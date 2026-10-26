@@ -89,14 +89,16 @@ const features = [
 							<h3 class="feature__title">{t(locale, `${key}.title`)}</h3>
 							<p class="feature__desc">{t(locale, `${key}.text`)}</p>
 						</div>
-						<Picture
-							class="shot feature__shot"
-							src={src}
-							alt={t(locale, `${key}.shot`)}
-							formats={['avif', 'webp']}
-							widths={[600, 900, 1200, 1800]}
-							sizes="(width < 900px) 94vw, 640px"
-						/>
+						<div class={`feature__media feature__media--${key}`}>
+							<Picture
+								class="shot feature__shot"
+								src={src}
+								alt={t(locale, `${key}.shot`)}
+								formats={['avif', 'webp']}
+								widths={[600, 900, 1200, 1800]}
+								sizes="(width < 900px) 94vw, 640px"
+							/>
+						</div>
 					</article>
 				))}
 			</div>
@@ -304,6 +306,39 @@ const features = [
 		color: var(--muted);
 	}
 
+	/* Свечение за снимком цветом значка его страницы в окне настроек */
+	.feature__media {
+		position: relative;
+
+		&::before {
+			content: '';
+			position: absolute;
+			z-index: -1;
+			inset: -18% -12%;
+			background: radial-gradient(closest-side, var(--tint), transparent);
+		}
+
+		&--rules {
+			--tint: rgb(200 80 220 / 38%);
+		}
+
+		&--hotkeys {
+			--tint: rgb(110 110 240 / 38%);
+		}
+
+		&--bar {
+			--tint: rgb(240 145 60 / 38%);
+		}
+
+		&--borders {
+			--tint: rgb(232 70 92 / 34%);
+		}
+
+		&--vim {
+			--tint: rgb(76 194 90 / 34%);
+		}
+	}
+
 	.feature__shot {
 		width: 100%;
 	}
@@ -327,5 +362,111 @@ const features = [
 
 	.install__zip {
 		font-family: var(--font-mono);
+	}
+
+	/* Движение: иконка покачивается, а остальное едет за прокруткой. Браузер без scroll-driven
+	   animations и просьба системы уменьшить движение оставляют страницу как есть */
+	@media (prefers-reduced-motion: no-preference) {
+		.hero__icon {
+			animation: float 6s ease-in-out infinite;
+		}
+
+		@supports (animation-timeline: view()) {
+			/* Первый экран при уходе вверх отстаёт от прокрутки и гаснет */
+			.hero__inner {
+				animation: sink linear both;
+				animation-timeline: view();
+				animation-range: exit 0% exit 100%;
+			}
+
+			/* Главный снимок встаёт из наклона, как на страницах продуктов */
+			.hero__shot {
+				transform-origin: 50% 100%;
+				animation: rise linear both;
+				animation-timeline: view();
+				animation-range: entry 0% cover 40%;
+			}
+
+			/* Снимок и текст едут с разной скоростью, свечение -- ещё медленнее */
+			.feature__media {
+				animation:
+					appear linear both,
+					parallax-near linear both;
+				animation-timeline: view(), view();
+				animation-range:
+					entry 0% entry 70%,
+					cover 0% cover 100%;
+
+				&::before {
+					animation: parallax-back linear both;
+					animation-timeline: view();
+				}
+			}
+
+			.feature__text {
+				animation:
+					appear linear both,
+					parallax-far linear both;
+				animation-timeline: view(), view();
+				animation-range:
+					entry 10% entry 80%,
+					cover 0% cover 100%;
+			}
+		}
+	}
+
+	@keyframes float {
+		50% {
+			transform: translateY(-8px) rotate(-2deg);
+		}
+	}
+
+	@keyframes sink {
+		to {
+			transform: translateY(35%) scale(0.96);
+			opacity: 0;
+		}
+	}
+
+	@keyframes rise {
+		from {
+			transform: perspective(1600px) rotateX(24deg) scale(0.9);
+		}
+	}
+
+	@keyframes appear {
+		from {
+			opacity: 0;
+		}
+	}
+
+	@keyframes parallax-near {
+		from {
+			transform: translateY(70px);
+		}
+
+		to {
+			transform: translateY(-70px);
+		}
+	}
+
+	@keyframes parallax-far {
+		from {
+			transform: translateY(30px);
+		}
+
+		to {
+			transform: translateY(-30px);
+		}
+	}
+
+	@keyframes parallax-back {
+		from {
+			transform: translateY(-60px) scale(0.9);
+		}
+
+		to {
+			transform: translateY(60px) scale(1.1);
+		}
 	}
 </style>

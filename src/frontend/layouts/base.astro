@@ -5,6 +5,7 @@ import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
 import ThemeBoot from '@aimuzov/infra-site-kit/theme-boot.astro'
 import '@aimuzov/infra-site-kit/ui/tokens.css'
 
+import Backdrop from '#frontend/components/backdrop.astro'
 import Corner from '#frontend/components/corner.astro'
 import Footer from '#frontend/components/footer.astro'
 import '#frontend/styles/global.css'
@@ -50,6 +51,7 @@ const url = new URL(Astro.url.pathname, Astro.site)
 		<slot name="head" />
 	</head>
 	<body>
+		<Backdrop />
 		<Corner {locale} />
 		<slot />
 		<Footer {locale} />
