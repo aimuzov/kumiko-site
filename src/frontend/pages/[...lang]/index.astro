@@ -364,8 +364,8 @@ const features = [
 		font-family: var(--font-mono);
 	}
 
-	/* Движение: иконка покачивается, а остальное едет за прокруткой. Браузер без scroll-driven
-	   animations и просьба системы уменьшить движение оставляют страницу как есть */
+	/* Иконка покачивается по времени, остальное едет за прокруткой. Без scroll-driven animations
+	   остаётся только покачивание, а просьба системы уменьшить движение останавливает всё */
 	@media (prefers-reduced-motion: no-preference) {
 		.hero__icon {
 			animation: float 6s ease-in-out infinite;
