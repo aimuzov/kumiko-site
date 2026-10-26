@@ -3,28 +3,22 @@
 	<img src="https://img.shields.io/badge/%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-0066cc?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5IDYiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0wIDBoOXYzSDB6Ii8+PHBhdGggZmlsbD0iIzAwMzlhNiIgZD0iTTAgMmg5djJIMHoiLz48cGF0aCBmaWxsPSIjZDUyYjFlIiBkPSJNMCA0aDl2MkgweiIvPjwvc3ZnPg==" alt="Русский">
 </p>
 
-<!-- template-only: баннер самого шаблона, site-bootstrapper вырезает этот блок из нового сайта. -->
-<p align="center">
-	<a href="https://github.com/aimuzov/infra-site-template"><img src="https://raw.githubusercontent.com/aimuzov/aimuzov/main/assets/infra-site-template.jpg" alt="infra-site-template: стартовый шаблон для новых сайтов" width="100%"></a>
-</p>
-<!-- /template-only -->
-
 <!-- Раскомментировать, когда в .github/assets появится banner.jpg.
 <p align="center">
-	<a href="https://__DOMAIN__"><img src=".github/assets/banner.jpg" alt="__NAME__: __DESCRIPTION__" width="100%"></a>
+	<a href="https://kumiko.aimuzov.online"><img src=".github/assets/banner.jpg" alt="kumiko: Лендинг kumiko, тайлингового менеджера окон для macOS" width="100%"></a>
 </p>
 -->
 
 <p align="center">
-	<a href="https://github.com/aimuzov/__PROJECT__/actions/workflows/deploy.yml"><img src="https://img.shields.io/github/actions/workflow/status/aimuzov/__PROJECT__/deploy.yml?branch=main&label=release" alt="Release"></a>
-	<a href="https://__DOMAIN__"><img src="https://img.shields.io/website?url=https%3A%2F%2F__DOMAIN__&label=site" alt="Site status"></a>
-	<a href="package.json"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Faimuzov%2F__PROJECT__%2Fmain%2Fpackage.json&query=%24.engines.node&label=node&logo=nodedotjs&logoColor=white&color=5fa04e" alt="Node"></a>
-	<a href="https://astro.build"><img src="https://img.shields.io/github/package-json/dependency-version/aimuzov/__PROJECT__/astro?logo=astro&logoColor=white&color=bc52ee" alt="Astro"></a>
-	<a href="https://svelte.dev"><img src="https://img.shields.io/github/package-json/dependency-version/aimuzov/__PROJECT__/svelte?logo=svelte&logoColor=white&color=ff3e00" alt="Svelte"></a>
-	<a href="LICENSE"><img src="https://img.shields.io/github/license/aimuzov/__PROJECT__" alt="License"></a>
+	<a href="https://github.com/aimuzov/kumiko-site/actions/workflows/deploy.yml"><img src="https://img.shields.io/github/actions/workflow/status/aimuzov/kumiko-site/deploy.yml?branch=main&label=release" alt="Release"></a>
+	<a href="https://kumiko.aimuzov.online"><img src="https://img.shields.io/website?url=https%3A%2F%2Fkumiko.aimuzov.online&label=site" alt="Site status"></a>
+	<a href="package.json"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Faimuzov%2Fkumiko-site%2Fmain%2Fpackage.json&query=%24.engines.node&label=node&logo=nodedotjs&logoColor=white&color=5fa04e" alt="Node"></a>
+	<a href="https://astro.build"><img src="https://img.shields.io/github/package-json/dependency-version/aimuzov/kumiko-site/astro?logo=astro&logoColor=white&color=bc52ee" alt="Astro"></a>
+	<a href="https://svelte.dev"><img src="https://img.shields.io/github/package-json/dependency-version/aimuzov/kumiko-site/svelte?logo=svelte&logoColor=white&color=ff3e00" alt="Svelte"></a>
+	<a href="LICENSE"><img src="https://img.shields.io/github/license/aimuzov/kumiko-site" alt="License"></a>
 </p>
 
-<h3 align="center">__DESCRIPTION__</h3>
+<h3 align="center">Лендинг kumiko, тайлингового менеджера окон для macOS</h3>
 
 <!-- Раскомментировать, когда в .github/assets появятся скриншоты.
 <table>
@@ -35,21 +29,20 @@
 </table>
 -->
 
-<p>Живёт на <a href="https://__DOMAIN__">__DOMAIN__</a>. Статичный сайт на <a href="https://astro.build">Astro</a>, интерактивные островки на <a href="https://svelte.dev">Svelte</a>.</p>
+<p>Живёт на <a href="https://kumiko.aimuzov.online">kumiko.aimuzov.online</a>. Статичный сайт на <a href="https://astro.build">Astro</a>, интерактивные островки на <a href="https://svelte.dev">Svelte</a>.</p>
 
 ## Что внутри
 
 - **Главная** (`/`): название и описание сайта из [`src/frontend/data/site.ts`](src/frontend/data/site.ts).
 - **404**: заглушка «такой страницы нет» со ссылкой на главную.
 - **Футер**: подпись автора из [infra-site-kit](https://github.com/aimuzov/infra-site-kit) со ссылкой на исходный код, `repo` в [`site.ts`](src/frontend/data/site.ts).
-- **Аналитика**: Яндекс Метрика, компонент счётчика берётся из [infra-site-kit](https://github.com/aimuzov/infra-site-kit) и сам добавляет свои источники в CSP; номер счётчика — `metrikaId` в [`site.ts`](src/frontend/data/site.ts).
 
 ## Как устроено
 
 Всё лежит в `src/`:
 
 - [`src/frontend`](src/frontend): сайт на Astro, это `srcDir` в `astro.config.mjs`. Импорты — через `#frontend/*`.
-- [`src/backend`](src/backend): API рядом с сайтом, как в shkatova-psychologist и community-taplist. Голый Node запускает TypeScript, без сборки и зависимостей; импорты через `#backend/*`, общий для обеих сторон код — в `src/shared` (`#shared/*`). В нём уже есть `GET /api/health`: его опрашивает деплой после релиза (`health-url` в `deploy.yml`) и compose в контейнере. На проде `/api/*` сюда шлёт Caddy, локально — прокси Vite в `astro.config.mjs`. Образ — `deploy/backend.Dockerfile`, сервис `api` — в `deploy/docker-compose.yml`. Сайт из `src/backend` ничего не импортирует. Сайт без API убирает всё это: папку, Dockerfile, сервис, скрипт `dev:api`, прокси и `health-url`.
+- Своего API нет, каркас для него лежит в [infra-site-template](https://github.com/aimuzov/infra-site-template).
 
 Всё про сервер — в [`deploy`](deploy): Dockerfile, compose и nginx. Скрипт выкладки общий для всех сайтов и лежит в [infra-server](https://github.com/aimuzov/infra-server).
 
@@ -57,13 +50,12 @@
 
 ## Запуск
 
-Стек и раскладка — из [infra-site-template](https://github.com/aimuzov/infra-site-template): Astro + Svelte 5, Prettier, oxlint, stylelint (BEM), `node --test` для unit-тестов, Playwright для e2e. Конфиги Prettier, stylelint, oxlint и Playwright и шаги CI берутся из [infra-site-kit](https://github.com/aimuzov/infra-site-kit). Node берётся из [`mise.toml`](mise.toml), эта же версия закреплена в `package.json` и в обоих Dockerfile в [`deploy`](deploy).
+Стек и раскладка — из [infra-site-template](https://github.com/aimuzov/infra-site-template): Astro + Svelte 5, Prettier, oxlint, stylelint (BEM), `node --test` для unit-тестов, Playwright для e2e. Конфиги Prettier, stylelint, oxlint и Playwright и шаги CI берутся из [infra-site-kit](https://github.com/aimuzov/infra-site-kit). Node берётся из [`mise.toml`](mise.toml), эта же версия закреплена в `package.json` и в Dockerfile в [`deploy`](deploy).
 
 ```sh
 cp .env.example .env   # может остаться пустым, но файл должен быть
 npm ci
 npm run dev       # сайт
-npm run dev:api   # API, сайт проксирует к нему /api
 ```
 
 Перед коммитом — те же проверки, что в CI:
@@ -72,7 +64,7 @@ npm run dev:api   # API, сайт проксирует к нему /api
 npm run format:check && npm run lint:js && npm run lint:css && npm run check && npm test && npm run build
 ```
 
-E2E-тесты в [`e2e`](e2e) собирают сайт и открывают его в Chromium: каждая страница из sitemap отвечает без ошибок в консоли и проходит axe, а если у сайта есть счётчик, Метрика ждёт первого действия. В CI они идут после проверок. Браузер ставится один раз через `npx playwright install chromium`.
+E2E-тесты в [`e2e`](e2e) собирают сайт и открывают его в Chromium: каждая страница из sitemap отвечает без ошибок в консоли и проходит axe. В CI они идут после проверок. Браузер ставится один раз через `npx playwright install chromium`.
 
 ```sh
 npm run test:e2e
@@ -89,12 +81,12 @@ Safari на iPhone сам приближает страницу, когда вс
 Сборка кладёт в каждую страницу CSP с хешами скриптов и стилей Astro (настройка `security.csp` в `astro.config.mjs`). В `npm run dev` политики нет, поэтому нарушения видны только после `npm run build && npm run preview` и на проде.
 
 - Никаких атрибутов `style=""` и обработчиков вроде `onclick`: стили задаются классами и правилами в `<style>`, обработчики живут в `<script>`.
-- Внешний скрипт, картинку или запрос (виджет, карту, шрифт с CDN) сначала нужно разрешить в `security.csp`. Из коробки там разрешён только сам сайт: компонент Яндекс Метрики приносит свой хеш и источники сам.
+- Внешний скрипт, картинку или запрос (виджет, карту, шрифт с CDN) сначала нужно разрешить в `security.csp`. Из коробки там разрешён только сам сайт.
 - После таких правок стоит открыть консоль браузера в `npm run preview`: всё заблокированное браузер пишет туда.
 
 ## Выкладка
 
-Сервер проектов из [infra-server](https://github.com/aimuzov/infra-server): мерж релизного PR, который ведёт release-please, запускает `deploy.yml`, он гоняет проверки и заходит по SSH. Шаги обоих берутся из [infra-site-kit](https://github.com/aimuzov/infra-site-kit), там же адрес сервера и его строка `known_hosts`. Там ключ запускает общий [`deploy/site.sh`](https://github.com/aimuzov/infra-server/blob/main/deploy/site.sh) из infra-server, который переключается на релизный тег и пересобирает контейнер `__PROJECT__` (nginx со статикой) из [`deploy/docker-compose.yml`](deploy/docker-compose.yml). Сборка идёт в юните systemd, так что оборванное SSH-соединение её не прерывает. Домен и TLS держит общий Caddy. `.env` лежит на сервере в `/srv/__PROJECT__`.
+Сервер проектов из [infra-server](https://github.com/aimuzov/infra-server): мерж релизного PR, который ведёт release-please, запускает `deploy.yml`, он гоняет проверки и заходит по SSH. Шаги обоих берутся из [infra-site-kit](https://github.com/aimuzov/infra-site-kit), там же адрес сервера и его строка `known_hosts`. Там ключ запускает общий [`deploy/site.sh`](https://github.com/aimuzov/infra-server/blob/main/deploy/site.sh) из infra-server, который переключается на релизный тег и пересобирает контейнер `kumiko-site` (nginx со статикой) из [`deploy/docker-compose.yml`](deploy/docker-compose.yml). Сборка идёт в юните systemd, так что оборванное SSH-соединение её не прерывает. Домен и TLS держит общий Caddy. `.env` лежит на сервере в `/srv/kumiko-site`.
 
 Job выкладки запускается, только когда переменная репозитория `DEPLOY_ENABLED` равна `true`, а SSH-ключ лежит в секрете `DEPLOY_SSH_KEY`. Пока сервер не готов, релиз гоняет одни проверки.
 

@@ -48,11 +48,10 @@ jobs:
     timeout-minutes: 20
     environment:
       name: production
-      url: https://__DOMAIN__
+      url: https://kumiko.aimuzov.online
     steps:
       - uses: aimuzov/infra-site-kit/deploy@v4
         with:
           ssh-key: ${{ secrets.DEPLOY_SSH_KEY }}
-          url: https://__DOMAIN__
-          health-url: https://__DOMAIN__/api/health
+          url: https://kumiko.aimuzov.online
           ref: ${{ needs.release.outputs.tag || inputs.tag }}

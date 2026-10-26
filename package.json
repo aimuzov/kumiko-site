@@ -1,7 +1,7 @@
 {
-	"name": "__PROJECT__",
+	"name": "kumiko-site",
 	"type": "module",
-	"version": "1.3.0",
+	"version": "1.0.0",
 	"private": true,
 	"license": "MIT",
 	"engines": {
@@ -9,7 +9,6 @@
 	},
 	"scripts": {
 		"dev": "astro dev",
-		"dev:api": "node --watch src/backend/server.ts",
 		"build": "astro build",
 		"preview": "astro preview",
 		"check": "astro check && svelte-check",
@@ -43,8 +42,6 @@
 		"typescript": "6.0.3"
 	},
 	"imports": {
-		"#frontend/*": "./src/frontend/*",
-		"#backend/*": "./src/backend/*",
-		"#shared/*": "./src/shared/*"
+		"#frontend/*": "./src/frontend/*"
 	}
 }

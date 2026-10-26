@@ -3,28 +3,22 @@
 	<a href="README.ru.md"><img src="https://img.shields.io/badge/%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-555?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5IDYiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0wIDBoOXYzSDB6Ii8+PHBhdGggZmlsbD0iIzAwMzlhNiIgZD0iTTAgMmg5djJIMHoiLz48cGF0aCBmaWxsPSIjZDUyYjFlIiBkPSJNMCA0aDl2MkgweiIvPjwvc3ZnPg==" alt="Русский"></a>
 </p>
 
-<!-- template-only: the template's own banner, site-bootstrapper cuts this block out of a new site. -->
-<p align="center">
-	<a href="https://github.com/aimuzov/infra-site-template"><img src="https://raw.githubusercontent.com/aimuzov/aimuzov/main/assets/infra-site-template.en.jpg" alt="infra-site-template: a starter for every new site" width="100%"></a>
-</p>
-<!-- /template-only -->
-
 <!-- Uncomment once .github/assets/banner.en.jpg is in place.
 <p align="center">
-	<a href="https://__DOMAIN__"><img src=".github/assets/banner.en.jpg" alt="__NAME__: __DESCRIPTION_EN__" width="100%"></a>
+	<a href="https://kumiko.aimuzov.online"><img src=".github/assets/banner.en.jpg" alt="kumiko: A landing page for kumiko, a tiling window manager for macOS" width="100%"></a>
 </p>
 -->
 
 <p align="center">
-	<a href="https://github.com/aimuzov/__PROJECT__/actions/workflows/deploy.yml"><img src="https://img.shields.io/github/actions/workflow/status/aimuzov/__PROJECT__/deploy.yml?branch=main&label=release" alt="Release"></a>
-	<a href="https://__DOMAIN__"><img src="https://img.shields.io/website?url=https%3A%2F%2F__DOMAIN__&label=site" alt="Site status"></a>
-	<a href="package.json"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Faimuzov%2F__PROJECT__%2Fmain%2Fpackage.json&query=%24.engines.node&label=node&logo=nodedotjs&logoColor=white&color=5fa04e" alt="Node"></a>
-	<a href="https://astro.build"><img src="https://img.shields.io/github/package-json/dependency-version/aimuzov/__PROJECT__/astro?logo=astro&logoColor=white&color=bc52ee" alt="Astro"></a>
-	<a href="https://svelte.dev"><img src="https://img.shields.io/github/package-json/dependency-version/aimuzov/__PROJECT__/svelte?logo=svelte&logoColor=white&color=ff3e00" alt="Svelte"></a>
-	<a href="LICENSE"><img src="https://img.shields.io/github/license/aimuzov/__PROJECT__" alt="License"></a>
+	<a href="https://github.com/aimuzov/kumiko-site/actions/workflows/deploy.yml"><img src="https://img.shields.io/github/actions/workflow/status/aimuzov/kumiko-site/deploy.yml?branch=main&label=release" alt="Release"></a>
+	<a href="https://kumiko.aimuzov.online"><img src="https://img.shields.io/website?url=https%3A%2F%2Fkumiko.aimuzov.online&label=site" alt="Site status"></a>
+	<a href="package.json"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Faimuzov%2Fkumiko-site%2Fmain%2Fpackage.json&query=%24.engines.node&label=node&logo=nodedotjs&logoColor=white&color=5fa04e" alt="Node"></a>
+	<a href="https://astro.build"><img src="https://img.shields.io/github/package-json/dependency-version/aimuzov/kumiko-site/astro?logo=astro&logoColor=white&color=bc52ee" alt="Astro"></a>
+	<a href="https://svelte.dev"><img src="https://img.shields.io/github/package-json/dependency-version/aimuzov/kumiko-site/svelte?logo=svelte&logoColor=white&color=ff3e00" alt="Svelte"></a>
+	<a href="LICENSE"><img src="https://img.shields.io/github/license/aimuzov/kumiko-site" alt="License"></a>
 </p>
 
-<h3 align="center">__DESCRIPTION_EN__</h3>
+<h3 align="center">A landing page for kumiko, a tiling window manager for macOS</h3>
 
 <!-- Uncomment once the screenshots are in .github/assets.
 <table>
@@ -35,7 +29,7 @@
 </table>
 -->
 
-<p>Lives at <a href="https://__DOMAIN__">__DOMAIN__</a>. A static <a href="https://astro.build">Astro</a> site, interactive islands are written in <a href="https://svelte.dev">Svelte</a>.</p>
+<p>Lives at <a href="https://kumiko.aimuzov.online">kumiko.aimuzov.online</a>. A static <a href="https://astro.build">Astro</a> site, interactive islands are written in <a href="https://svelte.dev">Svelte</a>.</p>
 
 The site is in Russian, so the names below are translated.
 
@@ -44,14 +38,13 @@ The site is in Russian, so the names below are translated.
 - **Home** (`/`): the site name and description from [`src/frontend/data/site.ts`](src/frontend/data/site.ts).
 - **404**: the shared not-found page from [infra-site-kit](https://github.com/aimuzov/infra-site-kit) inside the site layout: a link home, "back" for visitors who came from the site and suggestions from the sitemap.
 - **Footer**: the author credit from [infra-site-kit](https://github.com/aimuzov/infra-site-kit) with a link to the source code, `repo` in [`site.ts`](src/frontend/data/site.ts).
-- **Analytics**: Yandex Metrica, the counter component comes from [infra-site-kit](https://github.com/aimuzov/infra-site-kit) and adds its own CSP sources; the counter number is `metrikaId` in [`site.ts`](src/frontend/data/site.ts).
 
 ## How it is built
 
 Everything lives in `src/`:
 
 - [`src/frontend`](src/frontend): the Astro site, it is the `srcDir` in `astro.config.mjs`. Imports go through `#frontend/*`.
-- [`src/backend`](src/backend): the API next to the site, the way shkatova-psychologist and community-taplist do it. Plain Node runs the TypeScript, no build and no dependencies; imports go through `#backend/*`, code both sides need goes to `src/shared` (`#shared/*`). It comes with `GET /api/health`, which the deploy polls after a release (`health-url` in `deploy.yml`) and compose polls in the container. In production Caddy sends `/api/*` here, locally the Vite proxy in `astro.config.mjs` does. The image is `deploy/backend.Dockerfile`, the `api` service is in `deploy/docker-compose.yml`. The site never imports from `src/backend`. A site without an API drops all of that: the folder, the Dockerfile, the service, the `dev:api` script, the proxy and `health-url`.
+- No API of its own, the scaffold for one lives in [infra-site-template](https://github.com/aimuzov/infra-site-template).
 
 Everything about the server is in [`deploy`](deploy): the Dockerfile, compose and nginx. The deploy script is shared by all sites and lives in [infra-server](https://github.com/aimuzov/infra-server).
 
@@ -59,13 +52,12 @@ Every file, components included, is named in kebab-case: `base.astro`, `section-
 
 ## Running
 
-Stack and layout follow [infra-site-template](https://github.com/aimuzov/infra-site-template): Astro + Svelte 5, Prettier, oxlint, stylelint (BEM), `node --test` for unit tests, Playwright for e2e. The Prettier, stylelint, oxlint and Playwright configs and the CI steps come from [infra-site-kit](https://github.com/aimuzov/infra-site-kit). Node comes from [`mise.toml`](mise.toml), the same version is pinned in `package.json` and both Dockerfiles in [`deploy`](deploy).
+Stack and layout follow [infra-site-template](https://github.com/aimuzov/infra-site-template): Astro + Svelte 5, Prettier, oxlint, stylelint (BEM), `node --test` for unit tests, Playwright for e2e. The Prettier, stylelint, oxlint and Playwright configs and the CI steps come from [infra-site-kit](https://github.com/aimuzov/infra-site-kit). Node comes from [`mise.toml`](mise.toml), the same version is pinned in `package.json` and the Dockerfile in [`deploy`](deploy).
 
 ```sh
 cp .env.example .env   # may stay empty, but the file has to exist
 npm ci
 npm run dev       # the site
-npm run dev:api   # the API, the site proxies /api to it
 ```
 
 Before committing, the same checks as in CI:
@@ -74,7 +66,7 @@ Before committing, the same checks as in CI:
 npm run format:check && npm run lint:js && npm run lint:css && npm run check && npm test && npm run build
 ```
 
-E2E tests in [`e2e`](e2e) build the site and open it in Chromium: every sitemap page answers without console errors and passes axe, and when the site has a counter, the Metrika waits for the first interaction. CI runs them after the checks. The browser is installed once with `npx playwright install chromium`.
+E2E tests in [`e2e`](e2e) build the site and open it in Chromium: every sitemap page answers without console errors and passes axe. CI runs them after the checks. The browser is installed once with `npx playwright install chromium`.
 
 ```sh
 npm run test:e2e
@@ -91,12 +83,12 @@ Zoom as a whole is not turned off with `maximum-scale=1` or `user-scalable=no` i
 The build puts a CSP with hashes of Astro's scripts and styles into every page (the `security.csp` option in `astro.config.mjs`). `npm run dev` has no policy, so violations only show up after `npm run build && npm run preview` and in production.
 
 - No `style=""` attributes or handlers like `onclick`: styles go through classes and rules in `<style>`, handlers live in `<script>`.
-- An external script, image or request (a widget, a map, a font from a CDN) has to be allowed in `security.csp` first. Out of the box it allows only the site itself: the Yandex Metrica component brings its own hash and sources.
+- An external script, image or request (a widget, a map, a font from a CDN) has to be allowed in `security.csp` first. Out of the box it allows only the site itself.
 - After such changes, check the browser console in `npm run preview`: the browser reports everything it blocks there.
 
 ## Deployment
 
-The projects server from [infra-server](https://github.com/aimuzov/infra-server): merging the release PR that release-please keeps open runs `deploy.yml`, which runs the checks and logs in over SSH. The steps of both come from [infra-site-kit](https://github.com/aimuzov/infra-site-kit), which also holds the server address and its `known_hosts` line. There the key runs the shared [`deploy/site.sh`](https://github.com/aimuzov/infra-server/blob/main/deploy/site.sh) of infra-server, which checks out the release tag and rebuilds the `__PROJECT__` container (nginx with the static site) from [`deploy/docker-compose.yml`](deploy/docker-compose.yml). The build runs in a systemd unit, so a dropped SSH connection does not cut it short. The domain and TLS are handled by the shared Caddy. `.env` lives on the server in `/srv/__PROJECT__`.
+The projects server from [infra-server](https://github.com/aimuzov/infra-server): merging the release PR that release-please keeps open runs `deploy.yml`, which runs the checks and logs in over SSH. The steps of both come from [infra-site-kit](https://github.com/aimuzov/infra-site-kit), which also holds the server address and its `known_hosts` line. There the key runs the shared [`deploy/site.sh`](https://github.com/aimuzov/infra-server/blob/main/deploy/site.sh) of infra-server, which checks out the release tag and rebuilds the `kumiko-site` container (nginx with the static site) from [`deploy/docker-compose.yml`](deploy/docker-compose.yml). The build runs in a systemd unit, so a dropped SSH connection does not cut it short. The domain and TLS are handled by the shared Caddy. `.env` lives on the server in `/srv/kumiko-site`.
 
 The deploy job runs only when the repository variable `DEPLOY_ENABLED` is `true`, and the SSH key is the `DEPLOY_SSH_KEY` secret. Until the server is set up, a release only runs the checks.
 

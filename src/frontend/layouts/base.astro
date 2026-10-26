@@ -1,6 +1,4 @@
 ---
-import Metrika from '@aimuzov/infra-site-kit/metrika.astro'
-import MetrikaPixel from '@aimuzov/infra-site-kit/metrika-pixel.astro'
 import '@aimuzov/infra-site-kit/base.css'
 
 import Footer from '#frontend/components/footer.astro'
@@ -37,11 +35,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site)
 		<meta property="og:title" content={fullTitle} />
 		<meta property="og:description" content={description} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		{Number.isInteger(site.metrikaId) && <Metrika id={site.metrikaId} />}
 		<slot name="head" />
 	</head>
 	<body>
-		{Number.isInteger(site.metrikaId) && <MetrikaPixel id={site.metrikaId} />}
 		<slot />
 		<Footer />
 	</body>
