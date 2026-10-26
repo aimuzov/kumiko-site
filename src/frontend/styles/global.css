@@ -8,7 +8,6 @@
 	--container: 1180px;
 	--gutter: 20px;
 	--section-y: clamp(48px, 7vw, 112px);
-	--radius: 18px;
 
 	--bg: light-dark(#f8f3ea, #13100d);
 	--fg: light-dark(#2b1d13, #f3e6cf);
