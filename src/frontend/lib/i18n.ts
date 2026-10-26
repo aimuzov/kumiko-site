@@ -48,9 +48,6 @@ export const strings = {
 		'install.sip':
 			'Всё работает без отключения SIP, кроме выключения теней окон и плавающих окон поверх остальных. Им нужен скрипт в Dock, как у yabai.',
 
-		'news.title': 'Что нового в {version}',
-		'news.all': 'Все версии',
-
 		'changelog.title': 'Что нового',
 		'changelog.lead': 'Как менялся kumiko от версии к версии, простыми словами.',
 		'changelog.toc': 'Версии',
@@ -102,9 +99,6 @@ export const strings = {
 			'On first launch kumiko asks for Accessibility to arrange windows and Input Monitoring for hotkeys and Vim.',
 		'install.sip':
 			'Everything works with SIP on but turning window shadows off and keeping floating windows on top. Those need a scripting addition in Dock, as with yabai.',
-
-		'news.title': 'New in {version}',
-		'news.all': 'All versions',
 
 		'changelog.title': 'What’s new',
 		'changelog.lead': 'How kumiko changed from version to version, in plain words.',

@@ -1,4 +1,4 @@
-import { visibleReleases, type Release } from '@aimuzov/infra-site-kit/changelog.js'
+import type { Release } from '@aimuzov/infra-site-kit/changelog.js'
 
 /** Ченжлог для читателя живёт в репо приложения, запись в него пишется в релизный PR. */
 const CHANGELOG = 'https://raw.githubusercontent.com/aimuzov/kumiko/main/changelog.json'
@@ -20,15 +20,6 @@ export function kumikoReleases() {
 	})
 
 	return releases
-}
-
-/** Последний релиз, который видно читателю: из него карточка "Что нового". */
-export async function latestRelease() {
-	const [latest] = visibleReleases(await kumikoReleases())
-
-	if (!latest) throw new Error(`${CHANGELOG} has no visible release`)
-
-	return latest
 }
 
 /** Самый свежий релиз, даже скрытый в ченжлоге, и ссылка на его архив: его и скачивают. */

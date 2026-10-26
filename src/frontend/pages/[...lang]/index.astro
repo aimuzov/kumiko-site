@@ -1,8 +1,7 @@
 ---
-import { itemHtml, localizeRelease } from '@aimuzov/infra-site-kit/changelog.js'
-import { localizePath, type Locale } from '@aimuzov/infra-site-kit/i18n.js'
+import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
 import { Picture } from 'astro:assets'
-import { ArrowRight, Download } from 'lucide-static'
+import { Download } from 'lucide-static'
 
 import icon from '#frontend/assets/icon.png'
 import bar from '#frontend/assets/shots/bar.png'
@@ -15,13 +14,11 @@ import workspaces from '#frontend/assets/shots/workspaces.png'
 import BrewCommand from '#frontend/components/brew-command.svelte'
 import Base from '#frontend/layouts/base.astro'
 import { langPaths, t } from '#frontend/lib/i18n.ts'
-import { latestRelease, newestRelease, REPO } from '#frontend/lib/kumiko.ts'
+import { newestRelease, REPO } from '#frontend/lib/kumiko.ts'
 
 export const getStaticPaths = langPaths
 
 const { locale } = Astro.props as { locale: Locale }
-const latest = await latestRelease()
-const news = localizeRelease(latest, locale)
 const newest = await newestRelease()
 const version = `v${newest.version}`
 
@@ -102,26 +99,6 @@ const features = [
 						/>
 					</article>
 				))}
-			</div>
-		</section>
-
-		<section class="news" aria-labelledby="news-title">
-			<div class="container">
-				<div class="news__card">
-					<h2 class="news__title" id="news-title">
-						{t(locale, 'news.title', { version: `v${latest.version}` })}
-					</h2>
-					<p class="news__subtitle">{news.title}</p>
-					<ul class="news__items">
-						{news.items.map((item) => (
-							<li class="news__item" set:html={itemHtml(item)} />
-						))}
-					</ul>
-					<a class="news__all" href={localizePath('/changelog/', locale)}>
-						{t(locale, 'news.all')}
-						<span set:html={ArrowRight} aria-hidden="true" />
-					</a>
-				</div>
 			</div>
 		</section>
 
@@ -329,57 +306,6 @@ const features = [
 
 	.feature__shot {
 		width: 100%;
-	}
-
-	.news {
-		padding-block: var(--section-y);
-	}
-
-	.news__card {
-		max-width: 760px;
-		margin-inline: auto;
-		padding: clamp(24px, 4vw, 40px);
-		border: 1px solid var(--border);
-		border-radius: var(--radius);
-		background: var(--surface);
-	}
-
-	.news__title {
-		margin: 0;
-		font-size: clamp(1.4rem, 3vw, 1.9rem);
-	}
-
-	.news__subtitle {
-		margin: 4px 0 0;
-		color: var(--muted);
-	}
-
-	.news__items {
-		margin: 20px 0 0;
-		padding-left: 1.2em;
-	}
-
-	.news__item + .news__item {
-		margin-top: 8px;
-	}
-
-	.news__all {
-		display: inline-flex;
-		gap: 6px;
-		align-items: center;
-		margin-top: 20px;
-		font-weight: 600;
-		text-decoration: none;
-
-		&:hover {
-			text-decoration: underline;
-		}
-
-		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
-		& :global(svg) {
-			width: 16px;
-			height: 16px;
-		}
 	}
 
 	.install {
