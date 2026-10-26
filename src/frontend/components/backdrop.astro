@@ -1,0 +1,119 @@
+<!-- Тёплые пятна за страницей. Каждое медленно плывёт по своему кругу, а два слоя при прокрутке
+     отстают от страницы по-разному: дальний почти стоит, ближний уезжает быстрее -->
+<div class="backdrop" aria-hidden="true">
+	<div class="backdrop__layer backdrop__layer--far">
+		<span class="backdrop__blob backdrop__blob--copper"></span>
+		<span class="backdrop__blob backdrop__blob--dusk"></span>
+	</div>
+	<div class="backdrop__layer backdrop__layer--near">
+		<span class="backdrop__blob backdrop__blob--amber"></span>
+		<span class="backdrop__blob backdrop__blob--rose"></span>
+	</div>
+</div>
+
+<style>
+	.backdrop {
+		pointer-events: none;
+		position: fixed;
+		z-index: -1;
+		inset: 0;
+		overflow: hidden;
+	}
+
+	.backdrop__layer {
+		position: absolute;
+		inset: -20vh 0;
+	}
+
+	.backdrop__blob {
+		position: absolute;
+		width: 70vmax;
+		height: 70vmax;
+		border-radius: 50%;
+		background: radial-gradient(closest-side, var(--blob), transparent);
+		animation: drift 38s ease-in-out infinite alternate;
+
+		&--copper {
+			--blob: light-dark(rgb(196 128 72 / 34%), rgb(186 108 50 / 40%));
+
+			top: -18vmax;
+			left: -16vmax;
+		}
+
+		&--dusk {
+			--blob: light-dark(rgb(150 160 210 / 22%), rgb(80 100 170 / 28%));
+
+			top: 40%;
+			right: -24vmax;
+			animation-duration: 46s;
+			animation-delay: -12s;
+		}
+
+		&--amber {
+			--blob: light-dark(rgb(236 178 96 / 30%), rgb(210 140 60 / 22%));
+
+			top: 70%;
+			left: 10%;
+			animation-duration: 42s;
+			animation-delay: -20s;
+			animation-direction: alternate-reverse;
+		}
+
+		&--rose {
+			--blob: light-dark(rgb(214 132 120 / 22%), rgb(160 64 64 / 26%));
+
+			top: 5%;
+			right: -10vmax;
+			width: 50vmax;
+			height: 50vmax;
+			animation-duration: 34s;
+			animation-delay: -6s;
+		}
+	}
+
+	@keyframes drift {
+		0% {
+			transform: translate(0, 0) scale(1);
+		}
+
+		50% {
+			transform: translate(12vmax, 8vmax) scale(1.15);
+		}
+
+		100% {
+			transform: translate(-6vmax, 14vmax) scale(0.9);
+		}
+	}
+
+	@keyframes lift-far {
+		to {
+			transform: translateY(-12vh);
+		}
+	}
+
+	@keyframes lift-near {
+		to {
+			transform: translateY(-36vh);
+		}
+	}
+
+	@media (--reduced-motion) {
+		.backdrop__blob {
+			animation: none;
+		}
+	}
+
+	@supports (animation-timeline: scroll()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.backdrop__layer--far {
+				animation: lift-far linear both;
+				animation-timeline: scroll(root);
+			}
+
+			.backdrop__layer--near {
+				animation: lift-near linear both;
+				animation-timeline: scroll(root);
+			}
+		}
+	}
+</style>
