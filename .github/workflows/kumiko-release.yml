@@ -22,9 +22,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           latest=$(gh release view --repo aimuzov/kumiko --json tagName --jq .tagName)
-          live=$(curl -fsS https://kumiko.aimuzov.online/kumiko-version.txt || true)
-          echo "kumiko: $latest, site: ${live:-unknown}"
-          [ "$latest" = "$live" ] && exit 0
+          live=$(mktemp)
+          status=$(curl -sS -o "$live" -w '%{http_code}' https://kumiko.aimuzov.online/kumiko-version.txt || true)
+          echo "kumiko: $latest, site: HTTP $status"
+
+          # 404 -- на сервере сборка старше этого адреса, её и надо заменить. Сайт не ответил --
+          # о его версии ничего не известно, выкатка подождёт следующей проверки.
+          case "$status" in
+            200) [ "$latest" = "$(tr -d '\n' < "$live")" ] && exit 0 ;;
+            404) ;;
+            *) exit 0 ;;
+          esac
 
           # Выкатка уже идёт: она и так соберёт сайт с новым ченжлогом.
           busy=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow deploy.yml --json status \
