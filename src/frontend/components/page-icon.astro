@@ -13,10 +13,11 @@ const ICONS = {
 
 type Props = { page: keyof typeof ICONS; class?: string }
 
-const { page, class: className } = Astro.props
+// Остальное -- в том числе атрибут области стилей родителя, иначе его правила по `class` мимо
+const { page, class: className, ...rest } = Astro.props
 ---
 
-<span class:list={['page-icon', `page-icon--${page}`, className]} aria-hidden="true" set:html={ICONS[page]} />
+<span class:list={['page-icon', `page-icon--${page}`, className]} aria-hidden="true" set:html={ICONS[page]} {...rest} />
 
 <style>
 	/* Плитка как в боковой панели окна настроек: системный цвет сверху светлее, белая фигура */
