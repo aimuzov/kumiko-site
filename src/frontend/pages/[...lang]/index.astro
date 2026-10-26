@@ -4,14 +4,9 @@ import { Picture } from 'astro:assets'
 import { Download } from 'lucide-static'
 
 import icon from '#frontend/assets/icon.png'
-import bar from '#frontend/assets/shots/bar.png'
-import borders from '#frontend/assets/shots/borders.png'
-import hotkeys from '#frontend/assets/shots/hotkeys.png'
-import rules from '#frontend/assets/shots/rules.png'
 import strip from '#frontend/assets/shots/strip.png'
-import vim from '#frontend/assets/shots/vim.png'
-import workspaces from '#frontend/assets/shots/workspaces.png'
 import BrewCommand from '#frontend/components/brew-command.svelte'
+import DesktopDemo from '#frontend/components/desktop-demo.astro'
 import PageIcon from '#frontend/components/page-icon.astro'
 import Base from '#frontend/layouts/base.astro'
 import { langPaths, t } from '#frontend/lib/i18n.ts'
@@ -23,14 +18,8 @@ const { locale } = Astro.props as { locale: Locale }
 const newest = await newestRelease()
 const version = `v${newest.version}`
 
-/** Страница настроек и её текст в словаре. Рабочие столы показаны в первом экране. */
-const features: { key: 'rules' | 'hotkeys' | 'bar' | 'borders' | 'vim'; shot: ImageMetadata }[] = [
-	{ key: 'rules', shot: rules },
-	{ key: 'hotkeys', shot: hotkeys },
-	{ key: 'bar', shot: bar },
-	{ key: 'borders', shot: borders },
-	{ key: 'vim', shot: vim },
-]
+/** Возможности по порядку страниц окна настроек, текст -- в словаре по ключу. */
+const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as const
 ---
 
 <Base {locale}>
@@ -54,29 +43,7 @@ const features: { key: 'rules' | 'hotkeys' | 'bar' | 'borders' | 'vim'; shot: Im
 			</div>
 
 			<div class="container hero__stage">
-				<Picture
-					class="hero__strip"
-					src={strip}
-					alt={t(locale, 'bar.strip')}
-					formats={['avif', 'webp']}
-					widths={[505, 1010]}
-					sizes="(width < 600px) 90vw, 505px"
-				/>
-				<Picture
-					class="shot hero__shot"
-					src={workspaces}
-					alt={t(locale, 'hero.shot')}
-					formats={['avif', 'webp']}
-					widths={[600, 900, 1200, 1800]}
-					sizes="(width < 1000px) 94vw, 900px"
-					loading="eager"
-					fetchpriority="high"
-				/>
-				<div class="hero__caption">
-					<PageIcon page="workspaces" class="hero__caption-icon" />
-					<h2 class="hero__caption-title">{t(locale, 'workspaces.title')}</h2>
-					<p class="hero__caption-text">{t(locale, 'workspaces.text')}</p>
-				</div>
+				<DesktopDemo label={t(locale, 'hero.demo')} barLabel={t(locale, 'bar.strip')} />
 			</div>
 		</section>
 
@@ -85,28 +52,69 @@ const features: { key: 'rules' | 'hotkeys' | 'bar' | 'borders' | 'vim'; shot: Im
 				<h2 class="section-title" id="features-title">
 					{t(locale, 'features.title')}
 				</h2>
-				{features.map(({ key, shot: src }) => (
-					<article class="feature">
-						<div class="feature__text">
+				<div class="features__grid">
+					{features.map((key) => (
+						<article class={`feature feature--${key}`}>
+							<div class="feature__visual" aria-hidden="true">
+								{key === 'workspaces' && (
+									<div class="mini-spaces">
+										<span class="mini-spaces__glider" />
+										<span class="mini-spaces__item">1</span>
+										<span class="mini-spaces__item">2</span>
+										<span class="mini-spaces__item">3</span>
+										<span class="mini-spaces__item">4</span>
+									</div>
+								)}
+								{key === 'rules' && (
+									<div class="mini-rules">
+										<span class="mini-rules__app">Finder</span>
+										<span class="mini-rules__pick">Tile</span>
+										<span class="mini-rules__app">Settings</span>
+										<span class="mini-rules__pick mini-rules__pick--float">Float</span>
+									</div>
+								)}
+								{key === 'hotkeys' && (
+									<div class="mini-keys">
+										<kbd class="mini-keys__key">⌥</kbd>
+										<kbd class="mini-keys__key mini-keys__key--press">H</kbd>
+										<kbd class="mini-keys__key">J</kbd>
+										<kbd class="mini-keys__key">K</kbd>
+										<kbd class="mini-keys__key">L</kbd>
+									</div>
+								)}
+								{key === 'bar' && (
+									<Picture
+										class="mini-bar"
+										src={strip}
+										alt=""
+										formats={['avif', 'webp']}
+										widths={[505, 1010]}
+										sizes="(width < 600px) 80vw, 340px"
+									/>
+								)}
+								{key === 'borders' && (
+									<div class="mini-frame">
+										<span class="mini-frame__win" />
+										<span class="mini-frame__win mini-frame__win--focus" />
+									</div>
+								)}
+								{key === 'vim' && (
+									<div class="mini-vim">
+										<span class="mini-vim__line">
+											dd<span class="mini-vim__cursor">w</span>
+										</span>
+										<span class="mini-vim__mode">-- NORMAL --</span>
+									</div>
+								)}
+							</div>
 							<PageIcon page={key} class="feature__icon" />
 							<h3 class="feature__title">{t(locale, `${key}.title`)}</h3>
 							<p class="feature__desc">{t(locale, `${key}.text`)}</p>
-						</div>
-						<div class={`feature__media feature__media--${key}`}>
-							<Picture
-								class="shot feature__shot"
-								src={src}
-								alt={t(locale, `${key}.shot`)}
-								formats={['avif', 'webp']}
-								widths={[600, 900, 1200, 1800]}
-								sizes="(width < 900px) 94vw, 640px"
-							/>
-						</div>
-					</article>
-				))}
+						</article>
+					))}
+				</div>
 			</div>
 		</section>
-
 		<section class="install" aria-labelledby="install-title">
 			<div class="container install__inner">
 				<h2 class="section-title" id="install-title">
@@ -235,48 +243,8 @@ const features: { key: 'rules' | 'hotkeys' | 'bar' | 'borders' | 'vim'; shot: Im
 
 	.hero__stage {
 		display: flex;
-		flex-direction: column;
-		gap: 28px;
-		align-items: center;
+		justify-content: center;
 		margin-top: clamp(40px, 6vw, 72px);
-	}
-
-	.hero__strip {
-		width: min(505px, 90vw);
-		border-radius: 12px;
-		box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
-	}
-
-	.hero__shot {
-		width: min(900px, 100%);
-	}
-
-	.hero__caption {
-		max-width: 40rem;
-	}
-
-	.hero__caption-icon {
-		margin-bottom: 14px;
-	}
-
-	.feature__icon {
-		margin-bottom: 16px;
-	}
-
-	.hero__caption-title {
-		margin: 0;
-		font-size: clamp(1.4rem, 3vw, 1.9rem);
-	}
-
-	.hero__caption-text {
-		margin: 8px 0 0;
-		color: var(--muted);
-	}
-
-	/* Снимки окна с прозрачными углами: тень повторяет их форму */
-	.shot {
-		height: auto;
-		filter: drop-shadow(0 24px 48px rgb(0 0 0 / 28%));
 	}
 
 	.section-title {
@@ -290,68 +258,174 @@ const features: { key: 'rules' | 'hotkeys' | 'bar' | 'borders' | 'vim'; shot: Im
 		padding-block: var(--section-y);
 	}
 
-	.feature {
+	.features__grid {
 		display: grid;
-		gap: 24px 56px;
-		align-items: center;
-		padding-block: clamp(24px, 4vw, 56px);
+		gap: 20px;
 
-		@media (--md) {
-			grid-template-columns: 5fr 7fr;
-
-			&:nth-of-type(even) .feature__text {
-				order: 2;
-			}
+		@media (--sm) {
+			grid-template-columns: repeat(2, 1fr);
 		}
+
+		@media (--lg) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	/* Карточка: сверху маленькая живая картинка возможности, под ней значок страницы настроек */
+	.feature {
+		position: relative;
+		overflow: hidden;
+		padding: 24px;
+		border: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
+		border-radius: 20px;
+		background: color-mix(in srgb, var(--surface) 70%, transparent);
+		backdrop-filter: blur(12px);
+	}
+
+	.feature__visual {
+		display: grid;
+		place-items: center;
+		height: 120px;
+		margin: -8px -8px 20px;
+		border-radius: 14px;
+		background: #14161c;
+	}
+
+	.feature__icon {
+		margin-bottom: 14px;
 	}
 
 	.feature__title {
 		margin: 0;
-		font-size: clamp(1.4rem, 3vw, 1.9rem);
+		font-size: 1.25rem;
 		letter-spacing: -0.01em;
 	}
 
 	.feature__desc {
-		margin: 12px 0 0;
-		font-size: 1.0625rem;
+		margin: 8px 0 0;
 		color: var(--muted);
 	}
 
-	/* Свечение за снимком цветом значка его страницы в окне настроек */
-	.feature__media {
+	.mini-spaces {
 		position: relative;
+		display: flex;
+		gap: 8px;
+		padding: 6px;
+		border-radius: 12px;
+		background: #0a111e;
+	}
 
-		&::before {
-			content: '';
-			position: absolute;
-			z-index: -1;
-			inset: -18% -12%;
-			background: radial-gradient(closest-side, var(--tint), transparent);
-		}
+	.mini-spaces__item {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 30px;
+		border-radius: 8px;
+		font-weight: 600;
+		color: #cfd6e4;
+	}
 
-		&--rules {
-			--tint: rgb(200 80 220 / 38%);
-		}
+	/* Подложка выбранного стола переезжает со второго на третий и обратно */
+	.mini-spaces__glider {
+		position: absolute;
+		top: 6px;
+		left: calc(6px + 42px);
+		width: 34px;
+		height: 30px;
+		border-radius: 8px;
+		background: #2b3a55;
+		animation: space-pick 4s ease-in-out infinite;
+	}
 
-		&--hotkeys {
-			--tint: rgb(110 110 240 / 38%);
-		}
+	.mini-spaces__item {
+		position: relative;
+	}
 
-		&--bar {
-			--tint: rgb(240 145 60 / 38%);
-		}
+	.mini-rules {
+		display: grid;
+		grid-template-columns: auto auto;
+		gap: 8px 16px;
+		align-items: center;
+		font-size: 0.875rem;
+		color: #e6e6ea;
+	}
 
-		&--borders {
-			--tint: rgb(232 70 92 / 34%);
-		}
+	.mini-rules__pick {
+		padding: 2px 10px;
+		border-radius: 6px;
+		color: #fff;
+		background: #1f63e0;
 
-		&--vim {
-			--tint: rgb(76 194 90 / 34%);
+		&--float {
+			background: #8e3fbd;
 		}
 	}
 
-	.feature__shot {
-		width: 100%;
+	.mini-keys {
+		display: flex;
+		gap: 6px;
+	}
+
+	.mini-keys__key {
+		display: grid;
+		place-items: center;
+		min-width: 34px;
+		height: 34px;
+		padding: 0 8px;
+		border-radius: 8px;
+		font-family: var(--font-sans);
+		font-weight: 600;
+		color: #e6e6ea;
+		background: #2a2b31;
+		box-shadow: 0 3px 0 #0c0d10;
+
+		&--press {
+			animation: key-press 2.4s ease-in-out infinite;
+		}
+	}
+
+	.mini-bar {
+		width: 90%;
+		height: auto;
+		border-radius: 8px;
+	}
+
+	.mini-frame {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 6px;
+		width: 60%;
+		height: 70%;
+	}
+
+	.mini-frame__win {
+		border-radius: 6px;
+		background: #2a2b31;
+
+		&--focus {
+			box-shadow: 0 0 0 2px #8aadf4;
+			animation: frame-glow 3s ease-in-out infinite;
+		}
+	}
+
+	.mini-vim {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		align-items: center;
+		font-family: var(--font-mono);
+		color: #e6e6ea;
+	}
+
+	.mini-vim__cursor {
+		color: #14161c;
+		background: #5af78e;
+		animation: blink 1.2s steps(1) infinite;
+	}
+
+	.mini-vim__mode {
+		font-size: 0.75rem;
+		color: #5af78e;
 	}
 
 	.install {
@@ -375,8 +449,18 @@ const features: { key: 'rules' | 'hotkeys' | 'bar' | 'borders' | 'vim'; shot: Im
 		font-family: var(--font-mono);
 	}
 
-	/* Иконка покачивается по времени, остальное едет за прокруткой. Без scroll-driven animations
-	   остаётся только покачивание, а просьба системы уменьшить движение останавливает всё */
+	/* Иконка покачивается и мелочи в карточках шевелятся по времени, остальное едет за прокруткой.
+	   Без scroll-driven animations остаётся только первое, а просьба системы уменьшить движение
+	   останавливает всё */
+	@media (--reduced-motion) {
+		.mini-spaces__glider,
+		.mini-keys__key--press,
+		.mini-frame__win--focus,
+		.mini-vim__cursor {
+			animation: none;
+		}
+	}
+
 	@media (prefers-reduced-motion: no-preference) {
 		.hero__icon {
 			animation: float 6s ease-in-out infinite;
@@ -390,38 +474,27 @@ const features: { key: 'rules' | 'hotkeys' | 'bar' | 'borders' | 'vim'; shot: Im
 				animation-range: exit 0% exit 100%;
 			}
 
-			/* Главный снимок встаёт из наклона, как на страницах продуктов */
-			.hero__shot {
+			/* Рабочий стол встаёт из наклона, как на страницах продуктов */
+			.hero__stage {
 				transform-origin: 50% 100%;
 				animation: rise linear both;
 				animation-timeline: view();
 				animation-range: entry 0% cover 40%;
 			}
 
-			/* Снимок и текст едут с разной скоростью, свечение -- ещё медленнее */
-			.feature__media {
+			/* Карточки проявляются и всплывают, каждая колонка со своей скоростью */
+			.feature {
 				animation:
 					appear linear both,
-					parallax-near linear both;
+					parallax linear both;
 				animation-timeline: view(), view();
 				animation-range:
-					entry 0% entry 70%,
+					entry 0% entry 80%,
 					cover 0% cover 100%;
 
-				&::before {
-					animation: parallax-back linear both;
-					animation-timeline: view();
+				&:nth-child(3n + 2) {
+					--lift: 60px;
 				}
-			}
-
-			.feature__text {
-				animation:
-					appear linear both,
-					parallax-far linear both;
-				animation-timeline: view(), view();
-				animation-range:
-					entry 10% entry 80%,
-					cover 0% cover 100%;
 			}
 		}
 	}
@@ -451,33 +524,56 @@ const features: { key: 'rules' | 'hotkeys' | 'bar' | 'borders' | 'vim'; shot: Im
 		}
 	}
 
-	@keyframes parallax-near {
+	@keyframes parallax {
 		from {
-			transform: translateY(70px);
+			transform: translateY(var(--lift, 30px));
 		}
 
 		to {
-			transform: translateY(-70px);
+			transform: translateY(calc(var(--lift, 30px) * -1));
 		}
 	}
 
-	@keyframes parallax-far {
-		from {
-			transform: translateY(30px);
+	@keyframes space-pick {
+		0%,
+		45% {
+			transform: none;
 		}
 
-		to {
-			transform: translateY(-30px);
+		50%,
+		95% {
+			transform: translateX(42px);
 		}
 	}
 
-	@keyframes parallax-back {
-		from {
-			transform: translateY(-60px) scale(0.9);
+	@keyframes key-press {
+		0%,
+		40%,
+		60%,
+		100% {
+			transform: none;
+			box-shadow: 0 3px 0 #0c0d10;
 		}
 
-		to {
-			transform: translateY(60px) scale(1.1);
+		50% {
+			transform: translateY(3px);
+			background: #3478f6;
+			box-shadow: 0 0 0 #0c0d10;
+		}
+	}
+
+	@keyframes frame-glow {
+		50% {
+			box-shadow:
+				0 0 0 2px #8aadf4,
+				0 0 18px #8aadf480;
+		}
+	}
+
+	@keyframes blink {
+		50% {
+			color: inherit;
+			background: transparent;
 		}
 	}
 </style>

@@ -1,0 +1,290 @@
+---
+import { Picture } from 'astro:assets'
+
+import strip from '#frontend/assets/shots/strip.png'
+
+type Props = { label: string; barLabel: string }
+
+const { label, barLabel } = Astro.props
+---
+
+<!-- Нарисованный рабочий стол под kumiko. Цикл на 16 секунд: окна стоят плиткой, новое окно
+     делит место нижнего, рамка фокуса переходит к нему и дальше, потом окно закрывается.
+     Бар внизу -- настоящий снимок -->
+<figure class="desktop" role="img" aria-label={label}>
+	<div class="desktop__screen">
+		<div class="desktop__area">
+			<div class="desktop__win desktop__win--code">
+				<span class="desktop__chrome"></span>
+				<span class="desktop__body"></span>
+			</div>
+			<div class="desktop__win desktop__win--web">
+				<span class="desktop__chrome"></span>
+				<span class="desktop__body"></span>
+			</div>
+			<div class="desktop__win desktop__win--chat">
+				<span class="desktop__chrome"></span>
+				<span class="desktop__body"></span>
+			</div>
+			<div class="desktop__win desktop__win--term">
+				<span class="desktop__chrome"></span>
+				<span class="desktop__body"></span>
+			</div>
+		</div>
+		<div class="desktop__bar">
+			<Picture
+				class="desktop__strip"
+				src={strip}
+				alt={barLabel}
+				formats={['avif', 'webp']}
+				widths={[505, 1010]}
+				sizes="(width < 600px) 70vw, 505px"
+			/>
+		</div>
+	</div>
+</figure>
+
+<style>
+	.desktop {
+		--cycle: 16s;
+		--gap: 1.4%;
+		--frame: light-dark(#5b8cff, #8aadf4);
+
+		width: min(980px, 100%);
+		margin: 0;
+		padding: 10px;
+		border-radius: 22px;
+		background: light-dark(#1d1d1f, #2a2a2d);
+		box-shadow:
+			0 30px 80px rgb(0 0 0 / 35%),
+			inset 0 0 0 1px rgb(255 255 255 / 8%);
+	}
+
+	.desktop__screen {
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		aspect-ratio: 16 / 10;
+		border-radius: 13px;
+		background:
+			radial-gradient(120% 90% at 20% 0%, #3a4f78 0%, transparent 60%),
+			radial-gradient(90% 80% at 100% 30%, #5a3d52 0%, transparent 55%), linear-gradient(#1a2640, #0a111e);
+	}
+
+	.desktop__area {
+		position: relative;
+		flex: 1;
+		margin: 1.2% 1.2% 0;
+	}
+
+	/* Окно -- блок с полоской заголовка и намёком на содержимое. Место и рамку задают ключевые
+	   кадры ниже, свои у каждого окна */
+	.desktop__win {
+		position: absolute;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		border-radius: 9px;
+		background: #1e1f24;
+		box-shadow:
+			0 0 0 2px var(--ring, transparent),
+			0 8px 24px rgb(0 0 0 / 35%);
+		animation: var(--cycle) cubic-bezier(0.65, 0, 0.35, 1) infinite;
+		animation-name: var(--motion);
+	}
+
+	.desktop__chrome {
+		flex: none;
+		height: 9%;
+		min-height: 14px;
+		background:
+			radial-gradient(circle at 12px 50%, #ff5f57 3.5px, transparent 4px),
+			radial-gradient(circle at 24px 50%, #febc2e 3.5px, transparent 4px),
+			radial-gradient(circle at 36px 50%, #28c840 3.5px, transparent 4px), #2a2b31;
+	}
+
+	.desktop__body {
+		flex: 1;
+		margin: 6%;
+	}
+
+	.desktop__win--code {
+		--motion: ring-code;
+
+		top: 0;
+		left: 0;
+		width: calc(55% - var(--gap) / 2);
+		height: 100%;
+
+		/* Строки кода: у каждого слоя свой цвет, длина и отступ, шаг общий, поэтому строки
+		   не накладываются, а складываются в блоки разной ширины */
+		& .desktop__body {
+			background:
+				repeating-linear-gradient(#0000 0 2px, #c792ea88 2px 7px, #0000 7px 72px) 0 0 / 38% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 14px, #82aaff77 14px 19px, #0000 19px 72px) 8% 0 / 62% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 26px, #ffffff33 26px 31px, #0000 31px 72px) 16% 0 / 48% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 38px, #c3e88d77 38px 43px, #0000 43px 72px) 16% 0 / 70% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 50px, #ffffff33 50px 55px, #0000 55px 72px) 8% 0 / 30% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 62px, #f78c6c77 62px 67px, #0000 67px 72px) 0 0 / 22% 100% no-repeat;
+		}
+	}
+
+	.desktop__win--web {
+		--motion: ring-web;
+
+		top: 0;
+		left: calc(55% + var(--gap) / 2);
+		width: calc(45% - var(--gap) / 2);
+		height: calc(50% - var(--gap) / 2);
+
+		background: #f4efe6;
+
+		& .desktop__chrome {
+			background:
+				radial-gradient(circle at 12px 50%, #ff5f57 3.5px, transparent 4px),
+				radial-gradient(circle at 24px 50%, #febc2e 3.5px, transparent 4px),
+				radial-gradient(circle at 36px 50%, #28c840 3.5px, transparent 4px), #e4ddd1;
+		}
+
+		& .desktop__body {
+			background:
+				linear-gradient(#c08a5c, #9a5f30) 0 0 / 100% 38% no-repeat,
+				repeating-linear-gradient(#0000 0 10px, #2b1d1322 10px 14px) 0 100% / 100% 50% no-repeat;
+		}
+	}
+
+	.desktop__win--chat {
+		--motion: place-chat;
+
+		top: calc(50% + var(--gap) / 2);
+		left: calc(55% + var(--gap) / 2);
+		width: calc(45% - var(--gap) / 2);
+		height: calc(50% - var(--gap) / 2);
+
+		& .desktop__body {
+			border-radius: 4px;
+			background:
+				linear-gradient(#3e8ef7, #3e8ef7) 100% 10% / 45% 16% no-repeat,
+				linear-gradient(#ffffff26, #ffffff26) 0 45% / 55% 16% no-repeat,
+				linear-gradient(#3e8ef7, #3e8ef7) 100% 80% / 35% 16% no-repeat;
+		}
+	}
+
+	.desktop__win--term {
+		--motion: place-term, ring-term;
+
+		top: calc(50% + var(--gap) / 2);
+		left: calc(77.5% + var(--gap) / 2);
+		width: calc(22.5% - var(--gap) / 2);
+		height: calc(50% - var(--gap) / 2);
+
+		background: #111214;
+
+		& .desktop__body {
+			background: repeating-linear-gradient(#0000 0 8px, #5af78e66 8px 11px, #0000 11px 18px) 0 0 / 60% 100%
+				no-repeat;
+		}
+	}
+
+	.desktop__bar {
+		display: flex;
+		flex: none;
+		align-items: center;
+		height: 7.5%;
+		background: #0a111e;
+	}
+
+	.desktop__strip {
+		width: auto;
+		height: 100%;
+		mask-image: linear-gradient(to right, #000 85%, #0000);
+	}
+
+	@property --ring {
+		syntax: '<color>';
+		inherits: false;
+		initial-value: transparent;
+	}
+
+	/* Плитка: код слева, справа браузер над чатом. К 28% терминал делит место чата и берёт фокус,
+	   к 52% фокус уходит в браузер, к 80% терминал закрывается и фокус возвращается к коду */
+	@keyframes ring-code {
+		0%,
+		22%,
+		80%,
+		100% {
+			--ring: var(--frame);
+		}
+
+		26%,
+		76% {
+			--ring: transparent;
+		}
+	}
+
+	@keyframes ring-web {
+		0%,
+		48%,
+		76%,
+		100% {
+			--ring: transparent;
+		}
+
+		52%,
+		72% {
+			--ring: var(--frame);
+		}
+	}
+
+	@keyframes ring-term {
+		0%,
+		24%,
+		50%,
+		100% {
+			--ring: transparent;
+		}
+
+		28%,
+		46% {
+			--ring: var(--frame);
+		}
+	}
+
+	@keyframes place-chat {
+		0%,
+		20%,
+		80%,
+		100% {
+			width: calc(45% - var(--gap) / 2);
+		}
+
+		28%,
+		72% {
+			width: calc(22.5% - var(--gap));
+		}
+	}
+
+	@keyframes place-term {
+		0%,
+		20%,
+		80%,
+		100% {
+			transform: translateX(110%);
+			opacity: 0;
+		}
+
+		28%,
+		72% {
+			transform: none;
+			opacity: 1;
+		}
+	}
+
+	/* Без движения -- первый кадр: плитка из трёх окон, фокус на коде */
+	@media (--reduced-motion) {
+		.desktop__win {
+			animation-play-state: paused;
+			animation-delay: 0s;
+		}
+	}
+</style>
