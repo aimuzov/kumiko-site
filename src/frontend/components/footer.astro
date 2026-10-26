@@ -1,12 +1,18 @@
 ---
 import Credit from '@aimuzov/infra-site-kit/credit.astro'
 
+import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
+
 import { site } from '#frontend/data/site.ts'
+
+type Props = { locale: Locale }
+
+const { locale } = Astro.props
 ---
 
 <footer class="footer">
 	<div class="container">
-		<Credit repo={site.repo} />
+		<Credit repo={site.repo} {locale} />
 	</div>
 </footer>
 

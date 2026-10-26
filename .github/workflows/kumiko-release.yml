@@ -1,0 +1,42 @@
+name: kumiko release
+
+# Главная и история версий берут ченжлог kumiko при сборке, поэтому новый релиз приложения
+# виден на сайте только после пересборки. Раз в полчаса тег последнего релиза kumiko сверяется
+# с тем, с которым собран сайт, и при расхождении запускается выкатка свежего main.
+# Токен в репо приложения для этого не нужен.
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest=$(gh release view --repo aimuzov/kumiko --json tagName --jq .tagName)
+          live=$(mktemp)
+          status=$(curl -sS -o "$live" -w '%{http_code}' https://kumiko.aimuzov.online/kumiko-version.txt || true)
+          echo "kumiko: $latest, site: HTTP $status"
+
+          # 404 -- на сервере сборка старше этого адреса, её и надо заменить. Сайт не ответил --
+          # о его версии ничего не известно, выкатка подождёт следующей проверки.
+          case "$status" in
+            200) [ "$latest" = "$(tr -d '\n' < "$live")" ] && exit 0 ;;
+            404) ;;
+            *) exit 0 ;;
+          esac
+
+          # Выкатка уже идёт: она и так соберёт сайт с новым ченжлогом.
+          busy=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow deploy.yml --json status \
+            --jq '[.[] | select(.status != "completed")] | length')
+          [ "$busy" != 0 ] && exit 0
+
+          gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY"

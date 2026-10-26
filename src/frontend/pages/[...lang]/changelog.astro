@@ -1,0 +1,41 @@
+---
+import Changelog from '@aimuzov/infra-site-kit/changelog.astro'
+import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
+import * as lucide from 'lucide-static'
+
+import Base from '#frontend/layouts/base.astro'
+import { dateLocale, langPaths, t } from '#frontend/lib/i18n.ts'
+import { kumikoReleases } from '#frontend/lib/kumiko.ts'
+
+export const getStaticPaths = langPaths
+
+const { locale } = Astro.props as { locale: Locale }
+const releases = await kumikoReleases()
+const title = t(locale, 'changelog.title')
+const lead = t(locale, 'changelog.lead')
+---
+
+<Base {locale} {title} description={lead}>
+	<main class="history">
+		<Changelog
+			{releases}
+			icons={lucide}
+			{title}
+			{lead}
+			toc={t(locale, 'changelog.toc')}
+			versionLabel={t(locale, 'changelog.version')}
+			locale={dateLocale(locale)}
+		/>
+	</main>
+</Base>
+
+<style>
+	.history {
+		--changelog-accent: var(--accent);
+		--changelog-muted: var(--muted);
+		--changelog-sticky-top: 72px;
+		--changelog-padding: 0 var(--gutter);
+
+		padding-block: calc(var(--section-y) + 24px) var(--section-y);
+	}
+</style>
