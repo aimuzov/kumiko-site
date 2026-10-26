@@ -1,0 +1,404 @@
+---
+import { itemHtml, localizeRelease } from '@aimuzov/infra-site-kit/changelog.js'
+import { localizePath, type Locale } from '@aimuzov/infra-site-kit/i18n.js'
+import { Picture } from 'astro:assets'
+import { ArrowRight, Download } from 'lucide-static'
+
+import icon from '#frontend/assets/icon.png'
+import bar from '#frontend/assets/shots/bar.png'
+import borders from '#frontend/assets/shots/borders.png'
+import hotkeys from '#frontend/assets/shots/hotkeys.png'
+import rules from '#frontend/assets/shots/rules.png'
+import strip from '#frontend/assets/shots/strip.png'
+import vim from '#frontend/assets/shots/vim.png'
+import workspaces from '#frontend/assets/shots/workspaces.png'
+import BrewCommand from '#frontend/components/brew-command.svelte'
+import Base from '#frontend/layouts/base.astro'
+import { langPaths, t } from '#frontend/lib/i18n.ts'
+import { latestRelease, REPO } from '#frontend/lib/kumiko.ts'
+
+export const getStaticPaths = langPaths
+
+const { locale } = Astro.props as { locale: Locale }
+const latest = await latestRelease()
+const news = localizeRelease(latest, locale)
+const version = `v${latest.version}`
+
+/** Страница настроек и её текст в словаре. Рабочие столы показаны в первом экране. */
+const features = [
+	{ key: 'rules', shot: rules },
+	{ key: 'hotkeys', shot: hotkeys },
+	{ key: 'bar', shot: bar },
+	{ key: 'borders', shot: borders },
+	{ key: 'vim', shot: vim },
+]
+---
+
+<Base {locale}>
+	<main>
+		<section class="hero">
+			<div class="container hero__inner">
+				<Picture class="hero__icon" src={icon} alt="" width={128} height={128} formats={['avif', 'webp']} />
+				<h1 class="hero__title">
+					kumi<span class="hero__title-accent">ko</span>
+				</h1>
+				<p class="hero__tagline">{t(locale, 'hero.tagline')}</p>
+				<p class="hero__lead">{t(locale, 'hero.lead')}</p>
+				<div class="hero__actions">
+					<a class="hero__download" href={latest.download}>
+						<span set:html={Download} aria-hidden="true" />
+						{t(locale, 'hero.download', { version })}
+					</a>
+					<BrewCommand {locale} client:visible />
+				</div>
+				<p class="hero__note">{t(locale, 'hero.requires')}</p>
+			</div>
+
+			<div class="container hero__stage">
+				<Picture
+					class="hero__strip"
+					src={strip}
+					alt={t(locale, 'bar.strip')}
+					formats={['avif', 'webp']}
+					widths={[505, 1010]}
+					sizes="(width < 600px) 90vw, 505px"
+				/>
+				<Picture
+					class="shot hero__shot"
+					src={workspaces}
+					alt={t(locale, 'hero.shot')}
+					formats={['avif', 'webp']}
+					widths={[600, 900, 1200, 1800]}
+					sizes="(width < 1000px) 94vw, 900px"
+					loading="eager"
+					fetchpriority="high"
+				/>
+				<div class="hero__caption">
+					<h2 class="hero__caption-title">{t(locale, 'workspaces.title')}</h2>
+					<p class="hero__caption-text">{t(locale, 'workspaces.text')}</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="features" aria-labelledby="features-title">
+			<div class="container">
+				<h2 class="section-title" id="features-title">
+					{t(locale, 'features.title')}
+				</h2>
+				{features.map(({ key, shot: src }) => (
+					<article class="feature">
+						<div class="feature__text">
+							<h3 class="feature__title">{t(locale, `${key}.title`)}</h3>
+							<p class="feature__desc">{t(locale, `${key}.text`)}</p>
+						</div>
+						<Picture
+							class="shot feature__shot"
+							src={src}
+							alt={t(locale, `${key}.shot`)}
+							formats={['avif', 'webp']}
+							widths={[600, 900, 1200, 1800]}
+							sizes="(width < 900px) 94vw, 640px"
+						/>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="news" aria-labelledby="news-title">
+			<div class="container">
+				<div class="news__card">
+					<h2 class="news__title" id="news-title">
+						{t(locale, 'news.title', { version })}
+					</h2>
+					<p class="news__subtitle">{news.title}</p>
+					<ul class="news__items">
+						{news.items.map((item) => (
+							<li class="news__item" set:html={itemHtml(item)} />
+						))}
+					</ul>
+					<a class="news__all" href={localizePath('/changelog/', locale)}>
+						{t(locale, 'news.all')}
+						<span set:html={ArrowRight} aria-hidden="true" />
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<section class="install" aria-labelledby="install-title">
+			<div class="container install__inner">
+				<h2 class="section-title" id="install-title">
+					{t(locale, 'install.title')}
+				</h2>
+				<p class="install__text">{t(locale, 'install.brew')}</p>
+				<p class="install__text">
+					<BrewCommand {locale} client:visible />
+				</p>
+				<p class="install__text">{t(locale, 'install.zip')}</p>
+				<p class="install__text">
+					<a class="install__zip" href={latest.download}>
+						Kumiko-{latest.version}.zip
+					</a>
+					· <a href={`${REPO}/releases`}>GitHub Releases</a>
+				</p>
+				<p class="install__text install__text--muted">{t(locale, 'install.permissions')}</p>
+				<p class="install__text install__text--muted">{t(locale, 'install.sip')}</p>
+			</div>
+		</section>
+	</main>
+</Base>
+
+<style>
+	.hero {
+		position: relative;
+		padding-block: calc(var(--section-y) + 24px) var(--section-y);
+		text-align: center;
+
+		/* Тёплое свечение за иконкой, как на баннере README */
+		&::before {
+			content: '';
+			position: absolute;
+			z-index: -1;
+			top: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			width: min(900px, 120vw);
+			height: 560px;
+			background: radial-gradient(closest-side, var(--glow), transparent);
+		}
+	}
+
+	.hero__inner {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.hero__icon {
+		width: 112px;
+		height: 112px;
+		filter: drop-shadow(0 12px 32px rgb(80 45 20 / 35%));
+	}
+
+	.hero__title {
+		margin: 12px 0 0;
+		font-size: clamp(4rem, 14vw, 8.5rem);
+		font-weight: 800;
+		line-height: 1;
+		letter-spacing: -0.04em;
+	}
+
+	.hero__title-accent {
+		color: var(--accent);
+	}
+
+	.hero__tagline {
+		margin: 18px 0 0;
+		font-size: clamp(0.8rem, 2vw, 1rem);
+		font-weight: 700;
+		color: var(--muted);
+		text-transform: uppercase;
+		letter-spacing: 0.32em;
+	}
+
+	.hero__lead {
+		max-width: 38rem;
+		margin: 20px 0 0;
+		font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+		text-wrap: balance;
+	}
+
+	.hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px 16px;
+		align-items: center;
+		justify-content: center;
+		margin-top: 28px;
+	}
+
+	.hero__download {
+		display: inline-flex;
+		gap: 8px;
+		align-items: center;
+		padding: 12px 22px;
+		border-radius: 999px;
+		font-weight: 600;
+		color: var(--on-accent);
+		text-decoration: none;
+		background: var(--accent);
+		transition: filter 0.2s ease;
+
+		&:hover {
+			filter: brightness(1.08);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--accent);
+			outline-offset: 3px;
+		}
+
+		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
+		& :global(svg) {
+			width: 18px;
+			height: 18px;
+		}
+	}
+
+	.hero__note {
+		margin: 12px 0 0;
+		font-size: 0.875rem;
+		color: var(--muted);
+	}
+
+	.hero__stage {
+		display: flex;
+		flex-direction: column;
+		gap: 28px;
+		align-items: center;
+		margin-top: clamp(40px, 6vw, 72px);
+	}
+
+	.hero__strip {
+		width: min(505px, 90vw);
+		border-radius: 12px;
+		box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+	}
+
+	.hero__shot {
+		width: min(900px, 100%);
+	}
+
+	.hero__caption {
+		max-width: 40rem;
+	}
+
+	.hero__caption-title {
+		margin: 0;
+		font-size: clamp(1.4rem, 3vw, 1.9rem);
+	}
+
+	.hero__caption-text {
+		margin: 8px 0 0;
+		color: var(--muted);
+	}
+
+	/* Снимки окна с прозрачными углами: тень повторяет их форму */
+	.shot {
+		height: auto;
+		filter: drop-shadow(0 24px 48px rgb(0 0 0 / 28%));
+	}
+
+	.section-title {
+		margin: 0 0 clamp(24px, 4vw, 48px);
+		font-size: clamp(1.8rem, 4vw, 2.6rem);
+		text-align: center;
+		letter-spacing: -0.02em;
+	}
+
+	.features {
+		padding-block: var(--section-y);
+	}
+
+	.feature {
+		display: grid;
+		gap: 24px 56px;
+		align-items: center;
+		padding-block: clamp(24px, 4vw, 56px);
+
+		@media (--md) {
+			grid-template-columns: 5fr 7fr;
+
+			&:nth-of-type(even) .feature__text {
+				order: 2;
+			}
+		}
+	}
+
+	.feature__title {
+		margin: 0;
+		font-size: clamp(1.4rem, 3vw, 1.9rem);
+		letter-spacing: -0.01em;
+	}
+
+	.feature__desc {
+		margin: 12px 0 0;
+		font-size: 1.0625rem;
+		color: var(--muted);
+	}
+
+	.feature__shot {
+		width: 100%;
+	}
+
+	.news {
+		padding-block: var(--section-y);
+	}
+
+	.news__card {
+		max-width: 760px;
+		margin-inline: auto;
+		padding: clamp(24px, 4vw, 40px);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		background: var(--surface);
+	}
+
+	.news__title {
+		margin: 0;
+		font-size: clamp(1.4rem, 3vw, 1.9rem);
+	}
+
+	.news__subtitle {
+		margin: 4px 0 0;
+		color: var(--muted);
+	}
+
+	.news__items {
+		margin: 20px 0 0;
+		padding-left: 1.2em;
+	}
+
+	.news__item + .news__item {
+		margin-top: 8px;
+	}
+
+	.news__all {
+		display: inline-flex;
+		gap: 6px;
+		align-items: center;
+		margin-top: 20px;
+		font-weight: 600;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+
+		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
+		& :global(svg) {
+			width: 16px;
+			height: 16px;
+		}
+	}
+
+	.install {
+		padding-block: var(--section-y);
+	}
+
+	.install__inner {
+		max-width: calc(760px + var(--gutter) * 2);
+	}
+
+	.install__text {
+		margin: 0 0 14px;
+
+		&--muted {
+			font-size: 0.9375rem;
+			color: var(--muted);
+		}
+	}
+
+	.install__zip {
+		font-family: var(--font-mono);
+	}
+</style>
