@@ -1,0 +1,66 @@
+---
+import { Command, LayoutGrid, List, PanelTop, SquareDashed, TextCursorInput } from 'lucide-static'
+
+/** Значок страницы окна настроек kumiko: та же фигура из SF Symbols, только из Lucide, и тот же цвет. */
+const ICONS = {
+	workspaces: LayoutGrid,
+	rules: List,
+	hotkeys: Command,
+	bar: PanelTop,
+	borders: SquareDashed,
+	vim: TextCursorInput,
+}
+
+type Props = { page: keyof typeof ICONS; class?: string }
+
+const { page, class: className } = Astro.props
+---
+
+<span class:list={['page-icon', `page-icon--${page}`, className]} aria-hidden="true" set:html={ICONS[page]} />
+
+<style>
+	/* Плитка как в боковой панели окна настроек: системный цвет сверху светлее, белая фигура */
+	.page-icon {
+		display: inline-grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		border-radius: 12px;
+		color: #fff;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--icon) 70%, #fff), var(--icon));
+		box-shadow:
+			0 6px 16px color-mix(in srgb, var(--icon) 35%, transparent),
+			inset 0 1px 0 rgb(255 255 255 / 25%);
+
+		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
+		& :global(svg) {
+			width: 26px;
+			height: 26px;
+			stroke-width: 2.2;
+		}
+
+		&--workspaces {
+			--icon: #32ade6;
+		}
+
+		&--rules {
+			--icon: #af52de;
+		}
+
+		&--hotkeys {
+			--icon: #5856d6;
+		}
+
+		&--bar {
+			--icon: #ff9500;
+		}
+
+		&--borders {
+			--icon: #ff2d55;
+		}
+
+		&--vim {
+			--icon: #34c759;
+		}
+	}
+</style>
