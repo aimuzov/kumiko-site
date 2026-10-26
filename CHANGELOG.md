@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.0](https://github.com/aimuzov/kumiko-site/compare/v1.1.0...v1.2.0) (2026-10-26)
+
+
+### Features
+
+* drifting gradient and parallax on the landing page ([b21a1f3](https://github.com/aimuzov/kumiko-site/commit/b21a1f31cb3aa908a893bf40c8efce9d6589a2a9))
+* drifting gradient and parallax on the landing page ([0a7a920](https://github.com/aimuzov/kumiko-site/commit/0a7a92065c4c8d10c7e9a0bf2baf4ff79ee1920a))
+* drop the news card from the home page ([48426b1](https://github.com/aimuzov/kumiko-site/commit/48426b1c45a968b9b884fee560209ad9d1853a6e))
+* drop the news card from the home page ([5e94fca](https://github.com/aimuzov/kumiko-site/commit/5e94fcacb7ef3b9c9ccae48164137cad776cfedf))
+
 ## [1.1.0](https://github.com/aimuzov/kumiko-site/compare/v1.0.0...v1.1.0) (2026-10-26)
 
 
