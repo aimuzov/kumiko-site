@@ -1,0 +1,54 @@
+# Сайт на сервере проектов. Порты 80/443 занимает общий Caddy
+# из aimuzov/infra-server, он проксирует сюда домен через сеть `edge`,
+# а `/api/*` -- сервису API.
+
+name: __PROJECT__
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: '5m'
+    max-file: '2'
+
+services:
+  site:
+    build:
+      context: ..
+      dockerfile: deploy/frontend.Dockerfile
+      secrets: [env]
+    image: __PROJECT__
+    container_name: __PROJECT__
+    restart: unless-stopped
+    networks:
+      - edge
+    logging: *logging
+
+  # Что должно пережить пересборку (база, загрузки), кладут в volume, как в community-taplist.
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/backend.Dockerfile
+    image: __PROJECT__-api
+    container_name: __PROJECT__-api
+    restart: unless-stopped
+    env_file: ../.env
+    mem_limit: 128m
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:8787/api/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - edge
+    logging: *logging
+
+# Переменные сборки лежат в `/srv/__PROJECT__/.env`, образец -- `.env.example`.
+secrets:
+  env:
+    file: ../.env
+
+networks:
+  edge:
+    name: edge
+    external: true

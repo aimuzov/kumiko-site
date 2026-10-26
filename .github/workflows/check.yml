@@ -1,0 +1,28 @@
+name: Check
+
+# На main эти проверки вызывает workflow деплоя перед выкаткой, а ветки
+# проверяются через PR. Отдельный прогон на push дал бы дубль на тот же коммит.
+on:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: aimuzov/infra-site-kit/check@v4
+      # e2e из infra-site-kit: сборка в Chromium. Браузер кэшируется по версии Playwright,
+      # его системные библиотеки ставятся из apt каждый прогон.
+      - id: playwright
+        run: echo "version=$(npm ls @playwright/test --json | jq -r '.dependencies["@playwright/test"].version')" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
