@@ -22,11 +22,22 @@ export function kumikoReleases() {
 	return releases
 }
 
-/** Последний релиз, который видно читателю, и прямая ссылка на его архив. */
+/** Последний релиз, который видно читателю: из него карточка "Что нового". */
 export async function latestRelease() {
 	const [latest] = visibleReleases(await kumikoReleases())
 
 	if (!latest) throw new Error(`${CHANGELOG} has no visible release`)
 
-	return { ...latest, download: `${REPO}/releases/download/v${latest.version}/Kumiko-${latest.version}.zip` }
+	return latest
+}
+
+/** Самый свежий релиз, даже скрытый в ченжлоге, и ссылка на его архив: его и скачивают. */
+export async function newestRelease() {
+	const [newest] = await kumikoReleases()
+
+	if (!newest) throw new Error(`${CHANGELOG} has no release`)
+
+	const { version } = newest
+
+	return { version, download: `${REPO}/releases/download/v${version}/Kumiko-${version}.zip` }
 }

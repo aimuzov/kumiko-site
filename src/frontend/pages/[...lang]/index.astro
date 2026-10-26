@@ -15,14 +15,15 @@ import workspaces from '#frontend/assets/shots/workspaces.png'
 import BrewCommand from '#frontend/components/brew-command.svelte'
 import Base from '#frontend/layouts/base.astro'
 import { langPaths, t } from '#frontend/lib/i18n.ts'
-import { latestRelease, REPO } from '#frontend/lib/kumiko.ts'
+import { latestRelease, newestRelease, REPO } from '#frontend/lib/kumiko.ts'
 
 export const getStaticPaths = langPaths
 
 const { locale } = Astro.props as { locale: Locale }
 const latest = await latestRelease()
 const news = localizeRelease(latest, locale)
-const version = `v${latest.version}`
+const newest = await newestRelease()
+const version = `v${newest.version}`
 
 /** Страница настроек и её текст в словаре. Рабочие столы показаны в первом экране. */
 const features = [
@@ -45,7 +46,7 @@ const features = [
 				<p class="hero__tagline">{t(locale, 'hero.tagline')}</p>
 				<p class="hero__lead">{t(locale, 'hero.lead')}</p>
 				<div class="hero__actions">
-					<a class="hero__download" href={latest.download}>
+					<a class="hero__download" href={newest.download}>
 						<span set:html={Download} aria-hidden="true" />
 						{t(locale, 'hero.download', { version })}
 					</a>
@@ -108,7 +109,7 @@ const features = [
 			<div class="container">
 				<div class="news__card">
 					<h2 class="news__title" id="news-title">
-						{t(locale, 'news.title', { version })}
+						{t(locale, 'news.title', { version: `v${latest.version}` })}
 					</h2>
 					<p class="news__subtitle">{news.title}</p>
 					<ul class="news__items">
@@ -135,8 +136,8 @@ const features = [
 				</p>
 				<p class="install__text">{t(locale, 'install.zip')}</p>
 				<p class="install__text">
-					<a class="install__zip" href={latest.download}>
-						Kumiko-{latest.version}.zip
+					<a class="install__zip" href={newest.download}>
+						Kumiko-{newest.version}.zip
 					</a>
 					· <a href={`${REPO}/releases`}>GitHub Releases</a>
 				</p>
