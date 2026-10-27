@@ -9,7 +9,7 @@
 	--gutter: 20px;
 	--section-y: clamp(40px, 5vw, 80px);
 	/* Огромный заголовок раздела на фоне и место над разделом ровно под его буквы. */
-	--big-title: clamp(2.5rem, 8vw, 7rem);
+	--big-title: clamp(2.25rem, 7vw, 6rem);
 	--section-top: calc(var(--big-title) * 0.9 + 28px);
 
 	--bg: light-dark(#f8f3ea, #13100d);

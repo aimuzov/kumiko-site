@@ -155,9 +155,12 @@ const tools = [
 		--shrink: calc(1 - 0.65 * var(--k));
 
 		position: absolute;
-		transform: translate(calc(var(--tx) * var(--k)), calc(var(--ty) * var(--k)))
+
+		/* Центрирование первым: после scale сдвиг на -50% уменьшался бы вместе с плашкой, и она
+		   не долетала бы до центра. Отдельное свойство translate минификатор сливает в transform
+		   как раз в конец, поэтому только так */
+		transform: translate(-50%, -50%) translate(calc(var(--tx) * var(--k)), calc(var(--ty) * var(--k)))
 			scale(calc(var(--shrink) * (1 + var(--squash))), calc(var(--shrink) * (1 - var(--squash))));
-		translate: -50% -50%;
 		display: flex;
 		gap: 10px;
 		align-items: center;
@@ -235,11 +238,12 @@ const tools = [
 	.merge__inside {
 		position: absolute;
 		top: calc(50% + 96px);
-		left: 50%;
+		right: 0;
+		left: 0;
 		transform: translateY(12px);
-		translate: -50% 0;
 		display: flex;
 		gap: 6px;
+		justify-content: center;
 		opacity: 0;
 		transition:
 			opacity 0.4s ease,
