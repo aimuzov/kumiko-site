@@ -8,8 +8,9 @@
 	--container: 1180px;
 	--gutter: 20px;
 	--section-y: clamp(40px, 5vw, 80px);
-	/* Верх раздела с огромным заголовком на фоне: буквы выглядывают из-за контента. */
-	--section-top: clamp(56px, 6vw, 100px);
+	/* Огромный заголовок раздела на фоне и место над разделом ровно под его буквы. */
+	--big-title: clamp(3rem, 10vw, 9rem);
+	--section-top: calc(var(--big-title) * 0.9 + 28px);
 
 	--bg: light-dark(#f8f3ea, #13100d);
 	--fg: light-dark(#2b1d13, #f3e6cf);
