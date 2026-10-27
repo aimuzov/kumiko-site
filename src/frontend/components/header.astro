@@ -20,9 +20,9 @@ const newest = await newestRelease()
 
 /** Разделы главной. С других страниц якорь ведёт на главную к нужному месту. */
 const links = [
-	{ href: `${path === home ? '' : home}#features`, label: t(locale, 'nav.features') },
-	{ href: `${path === home ? '' : home}#steps`, label: t(locale, 'nav.steps') },
-	{ href: `${path === home ? '' : home}#install`, label: t(locale, 'nav.install') },
+	{ href: `${path === home ? '' : home}#features`, label: t(locale, 'nav.features'), section: 'features' },
+	{ href: `${path === home ? '' : home}#steps`, label: t(locale, 'nav.steps'), section: 'steps' },
+	{ href: `${path === home ? '' : home}#install`, label: t(locale, 'nav.install'), section: 'install' },
 	{ href: changelog, label: t(locale, 'changelog.link'), current: path === changelog },
 ]
 
@@ -43,9 +43,10 @@ const github =
 			</span>
 		</a>
 
-		<nav class="header__nav" aria-label={t(locale, 'nav.label')}>
-			{links.map(({ href, label, current }) => (
-				<a class="header__link" {href} aria-current={current ? 'page' : undefined}>
+		<nav class="header__nav" aria-label={t(locale, 'nav.label')} data-nav>
+			<span class="header__pill" aria-hidden="true"></span>
+			{links.map(({ href, label, current, section }) => (
+				<a class="header__link" {href} aria-current={current ? 'page' : undefined} data-section={section}>
 					{label}
 				</a>
 			))}
@@ -71,9 +72,11 @@ const github =
 </header>
 
 <script>
-	import { initHeader } from '#frontend/lib/header.ts'
+	import { initHeader, initSectionSpy } from '#frontend/lib/header.ts'
 
 	for (const header of document.querySelectorAll<HTMLElement>('[data-header]')) initHeader(header)
+
+	for (const nav of document.querySelectorAll<HTMLElement>('[data-nav]')) initSectionSpy(nav)
 </script>
 
 <style>
@@ -145,6 +148,7 @@ const github =
 	}
 
 	.header__link {
+		position: relative;
 		padding: 6px 12px;
 		border-radius: 999px;
 		font-size: 0.9375rem;
@@ -155,15 +159,50 @@ const github =
 			color 0.2s ease,
 			background-color 0.2s ease;
 
-		&:hover,
-		&[aria-current='page'] {
+		&:hover {
 			color: var(--fg);
+			background: color-mix(in srgb, var(--fg) 7%, transparent);
+		}
+
+		&[aria-current] {
+			color: var(--fg);
+		}
+
+		/* Без скрипта подложки нет, и текущая страница подсвечена своим фоном */
+		.header__nav:not([data-pill]) &[aria-current] {
 			background: color-mix(in srgb, var(--fg) 7%, transparent);
 		}
 
 		&:focus-visible {
 			outline: 2px solid var(--accent);
 			outline-offset: 2px;
+		}
+	}
+
+	/* Подложка текущего раздела одна на всё меню и переезжает к нужному пункту, место и ширину
+	   ей задаёт lib/header.ts */
+	.header__pill {
+		position: absolute;
+		top: 0;
+		left: 0;
+		transform: translateX(var(--pill-x, 0));
+		width: var(--pill-w, 0);
+		height: 100%;
+		border-radius: 999px;
+		opacity: 0;
+		background: color-mix(in srgb, var(--accent) 16%, transparent);
+		box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+		transition:
+			transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+			width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+			opacity 0.25s ease;
+
+		@media (--reduced-motion) {
+			transition: opacity 0.2s ease;
+		}
+
+		[data-pill] > & {
+			opacity: 1;
 		}
 	}
 

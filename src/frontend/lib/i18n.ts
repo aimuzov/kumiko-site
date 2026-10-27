@@ -24,6 +24,16 @@ export const strings = {
 		'hero.demo':
 			'Рабочий стол с kumiko: окна стоят плиткой, новое окно делит место соседнего, рамка фокуса переходит между ними, внизу бар с рабочими столами',
 
+		'merge.title': 'Одно приложение вместо шести',
+		'merge.lead':
+			'Плитку, хоткеи, бар, рамку, прятки значков строки меню и Vim обычно собирают из отдельных утилит. В kumiko это один процесс и один файл настроек.',
+		'merge.windows': 'окна',
+		'merge.hotkeys': 'хоткеи',
+		'merge.bar': 'бар',
+		'merge.borders': 'рамка',
+		'merge.menubar': 'строка меню',
+		'merge.vim': 'Vim',
+
 		'features.title': 'Что умеет',
 		'workspaces.title': 'Рабочие столы на каждом экране',
 		'workspaces.text':
@@ -91,6 +101,16 @@ export const strings = {
 			'Try it: <kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd> move the focus, <kbd>n</kbd> opens a window, <kbd>x</kbd> closes it',
 		'hero.demo':
 			'A desktop with kumiko: windows tile, a new window splits the place of its neighbour, the focus frame moves between them, and the bar with workspaces runs along the bottom',
+
+		'merge.title': 'One app instead of six',
+		'merge.lead':
+			'Tiling, hotkeys, a bar, a frame, hiding menu bar icons and Vim usually come from separate tools. In kumiko they are one process and one config file.',
+		'merge.windows': 'windows',
+		'merge.hotkeys': 'hotkeys',
+		'merge.bar': 'bar',
+		'merge.borders': 'borders',
+		'merge.menubar': 'menu bar',
+		'merge.vim': 'Vim',
 
 		'features.title': 'What it does',
 		'workspaces.title': 'Workspaces on every display',

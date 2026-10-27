@@ -1,0 +1,121 @@
+---
+/** Сочетание и команда kumiko. Команды настоящие, клавиши -- для примера. */
+const binds = [
+	['⌥ 1', 'workspace focus 1'],
+	['⌥ H', 'window focus west'],
+	['⌥ ⇧ L', 'window warp east'],
+	['⌥ R', 'mode resize'],
+	['⌥ F', 'window float'],
+	['⌥ Z', 'window zoom'],
+	['⌥ S', 'window stack'],
+	['⌥ B', 'workspace balance'],
+	['⌥ M', 'workspace mirror'],
+	['⌥ .', 'menubar toggle'],
+]
+
+/** Слова раскладок и модулей для второй ленты. */
+const words = ['bsp', 'stack', 'float', 'workspaces', 'hotkeys', 'bar', 'borders', 'menubar', 'vim', 'kumiko.toml']
+---
+
+<!-- Две ленты крест-накрест едут навстречу друг другу: на одной сочетания и команды, на другой
+     слова раскладок и модулей. Содержимое повторено дважды, чтобы сдвиг на половину замыкал круг -->
+<div class="ticker" aria-hidden="true">
+	<div class="ticker__band ticker__band--binds">
+		<div class="ticker__track">
+			{[0, 1].map(() =>
+				binds.map(([keys, command]) => (
+					<span class="ticker__item">
+						<kbd class="ticker__keys">{keys}</kbd>
+						{command}
+					</span>
+				)),
+			)}
+		</div>
+	</div>
+	<div class="ticker__band ticker__band--words">
+		<div class="ticker__track ticker__track--back">
+			{[0, 1].map(() => words.map((word) => <span class="ticker__word">{word}</span>))}
+		</div>
+	</div>
+</div>
+
+<style>
+	.ticker {
+		position: relative;
+		overflow: hidden;
+		height: 190px;
+		margin-block: 8px;
+	}
+
+	.ticker__band {
+		position: absolute;
+		top: 50%;
+		left: -5%;
+		width: 110%;
+		padding-block: 14px;
+
+		&--binds {
+			z-index: 1;
+			transform: translateY(-50%) rotate(-3deg);
+			color: var(--on-accent);
+			background: linear-gradient(90deg, var(--accent), #c97b3d, var(--accent));
+			box-shadow: 0 12px 32px rgb(80 45 20 / 30%);
+		}
+
+		&--words {
+			transform: translateY(-50%) rotate(2.5deg);
+			color: var(--muted);
+			background: color-mix(in srgb, var(--surface) 85%, transparent);
+		}
+	}
+
+	.ticker__track {
+		display: flex;
+		gap: 40px;
+		width: max-content;
+		animation: ticker 50s linear infinite;
+
+		&--back {
+			animation-duration: 70s;
+			animation-direction: reverse;
+		}
+	}
+
+	.ticker__item {
+		display: inline-flex;
+		gap: 10px;
+		align-items: center;
+		font-family: var(--font-mono);
+		font-size: 0.9375rem;
+		white-space: nowrap;
+	}
+
+	.ticker__keys {
+		padding: 2px 8px;
+		border-radius: 6px;
+		font-family: var(--font-sans);
+		font-weight: 700;
+		background: rgb(0 0 0 / 18%);
+	}
+
+	.ticker__word {
+		font-size: 1.125rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		white-space: nowrap;
+	}
+
+	@keyframes ticker {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	/* Без движения ленты стоят, просто перекрещиваются */
+	@media (--reduced-motion) {
+		.ticker__track {
+			animation: none;
+		}
+	}
+</style>

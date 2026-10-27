@@ -9,8 +9,10 @@ import BrewCommand from '#frontend/components/brew-command.svelte'
 import DesktopDemo from '#frontend/components/desktop-demo.astro'
 import DodgyButton from '#frontend/components/dodgy-button.svelte'
 import HeadingIcon from '#frontend/components/heading-icon.astro'
+import Merge from '#frontend/components/merge.astro'
 import PageIcon from '#frontend/components/page-icon.astro'
 import Steps from '#frontend/components/steps.astro'
+import Ticker from '#frontend/components/ticker.astro'
 import Base from '#frontend/layouts/base.astro'
 import { langPaths, t } from '#frontend/lib/i18n.ts'
 import { newestRelease, REPO } from '#frontend/lib/kumiko.ts'
@@ -53,6 +55,8 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 				/>
 			</div>
 		</section>
+
+		<Merge {locale} />
 
 		<section class="features" id="features" aria-labelledby="features-title">
 			<div class="container">
@@ -125,6 +129,8 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 				</div>
 			</div>
 		</section>
+		<Ticker />
+
 		<Steps {locale} />
 
 		<section class="install" id="install" aria-labelledby="install-title">
