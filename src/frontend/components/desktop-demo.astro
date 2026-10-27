@@ -1,10 +1,15 @@
 ---
+import { Coffee } from 'lucide-static'
+
 type Props = { label: string; hint: string }
 
 const { label, hint } = Astro.props
 
 /** Окна первого стола до скрипта, по местам плитки на три окна. */
 const first = ['code', 'web', 'chat']
+
+/** Имена столов: пустой стол бар показывает именем, а не иконками. */
+const names = ['Code', 'Notes', 'Media', 'Other']
 ---
 
 <!-- Нарисованный рабочий стол под kumiko, им правит lib/desktop-demo.ts: окна встают плиткой,
@@ -28,15 +33,22 @@ const first = ['code', 'web', 'chat']
 		</div>
 		<div class="desktop__bar">
 			<span class="desktop__spaces">
-				{[1, 2, 3, 4].map((n) => (
-					<span class:list={['desktop__space', n === 1 && 'is-current']} data-space={n - 1}>
-						{n}
-						<span class="desktop__dots" data-dots />
+				{names.map((name, i) => (
+					<span class:list={['desktop__space', i === 0 && 'is-current']} data-space={i} data-name={name}>
+						<span class="desktop__num">{i + 1}</span>
+						<span class="desktop__apps" data-apps>
+							{i === 0 && first.map((kind) => <span class={`desktop__app desktop__app--${kind}`} />)}
+						</span>
 					</span>
 				))}
 			</span>
-			<span class="desktop__clock" data-clock>
-				10:24
+			<span class="desktop__status">
+				<span class="desktop__input">RU</span>
+				<span class="desktop__battery" />
+				<span class="desktop__mug" set:html={Coffee} />
+				<span class="desktop__clock" data-clock>
+					Mon 27 Oct&nbsp;&nbsp;10:24
+				</span>
 			</span>
 		</div>
 	</div>
@@ -244,83 +256,205 @@ const first = ['code', 'web', 'chat']
 		}
 	}
 
-	/* Бар как у kumiko: столы с точками их окон слева, часы справа. Клик по столу его показывает */
+	/* Бар как у kumiko, по его Views.swift: без плашки, текст прямо на обоях. Слева столы: номер и
+	   иконки их приложений, текущий -- в стеклянной капсуле, остальные приглушены и в сером.
+	   Справа раскладка, батарея, кружка и дата. Размеры -- его пункты в долях шрифта бара */
 	.desktop__bar {
 		display: flex;
 		flex: none;
 		align-items: center;
 		justify-content: space-between;
-		height: 7.5%;
-		padding: 0 1.2%;
-		font-size: clamp(0.6rem, 1.4vw, 0.8rem);
-		color: #cfd6e4;
-		background: #0a111e;
+		height: 3em;
+		padding: 0 0.9em;
+		font-size: clamp(8px, 1vw, 11px);
+		color: #fff;
 	}
 
 	.desktop__spaces {
 		display: flex;
-		gap: 4px;
-		height: 76%;
+		gap: 0.15em;
+		align-items: center;
 	}
 
 	.desktop__space {
 		cursor: pointer;
 		display: inline-flex;
-		gap: 6px;
+		gap: 0.38em;
 		align-items: center;
-		padding: 0 8px;
-		border-radius: 7px;
-		font-weight: 600;
+		height: 1.85em;
+		padding: 0 0.62em;
+		border-radius: 999px;
 
 		&:hover {
-			background: rgb(255 255 255 / 8%);
+			background: color-mix(in srgb, var(--frame) 30%, transparent);
 		}
 
+		/* Стекло macOS 26: светлая полупрозрачная капсула с бликом по краю */
 		&.is-current {
-			color: #fff;
-			background: #2b3a55;
+			background: rgb(255 255 255 / 16%);
+			backdrop-filter: blur(6px) saturate(1.6);
+			box-shadow:
+				inset 0 0 0 0.5px rgb(255 255 255 / 30%),
+				inset 0 1px 0 rgb(255 255 255 / 22%);
+		}
+
+		&.is-hidden {
+			display: none;
 		}
 	}
 
-	.desktop__dots {
-		display: inline-flex;
-		gap: 3px;
+	.desktop__num {
+		font-variant-numeric: tabular-nums;
+
+		.desktop__space:not(.is-current) & {
+			opacity: 0.75;
+		}
 	}
 
-	/* Точка окна в цвет его содержимого */
-	.desktop__dot {
-		width: 7px;
-		height: 7px;
-		border-radius: 2px;
-		background: var(--dot);
+	.desktop__apps {
+		display: inline-flex;
+		gap: 0.23em;
+		align-items: center;
+	}
+
+	/* Иконка приложения на 15 пунктов, как в баре. Не на текущем столе -- серая и чуть бледнее */
+	.desktop__app {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 1.3em;
+		height: 1.3em;
+		border-radius: 24%;
+		font-size: 1em;
+		background: var(--app);
+
+		.desktop__space:not(.is-current) & {
+			opacity: 0.9;
+			filter: grayscale(1);
+		}
+
+		&::after {
+			font-size: 0.55em;
+			font-weight: 800;
+			line-height: 1;
+			color: #fff;
+		}
 
 		&--code {
-			--dot: #82aaff;
+			--app: linear-gradient(#3b8eea, #1f5fb8);
+
+			&::after {
+				content: '{}';
+			}
 		}
 
 		&--web {
-			--dot: #c08a5c;
+			--app:
+				radial-gradient(circle at 50% 50%, #fff4e2 0 28%, transparent 30%), linear-gradient(#e0a86e, #9a5f30);
 		}
 
 		&--chat {
-			--dot: #3e8ef7;
+			--app: linear-gradient(#5ab4f2, #2a8bd8);
+
+			border-radius: 50%;
+
+			&::after {
+				content: '';
+				width: 46%;
+				height: 34%;
+				border-radius: 40%;
+				background: #fff;
+			}
 		}
 
 		&--term {
-			--dot: #5af78e;
+			--app: linear-gradient(#3a3b40, #121316);
+
+			&::after {
+				content: '>_';
+				color: #5af78e;
+			}
 		}
 
 		&--notes {
-			--dot: #f5d76e;
+			--app: linear-gradient(#fbe382 0 30%, #fff8dc 30%);
+
+			&::after {
+				content: '';
+				width: 60%;
+				height: 40%;
+				margin-top: 20%;
+				background: repeating-linear-gradient(#0000 0 2px, #c9b26a 2px 3px);
+			}
 		}
 
 		&--music {
-			--dot: #ff2d55;
+			--app: linear-gradient(#ff5a78, #e3204c);
+
+			&::after {
+				content: '♪';
+				font-size: 0.75em;
+			}
+		}
+	}
+
+	/* Пустой текущий стол бар показывает именем, а не иконками */
+	.desktop__name {
+		opacity: 0.9;
+	}
+
+	.desktop__status {
+		display: flex;
+		gap: 1.08em;
+		align-items: center;
+	}
+
+	.desktop__input {
+		padding: 0 0.3em;
+		border: 1px solid rgb(255 255 255 / 85%);
+		border-radius: 0.3em;
+		font-size: 0.78em;
+		font-weight: 600;
+		line-height: 1.35;
+	}
+
+	/* Батарея как в Пункте управления: контур, колпачок и заливка по заряду */
+	.desktop__battery {
+		position: relative;
+		width: 1.85em;
+		height: 0.92em;
+		padding: 1.5px;
+		border: 1px solid rgb(255 255 255 / 55%);
+		border-radius: 0.28em;
+		background: linear-gradient(90deg, #fff 0 78%, transparent 78%) content-box;
+		background-clip: content-box;
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			right: -0.2em;
+			transform: translateY(-50%);
+			width: 0.12em;
+			height: 0.36em;
+			border-radius: 0 1px 1px 0;
+			background: rgb(255 255 255 / 55%);
+		}
+	}
+
+	.desktop__mug {
+		display: inline-grid;
+
+		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
+		& svg {
+			width: 1.15em;
+			height: 1.15em;
 		}
 	}
 
 	.desktop__clock {
 		font-variant-numeric: tabular-nums;
+		white-space: pre;
 	}
 
 	.desktop__hint {

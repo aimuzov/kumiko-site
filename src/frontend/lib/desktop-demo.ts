@@ -80,11 +80,16 @@ export function initDesktopDemo(demo: HTMLElement) {
 			})
 		})
 
+		// Как в баре kumiko: пустой стол виден, только когда он текущий, и тогда вместо иконок имя
 		pills.forEach((pill, s) => {
-			pill.classList.toggle('is-current', s === current)
+			const wins = spaces[s]
+			const name = Object.assign(node('desktop__name'), { textContent: pill.dataset.name ?? '' })
 
-			pill.querySelector('[data-dots]')!.replaceChildren(
-				...spaces[s].map(({ kind }) => node(`desktop__dot desktop__dot--${kind}`)),
+			pill.classList.toggle('is-current', s === current)
+			pill.classList.toggle('is-hidden', !wins.length && s !== current)
+
+			pill.querySelector('[data-apps]')!.replaceChildren(
+				...(wins.length ? wins.map(({ kind }) => node(`desktop__app desktop__app--${kind}`)) : [name]),
 			)
 		})
 	}
@@ -179,13 +184,15 @@ export function initDesktopDemo(demo: HTMLElement) {
 			show = (show + 1) % SHOW.length
 		}, STEP)
 
+	// Дата, как у часов бара: всегда по-английски, «Mon 27 Oct  10:24»
 	const clock = demo.querySelector<HTMLElement>('[data-clock]')
 	const tick = () => {
+		const now = new Date()
+		const part = (options: Intl.DateTimeFormatOptions) => now.toLocaleString('en-GB', options)
+		const time = part({ hour: '2-digit', minute: '2-digit', hour12: false })
+
 		if (clock)
-			clock.textContent = new Date().toLocaleTimeString(document.documentElement.lang, {
-				hour: '2-digit',
-				minute: '2-digit',
-			})
+			clock.textContent = `${part({ weekday: 'short' })} ${part({ day: 'numeric' })} ${part({ month: 'short' })}  ${time}`
 	}
 
 	tick()
