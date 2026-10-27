@@ -81,8 +81,9 @@ const first = ['code', 'web', 'chat']
 		margin: 0.8% 0.8% 0;
 	}
 
-	/* Место окна задаёт скрипт процентами области, до него -- плитка на три окна. Окно другого
-	   стола уезжает вбок по --away и гаснет, новое и закрытое -- сжимаются */
+	/* Место окна задаёт скрипт процентами области, до него -- плитка на три окна. Новое и
+	   закрытое окно сжимаются. Стол сменяется мгновенно, как у kumiko: окна скрытого стола он
+	   уводит в угол экрана, а показанного сразу ставит на места, без всякого полёта */
 	.desktop__slot {
 		position: absolute;
 		padding: 0.6%;
@@ -120,9 +121,11 @@ const first = ['code', 'web', 'chat']
 		}
 
 		&.is-away {
-			pointer-events: none;
-			transform: translateX(calc(var(--away, 1) * 14%));
-			opacity: 0;
+			visibility: hidden;
+		}
+
+		[data-switching] & {
+			transition: none;
 		}
 
 		&.is-new,
@@ -268,7 +271,6 @@ const first = ['code', 'web', 'chat']
 		padding: 0 8px;
 		border-radius: 7px;
 		font-weight: 600;
-		transition: background-color 0.25s ease;
 
 		&:hover {
 			background: rgb(255 255 255 / 8%);

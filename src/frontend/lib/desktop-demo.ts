@@ -75,7 +75,6 @@ export function initDesktopDemo(demo: HTMLElement) {
 
 				el.classList.remove('desktop__slot--0', 'desktop__slot--1', 'desktop__slot--2')
 				Object.assign(el.style, { left: `${r.x}%`, top: `${r.y}%`, width: `${r.w}%`, height: `${r.h}%` })
-				el.style.setProperty('--away', s < current ? '-1' : '1')
 				el.classList.toggle('is-away', s !== current)
 				el.classList.toggle('is-focus', s === current && i === focus[s])
 			})
@@ -117,6 +116,13 @@ export function initDesktopDemo(demo: HTMLElement) {
 		render()
 	}
 
+	// Стол сменяется мгновенно, как у kumiko: на кадр отключаем переходы, чтобы окна не ехали
+	function switchTo(space: number) {
+		current = space
+		demo.dataset.switching = ''
+		requestAnimationFrame(() => requestAnimationFrame(() => delete demo.dataset.switching))
+	}
+
 	function press(key: string) {
 		if (key in DIRECTIONS) {
 			const next = neighbour(bsp(spaces[current].length), focus[current], DIRECTIONS[key])
@@ -124,7 +130,7 @@ export function initDesktopDemo(demo: HTMLElement) {
 			if (next >= 0) focus[current] = next
 		} else if (key === 'n') open()
 		else if (key === 'x') close()
-		else if (key >= '1' && key <= String(spaces.length)) current = Number(key) - 1
+		else if (key >= '1' && key <= String(spaces.length)) switchTo(Number(key) - 1)
 		else return false
 
 		render()
@@ -157,7 +163,7 @@ export function initDesktopDemo(demo: HTMLElement) {
 		const pill = target.closest<HTMLElement>('[data-space]')
 		const slot = target.closest<HTMLElement>('[data-win]')
 
-		if (pill) current = Number(pill.dataset.space)
+		if (pill) switchTo(Number(pill.dataset.space))
 		else if (slot) focus[current] = spaces[current].findIndex((w) => w.el === slot)
 		else return
 
