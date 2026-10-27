@@ -20,22 +20,25 @@
 
 <h3 align="center">Лендинг kumiko, тайлингового менеджера окон для macOS</h3>
 
-<!-- Раскомментировать, когда в .github/assets появятся скриншоты.
 <table>
 	<tr>
-		<td width="50%" align="center"><img src=".github/assets/home.jpg" alt="Главная"><br><b>Главная</b> для посетителей</td>
-		<td width="50%" align="center"><img src=".github/assets/screen.jpg" alt="Второй экран"><br><b>Экран</b> что на нём</td>
+		<td width="50%" align="center"><img src=".github/assets/home.jpg" alt="Первый экран: иконка, kumiko, кнопка скачивания и команда Homebrew"><br><b>Первый экран</b> со скачиванием</td>
+		<td width="50%" align="center"><img src=".github/assets/finale.jpg" alt="Финал: окна разложены плиткой, по центру окно со скачиванием"><br><b>Финал</b>, где окна встают плиткой</td>
 	</tr>
 </table>
--->
 
-<p>Живёт на <a href="https://kumiko.aimuzov.online">kumiko.aimuzov.online</a>. Статичный сайт на <a href="https://astro.build">Astro</a>, интерактивные островки на <a href="https://svelte.dev">Svelte</a>.</p>
+<p>Живёт на <a href="https://kumiko.aimuzov.online">kumiko.aimuzov.online</a>. Статичный сайт на <a href="https://astro.build">Astro</a>, интерактивные островки на <a href="https://svelte.dev">Svelte</a>. Русская версия в корне, английская под <code>/en/</code>.</p>
 
 ## Что внутри
 
-- **Главная** (`/`): название и описание сайта из [`src/frontend/data/site.ts`](src/frontend/data/site.ts).
-- **404**: заглушка «такой страницы нет» со ссылкой на главную.
-- **Футер**: подпись автора из [infra-site-kit](https://github.com/aimuzov/infra-site-kit) со ссылкой на исходный код, `repo` в [`site.ts`](src/frontend/data/site.ts).
+- **Главная** (`/`, `/en/`):
+    - первый экран со скачиванием последнего релиза и командой `brew install --cask aimuzov/tap/kumiko`;
+    - нарисованный рабочий стол, которым правят клавиши, как в самом kumiko: `h j k l`, `n`, `x`, `1`–`4`. Плитка BSP и поиск соседнего окна живут в [`lib/tiling.ts`](src/frontend/lib/tiling.ts);
+    - «Одно приложение вместо шести»: при прокрутке yabai, skhd, sketchybar, JankyBorders, Ice и SketchyVim слетаются в иконку kumiko;
+    - возможности, три шага установки и финал, где разбросанные окна встают плиткой вокруг окна со скачиванием.
+- **Что нового** (`/changelog/`): ченжлог для читателя из [`changelog.json`](https://github.com/aimuzov/kumiko/blob/main/changelog.json) kumiko, его берёт сборка и рисует компонент [infra-site-kit](https://github.com/aimuzov/infra-site-kit). Новый релиз kumiko сайт подхватывает сам, см. «Выкладку».
+- **Шапка**: якоря разделов с подсветкой текущего, язык, тема с подглядыванием, GitHub и скачивание.
+- **404** и **подвал** из [infra-site-kit](https://github.com/aimuzov/infra-site-kit).
 
 ## Как устроено
 
@@ -43,6 +46,8 @@
 
 - [`src/frontend`](src/frontend): сайт на Astro, это `srcDir` в `astro.config.mjs`. Импорты — через `#frontend/*`.
 - Своего API нет, каркас для него лежит в [infra-site-template](https://github.com/aimuzov/infra-site-template).
+- Тексты обоих языков — в [`lib/i18n.ts`](src/frontend/lib/i18n.ts), страницы собираются по языкам через `[...lang]`.
+- Типограф в [`middleware.ts`](src/frontend/middleware.ts) проходит по каждой русской странице при сборке, поэтому неразрывные пробелы получает и текст из ченжлога и infra-site-kit. Скрипты и стили он оставляет байт в байт, так что хеши CSP сходятся.
 
 Всё про сервер — в [`deploy`](deploy): Dockerfile, compose и nginx. Скрипт выкладки общий для всех сайтов и лежит в [infra-server](https://github.com/aimuzov/infra-server).
 
@@ -89,6 +94,8 @@ Safari на iPhone сам приближает страницу, когда вс
 Сервер проектов из [infra-server](https://github.com/aimuzov/infra-server): мерж релизного PR, который ведёт release-please, запускает `deploy.yml`, он гоняет проверки и заходит по SSH. Шаги обоих берутся из [infra-site-kit](https://github.com/aimuzov/infra-site-kit), там же адрес сервера и его строка `known_hosts`. Там ключ запускает общий [`deploy/site.sh`](https://github.com/aimuzov/infra-server/blob/main/deploy/site.sh) из infra-server, который переключается на релизный тег и пересобирает контейнер `kumiko-site` (nginx со статикой) из [`deploy/docker-compose.yml`](deploy/docker-compose.yml). Сборка идёт в юните systemd, так что оборванное SSH-соединение её не прерывает. Домен и TLS держит общий Caddy. `.env` лежит на сервере в `/srv/kumiko-site`.
 
 Job выкладки запускается, только когда переменная репозитория `DEPLOY_ENABLED` равна `true`, а SSH-ключ лежит в секрете `DEPLOY_SSH_KEY`. Пока сервер не готов, релиз гоняет одни проверки.
+
+Сайт показывает ченжлог и последний релиз kumiko, поэтому новый релиз kumiko требует пересборки. [`kumiko-release.yml`](.github/workflows/kumiko-release.yml) раз в полчаса сверяет тег последнего релиза kumiko с тем, с которым собран сайт (`/kumiko-version.txt`), и при расхождении запускает выкладку. Токен в репо kumiko для этого не нужен.
 
 Быстро откатиться — запустить Release вручную с прошлым тегом: `gh workflow run deploy.yml -f tag=v1.2.3`. Исправление плохого коммита выезжает через релизный PR, как любое изменение.
 
