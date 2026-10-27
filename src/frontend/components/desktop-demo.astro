@@ -3,30 +3,30 @@ import { Picture } from 'astro:assets'
 
 import strip from '#frontend/assets/shots/strip.png'
 
-type Props = { label: string; barLabel: string }
+type Props = { label: string; barLabel: string; hint: string }
 
-const { label, barLabel } = Astro.props
+const { label, barLabel, hint } = Astro.props
 ---
 
 <!-- Нарисованный рабочий стол под kumiko. Цикл на 16 секунд: окна стоят плиткой, новое окно
      делит место нижнего, рамка фокуса переходит к нему и дальше, потом окно закрывается.
-     Бар внизу -- настоящий снимок -->
-<figure class="desktop" role="img" aria-label={label}>
+     Бар внизу -- настоящий снимок. Клавиши и клики останавливают цикл, и окнами правит гость -->
+<figure class="desktop" role="img" aria-label={label} data-demo>
 	<div class="desktop__screen">
 		<div class="desktop__area">
-			<div class="desktop__win desktop__win--code">
+			<div class="desktop__win desktop__win--code" data-win="code">
 				<span class="desktop__chrome"></span>
 				<span class="desktop__body"></span>
 			</div>
-			<div class="desktop__win desktop__win--web">
+			<div class="desktop__win desktop__win--web" data-win="web">
 				<span class="desktop__chrome"></span>
 				<span class="desktop__body"></span>
 			</div>
-			<div class="desktop__win desktop__win--chat">
+			<div class="desktop__win desktop__win--chat" data-win="chat">
 				<span class="desktop__chrome"></span>
 				<span class="desktop__body"></span>
 			</div>
-			<div class="desktop__win desktop__win--term">
+			<div class="desktop__win desktop__win--term" data-win="term">
 				<span class="desktop__chrome"></span>
 				<span class="desktop__body"></span>
 			</div>
@@ -42,7 +42,14 @@ const { label, barLabel } = Astro.props
 			/>
 		</div>
 	</div>
+	<figcaption class="desktop__hint" set:html={hint} />
 </figure>
+
+<script>
+	import { initDesktopDemo } from '#frontend/lib/desktop-demo.ts'
+
+	for (const demo of document.querySelectorAll<HTMLElement>('[data-demo]')) initDesktopDemo(demo)
+</script>
 
 <style>
 	.desktop {
@@ -198,6 +205,58 @@ const { label, barLabel } = Astro.props
 		width: auto;
 		height: 100%;
 		mask-image: linear-gradient(to right, #000 85%, #0000);
+	}
+
+	.desktop__hint {
+		margin-top: 14px;
+		font-size: 0.875rem;
+		color: var(--muted);
+		text-align: center;
+
+		/* Подсказка про клавиши нужна только там, где есть клавиатура */
+		@media (--touch) {
+			display: none;
+		}
+
+		/* stylelint-disable-next-line selector-max-type -- клавиши приходят разметкой из словаря */
+		& :global(kbd) {
+			padding: 1px 6px;
+			border: 1px solid var(--border);
+			border-radius: 5px;
+			font-family: var(--font-mono);
+			font-size: 0.8125rem;
+			color: var(--fg);
+			background: var(--surface);
+		}
+	}
+
+	/* Гость взялся за клавиши: цикл стоит, место и фокус задают атрибуты из lib/desktop-demo.ts */
+	.desktop[data-live] .desktop__win {
+		--ring: transparent;
+
+		cursor: pointer;
+		transition:
+			--ring 0.2s ease,
+			width 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+			transform 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+			opacity 0.3s ease;
+		animation: none;
+	}
+
+	.desktop[data-focus='code'] .desktop__win--code,
+	.desktop[data-focus='web'] .desktop__win--web,
+	.desktop[data-focus='chat'] .desktop__win--chat,
+	.desktop[data-focus='term'] .desktop__win--term {
+		--ring: var(--frame);
+	}
+
+	.desktop[data-live]:not([data-term]) .desktop__win--term {
+		transform: translateX(110%);
+		opacity: 0;
+	}
+
+	.desktop[data-live][data-term] .desktop__win--chat {
+		width: calc(22.5% - var(--gap));
 	}
 
 	@property --ring {

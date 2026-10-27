@@ -7,7 +7,9 @@ import icon from '#frontend/assets/icon.png'
 import strip from '#frontend/assets/shots/strip.png'
 import BrewCommand from '#frontend/components/brew-command.svelte'
 import DesktopDemo from '#frontend/components/desktop-demo.astro'
+import DodgyButton from '#frontend/components/dodgy-button.svelte'
 import PageIcon from '#frontend/components/page-icon.astro'
+import Steps from '#frontend/components/steps.astro'
 import Base from '#frontend/layouts/base.astro'
 import { langPaths, t } from '#frontend/lib/i18n.ts'
 import { newestRelease, REPO } from '#frontend/lib/kumiko.ts'
@@ -43,7 +45,11 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 			</div>
 
 			<div class="container hero__stage">
-				<DesktopDemo label={t(locale, 'hero.demo')} barLabel={t(locale, 'bar.strip')} />
+				<DesktopDemo
+					label={t(locale, 'hero.demo')}
+					barLabel={t(locale, 'bar.strip')}
+					hint={t(locale, 'hero.hint')}
+				/>
 			</div>
 		</section>
 
@@ -55,66 +61,70 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 				<div class="features__grid">
 					{features.map((key) => (
 						<article class={`feature feature--${key}`}>
-							<div class="feature__visual" aria-hidden="true">
-								{key === 'workspaces' && (
-									<div class="mini-spaces">
-										<span class="mini-spaces__glider" />
-										<span class="mini-spaces__item">1</span>
-										<span class="mini-spaces__item">2</span>
-										<span class="mini-spaces__item">3</span>
-										<span class="mini-spaces__item">4</span>
-									</div>
-								)}
-								{key === 'rules' && (
-									<div class="mini-rules">
-										<span class="mini-rules__app">Finder</span>
-										<span class="mini-rules__pick">Tile</span>
-										<span class="mini-rules__app">Settings</span>
-										<span class="mini-rules__pick mini-rules__pick--float">Float</span>
-									</div>
-								)}
-								{key === 'hotkeys' && (
-									<div class="mini-keys">
-										<kbd class="mini-keys__key">⌥</kbd>
-										<kbd class="mini-keys__key mini-keys__key--press">H</kbd>
-										<kbd class="mini-keys__key">J</kbd>
-										<kbd class="mini-keys__key">K</kbd>
-										<kbd class="mini-keys__key">L</kbd>
-									</div>
-								)}
-								{key === 'bar' && (
-									<Picture
-										class="mini-bar"
-										src={strip}
-										alt=""
-										formats={['avif', 'webp']}
-										widths={[505, 1010]}
-										sizes="(width < 600px) 80vw, 340px"
-									/>
-								)}
-								{key === 'borders' && (
-									<div class="mini-frame">
-										<span class="mini-frame__win" />
-										<span class="mini-frame__win mini-frame__win--focus" />
-									</div>
-								)}
-								{key === 'vim' && (
-									<div class="mini-vim">
-										<span class="mini-vim__line">
-											dd<span class="mini-vim__cursor">w</span>
-										</span>
-										<span class="mini-vim__mode">-- NORMAL --</span>
-									</div>
-								)}
+							<div class="feature__card" data-tilt>
+								<div class="feature__visual" aria-hidden="true">
+									{key === 'workspaces' && (
+										<div class="mini-spaces">
+											<span class="mini-spaces__glider" />
+											<span class="mini-spaces__item">1</span>
+											<span class="mini-spaces__item">2</span>
+											<span class="mini-spaces__item">3</span>
+											<span class="mini-spaces__item">4</span>
+										</div>
+									)}
+									{key === 'rules' && (
+										<div class="mini-rules">
+											<span class="mini-rules__app">Finder</span>
+											<span class="mini-rules__pick">Tile</span>
+											<span class="mini-rules__app">Settings</span>
+											<span class="mini-rules__pick mini-rules__pick--float">Float</span>
+										</div>
+									)}
+									{key === 'hotkeys' && (
+										<div class="mini-keys">
+											<kbd class="mini-keys__key">⌥</kbd>
+											<kbd class="mini-keys__key mini-keys__key--press">H</kbd>
+											<kbd class="mini-keys__key">J</kbd>
+											<kbd class="mini-keys__key">K</kbd>
+											<kbd class="mini-keys__key">L</kbd>
+										</div>
+									)}
+									{key === 'bar' && (
+										<Picture
+											class="mini-bar"
+											src={strip}
+											alt=""
+											formats={['avif', 'webp']}
+											widths={[505, 1010]}
+											sizes="(width < 600px) 80vw, 340px"
+										/>
+									)}
+									{key === 'borders' && (
+										<div class="mini-frame">
+											<span class="mini-frame__win" />
+											<span class="mini-frame__win mini-frame__win--focus" />
+										</div>
+									)}
+									{key === 'vim' && (
+										<div class="mini-vim">
+											<span class="mini-vim__line">
+												dd<span class="mini-vim__cursor">w</span>
+											</span>
+											<span class="mini-vim__mode">-- NORMAL --</span>
+										</div>
+									)}
+								</div>
+								<PageIcon page={key} class="feature__icon" />
+								<h3 class="feature__title">{t(locale, `${key}.title`)}</h3>
+								<p class="feature__desc">{t(locale, `${key}.text`)}</p>
 							</div>
-							<PageIcon page={key} class="feature__icon" />
-							<h3 class="feature__title">{t(locale, `${key}.title`)}</h3>
-							<p class="feature__desc">{t(locale, `${key}.text`)}</p>
 						</article>
 					))}
 				</div>
 			</div>
 		</section>
+		<Steps {locale} />
+
 		<section class="install" aria-labelledby="install-title">
 			<div class="container install__inner">
 				<h2 class="section-title" id="install-title">
@@ -131,12 +141,31 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 					</a>
 					· <a href={`${REPO}/releases`}>GitHub Releases</a>
 				</p>
-				<p class="install__text install__text--muted">{t(locale, 'install.permissions')}</p>
 				<p class="install__text install__text--muted">{t(locale, 'install.sip')}</p>
+			</div>
+		</section>
+
+		<section class="final" aria-labelledby="final-title">
+			<div class="container final__inner">
+				<h2 class="final__title" id="final-title">
+					{t(locale, 'final.title')}
+				</h2>
+				<DodgyButton
+					href={newest.download}
+					label={t(locale, 'hero.download', { version })}
+					dodges={t(locale, 'final.dodge').split('|')}
+					client:visible
+				/>
 			</div>
 		</section>
 	</main>
 </Base>
+
+<script>
+	import { initTilt } from '#frontend/lib/tilt.ts'
+
+	for (const card of document.querySelectorAll<HTMLElement>('[data-tilt]')) initTilt(card)
+</script>
 
 <style>
 	.hero {
@@ -272,14 +301,67 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 	}
 
 	/* Карточка: сверху маленькая живая картинка возможности, под ней значок страницы настроек */
+	/* Карточку двигает прокрутка, а наклон за курсором -- у слоя внутри, чтобы они не спорили
+	   за transform. Пятно света идёт за курсором цветом значка страницы */
 	.feature {
+		--tint: #32ade6;
+
+		&--rules {
+			--tint: #af52de;
+		}
+
+		&--hotkeys {
+			--tint: #5856d6;
+		}
+
+		&--bar {
+			--tint: #ff9500;
+		}
+
+		&--borders {
+			--tint: #ff2d55;
+		}
+
+		&--vim {
+			--tint: #34c759;
+		}
+	}
+
+	.feature__card {
 		position: relative;
+		transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
 		overflow: hidden;
+		height: 100%;
 		padding: 24px;
 		border: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
 		border-radius: 20px;
 		background: color-mix(in srgb, var(--surface) 70%, transparent);
 		backdrop-filter: blur(12px);
+		transition:
+			transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+			border-color 0.3s ease;
+
+		&::before {
+			pointer-events: none;
+			content: '';
+			position: absolute;
+			inset: 0;
+			opacity: 0;
+			background: radial-gradient(
+				320px circle at var(--spot-x, 50%) var(--spot-y, 0%),
+				color-mix(in srgb, var(--tint) 22%, transparent),
+				transparent 70%
+			);
+			transition: opacity 0.3s ease;
+		}
+
+		&:hover {
+			border-color: color-mix(in srgb, var(--tint) 45%, transparent);
+
+			&::before {
+				opacity: 1;
+			}
+		}
 	}
 
 	.feature__visual {
@@ -447,6 +529,25 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 
 	.install__zip {
 		font-family: var(--font-mono);
+	}
+
+	.final {
+		padding-block: var(--section-y) calc(var(--section-y) * 1.5);
+	}
+
+	.final__inner {
+		display: flex;
+		flex-direction: column;
+		gap: 28px;
+		align-items: center;
+		text-align: center;
+	}
+
+	.final__title {
+		margin: 0;
+		font-size: clamp(2.2rem, 6vw, 4rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
 	}
 
 	/* Иконка покачивается и мелочи в карточках шевелятся по времени, остальное едет за прокруткой.

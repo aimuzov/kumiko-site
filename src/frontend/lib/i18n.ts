@@ -11,6 +11,8 @@ export const strings = {
 		'hero.download': 'Скачать {version}',
 		'hero.requires': 'macOS 14 и новее',
 		'hero.brew': 'Через Homebrew',
+		'hero.hint':
+			'Попробуй: <kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd> двигают фокус, <kbd>n</kbd> открывает окно, <kbd>x</kbd> закрывает',
 		'hero.demo':
 			'Рабочий стол с kumiko: окна стоят плиткой, новое окно делит место соседнего, рамка фокуса переходит между ними, внизу бар с рабочими столами',
 
@@ -26,7 +28,7 @@ export const strings = {
 			'Сочетания пишутся как в skhd и держатся за положение клавиш, поэтому работают на любой раскладке. Есть режимы, переназначение клавиш и запрет системных сочетаний.',
 		'bar.title': 'Бар вместо строки меню',
 		'bar.text':
-			'Столы с иконками приложений, которые растут под курсором, как в Dock, время, батарея и раскладка. Клик по столу показывает его, по иконке -- окно приложения.',
+			'Столы с иконками приложений, которые растут под курсором, как в Dock, время, батарея и раскладка. Клик по столу показывает его, по иконке — окно приложения.',
 		'bar.strip': 'Бар с рабочими столами и иконками их приложений',
 		'borders.title': 'Рамка вокруг окна в фокусе',
 		'borders.text': 'Цветом акцента системы или своим. Углы рамки повторяют радиус окна.',
@@ -34,12 +36,23 @@ export const strings = {
 		'vim.text':
 			'Режимы Vim в полях любых приложений, и на русской раскладке тоже. В терминалах и редакторах со своим Vim их можно выключить.',
 
+		'steps.title': 'Три шага',
+		'steps.install.title': 'Поставь',
+		'steps.install.text': 'Одна команда в терминале. Cask заодно кладёт команду kumiko в PATH.',
+		'steps.allow.title': 'Разреши',
+		'steps.allow.text': 'Универсальный доступ, чтобы раскладывать окна, и мониторинг ввода для хоткеев и Vim.',
+		'steps.allow.access': 'Универсальный доступ',
+		'steps.allow.input': 'Мониторинг ввода',
+		'steps.tile.title': 'Работай',
+		'steps.tile.text': 'Окна сами встают по местам, а остальное настраивается в окне настроек или в kumiko.toml.',
+
+		'final.title': 'Разложи свои окна',
+		'final.dodge': 'Мимо!|Ещё разок|Почти!',
+
 		'install.title': 'Установка',
 		'install.brew': 'Через Homebrew. Cask заодно кладёт команду kumiko в PATH.',
 		'install.zip':
 			'Или скачай архив, распакуй и перенеси Kumiko.app в Программы. Приложение пока не нотаризовано: в первый раз открой его, а потом нажми «Всё равно открыть» в настройках «Конфиденциальность и безопасность».',
-		'install.permissions':
-			'При первом запуске kumiko попросит Универсальный доступ, чтобы раскладывать окна, и Мониторинг ввода для хоткеев и Vim.',
 		'install.sip':
 			'Всё работает без отключения SIP, кроме выключения теней окон и плавающих окон поверх остальных. Им нужен скрипт в Dock, как у yabai.',
 
@@ -58,6 +71,8 @@ export const strings = {
 		'hero.download': 'Download {version}',
 		'hero.requires': 'macOS 14 or later',
 		'hero.brew': 'With Homebrew',
+		'hero.hint':
+			'Try it: <kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd> move the focus, <kbd>n</kbd> opens a window, <kbd>x</kbd> closes it',
 		'hero.demo':
 			'A desktop with kumiko: windows tile, a new window splits the place of its neighbour, the focus frame moves between them, and the bar with workspaces runs along the bottom',
 
@@ -81,12 +96,23 @@ export const strings = {
 		'vim.text':
 			'Vim modes in the text fields of any app, on a Russian layout too. Turn them off in terminals and editors that have a Vim of their own.',
 
+		'steps.title': 'Three steps',
+		'steps.install.title': 'Install',
+		'steps.install.text': 'One command in the terminal. The cask also puts the kumiko command on the PATH.',
+		'steps.allow.title': 'Allow',
+		'steps.allow.text': 'Accessibility to arrange windows and Input Monitoring for hotkeys and Vim.',
+		'steps.allow.access': 'Accessibility',
+		'steps.allow.input': 'Input Monitoring',
+		'steps.tile.title': 'Tile',
+		'steps.tile.text': 'Windows find their places, and the rest is set in the settings window or in kumiko.toml.',
+
+		'final.title': 'Tile your windows',
+		'final.dodge': 'Missed!|Once more|Almost!',
+
 		'install.title': 'Install',
 		'install.brew': 'With Homebrew. The cask also puts the kumiko command on the PATH.',
 		'install.zip':
 			'Or download the archive, unzip it and move Kumiko.app to Applications. The app is not notarized yet: try to open it once, then press Open Anyway under Privacy & Security in System Settings.',
-		'install.permissions':
-			'On first launch kumiko asks for Accessibility to arrange windows and Input Monitoring for hotkeys and Vim.',
 		'install.sip':
 			'Everything works with SIP on but turning window shadows off and keeping floating windows on top. Those need a scripting addition in Dock, as with yabai.',
 
