@@ -163,8 +163,10 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 </script>
 
 <style>
+	/* Свечение шире экрана на телефоне: обрезаем по краю, иначе страница ездит вбок */
 	.hero {
 		position: relative;
+		overflow-x: clip;
 		padding-block: calc(var(--header-h) + var(--section-y)) var(--section-y);
 		text-align: center;
 
