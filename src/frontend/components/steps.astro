@@ -16,7 +16,7 @@ const { locale } = Astro.props
      переключатели разрешений щёлкают по очереди, разбросанные окна встают плиткой -->
 <section class="steps" id="steps" aria-labelledby="steps-title">
 	<div class="container">
-		<BigTitle id="steps-title" icon={Footprints} filled text={t(locale, 'steps.title')} />
+		<BigTitle id="steps-title" icon={Footprints} filled side="right" text={t(locale, 'steps.title')} />
 		<ol class="steps__list">
 			<li class="step">
 				<div class="step__scene step__scene--term" aria-hidden="true">

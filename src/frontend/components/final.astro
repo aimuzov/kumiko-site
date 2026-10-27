@@ -25,7 +25,7 @@ const windows = ['code', 'music', 'web', 'chat', 'term', 'notes']
      просьбе о меньшем движении окна сразу стоят плиткой -->
 <section class="final" aria-labelledby="final-title" data-final>
 	<div class="container">
-		<BigTitle id="final-title" icon={LayoutDashboard} text={t(locale, 'final.title')} />
+		<BigTitle id="final-title" icon={LayoutDashboard} side="right" text={t(locale, 'final.title')} />
 		<div class="final__screen" data-screen>
 			{windows.map((kind) => (
 				<div class={`final__slot final__slot--${kind}`} aria-hidden="true">

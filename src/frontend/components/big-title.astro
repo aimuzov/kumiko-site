@@ -8,10 +8,12 @@ type Props = {
 	icon: string
 	/** Залить значок цветом, а не только обвести: звёздам и следам идёт, коробке нет. */
 	filled?: boolean
+	/** С какой стороны лежит огромный значок. Разделы чередуют, чтобы не было однообразно. */
+	side?: 'left' | 'right'
 	text: string
 }
 
-const { id, icon, filled = false, text } = Astro.props
+const { id, icon, filled = false, side = 'left', text } = Astro.props
 ---
 
 <!-- Заголовок раздела огромными буквами на слое под контентом. Он отстаёт от прокрутки,
@@ -28,7 +30,11 @@ const { id, icon, filled = false, text } = Astro.props
 	<h2 class="big-title__label" {id}>
 		{text}
 	</h2>
-	<span class:list={['big-title__glyph', filled && 'big-title__glyph--filled']} aria-hidden="true" set:html={icon} />
+	<span
+		class:list={['big-title__glyph', filled && 'big-title__glyph--filled', `big-title__glyph--${side}`]}
+		aria-hidden="true"
+		set:html={icon}
+	/>
 	<span class="big-title__text" aria-hidden="true">
 		<span class="big-title__float">{text}</span>
 	</span>
@@ -55,8 +61,20 @@ const { id, icon, filled = false, text } = Astro.props
 		clip-path: inset(50%);
 	}
 
-	/* Сплошная заливка цветом между акцентом и фоном: буквы видно, но они не спорят с контентом */
+	/* --fade -- насколько заголовок угас. Анимируется только число, а цвет считается из него
+	   здесь: значения в ключевых кадрах браузер не пересчитывает при смене темы */
+	@property --fade {
+		syntax: '<number>';
+		inherits: false;
+		initial-value: 1;
+	}
+
+	/* Сплошная заливка. Раздел въезжает -- буквы яркой меди, дальше они угасают до цвета между
+	   акцентом и фоном: видно, но не спорят с контентом. Без анимации сразу угасший */
 	.big-title__text {
+		--vivid: light-dark(#b8692c, #e8a467);
+		--dim: color-mix(in srgb, var(--accent) 50%, var(--bg));
+
 		display: flex;
 		gap: 0.15em;
 		align-items: center;
@@ -64,7 +82,7 @@ const { id, icon, filled = false, text } = Astro.props
 		font-size: var(--big-title);
 		font-weight: 700;
 		line-height: 0.9;
-		color: color-mix(in srgb, var(--accent) 50%, var(--bg));
+		color: color-mix(in srgb, var(--vivid) calc((1 - var(--fade)) * 100%), var(--dim));
 		letter-spacing: 0.01em;
 		white-space: nowrap;
 	}
@@ -82,6 +100,8 @@ const { id, icon, filled = false, text } = Astro.props
 	}
 
 	.big-title__glyph {
+		--turn: 1;
+
 		position: absolute;
 		top: -8vh;
 		left: -6vw;
@@ -98,6 +118,14 @@ const { id, icon, filled = false, text } = Astro.props
 			height: 100%;
 			opacity: 0.1;
 			stroke-width: 2.4;
+		}
+
+		/* Справа значок лежит зеркально: и поворачивается в обратную сторону */
+		&--right {
+			--turn: -1;
+
+			right: -6vw;
+			left: auto;
 		}
 
 		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
@@ -117,14 +145,29 @@ const { id, icon, filled = false, text } = Astro.props
 				animation-timeline: view();
 			}
 
+			/* Проявляется и уезжает всё время, пока раздел на экране, а угасает с трети до
+			   двух третей этого пути */
 			.big-title__text {
-				animation-name: surface;
+				animation-name: surface, fade;
+				animation-range:
+					normal,
+					cover 30% cover 62%;
 			}
 
 			/* Значок медленнее букв и поворачивается, как будто лежит глубже */
 			.big-title__glyph {
 				animation-name: deep;
 			}
+		}
+	}
+
+	@keyframes fade {
+		from {
+			--fade: 0;
+		}
+
+		to {
+			--fade: 1;
 		}
 	}
 
@@ -145,7 +188,7 @@ const { id, icon, filled = false, text } = Astro.props
 
 	@keyframes deep {
 		from {
-			transform: translateY(40%) rotate(-10deg);
+			transform: translateY(40%) rotate(calc(var(--turn) * -10deg));
 			opacity: 0;
 		}
 
@@ -155,7 +198,7 @@ const { id, icon, filled = false, text } = Astro.props
 		}
 
 		to {
-			transform: translateY(-20%) rotate(6deg);
+			transform: translateY(-20%) rotate(calc(var(--turn) * 6deg));
 			opacity: 0;
 		}
 	}
