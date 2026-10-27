@@ -12,6 +12,7 @@ import strip from '#frontend/assets/shots/strip.png'
 import vim from '#frontend/assets/shots/vim.png'
 import workspaces from '#frontend/assets/shots/workspaces.png'
 import BrewCommand from '#frontend/components/brew-command.svelte'
+import PageIcon from '#frontend/components/page-icon.astro'
 import Base from '#frontend/layouts/base.astro'
 import { langPaths, t } from '#frontend/lib/i18n.ts'
 import { newestRelease, REPO } from '#frontend/lib/kumiko.ts'
@@ -23,7 +24,7 @@ const newest = await newestRelease()
 const version = `v${newest.version}`
 
 /** Страница настроек и её текст в словаре. Рабочие столы показаны в первом экране. */
-const features = [
+const features: { key: 'rules' | 'hotkeys' | 'bar' | 'borders' | 'vim'; shot: ImageMetadata }[] = [
 	{ key: 'rules', shot: rules },
 	{ key: 'hotkeys', shot: hotkeys },
 	{ key: 'bar', shot: bar },
@@ -72,6 +73,7 @@ const features = [
 					fetchpriority="high"
 				/>
 				<div class="hero__caption">
+					<PageIcon page="workspaces" class="hero__caption-icon" />
 					<h2 class="hero__caption-title">{t(locale, 'workspaces.title')}</h2>
 					<p class="hero__caption-text">{t(locale, 'workspaces.text')}</p>
 				</div>
@@ -86,6 +88,7 @@ const features = [
 				{features.map(({ key, shot: src }) => (
 					<article class="feature">
 						<div class="feature__text">
+							<PageIcon page={key} class="feature__icon" />
 							<h3 class="feature__title">{t(locale, `${key}.title`)}</h3>
 							<p class="feature__desc">{t(locale, `${key}.text`)}</p>
 						</div>
@@ -250,6 +253,14 @@ const features = [
 
 	.hero__caption {
 		max-width: 40rem;
+	}
+
+	.hero__caption-icon {
+		margin-bottom: 14px;
+	}
+
+	.feature__icon {
+		margin-bottom: 16px;
 	}
 
 	.hero__caption-title {
