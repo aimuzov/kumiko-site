@@ -31,7 +31,15 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 	<main>
 		<section class="hero">
 			<div class="container hero__inner">
-				<Picture class="hero__icon" src={icon} alt="" width={128} height={128} formats={['avif', 'webp']} />
+				<Picture
+					class="hero__icon"
+					src={icon}
+					alt=""
+					width={128}
+					height={128}
+					densities={[1, 2, 3]}
+					formats={['avif', 'webp']}
+				/>
 				<h1 class="hero__title">
 					kumi<span class="hero__title-accent">ko</span>
 				</h1>
@@ -48,7 +56,7 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 			</div>
 
 			<div class="container hero__stage">
-				<DesktopDemo label={t(locale, 'hero.demo')} hint={t(locale, 'hero.hint')} />
+				<DesktopDemo label={t(locale, 'hero.demo')} {locale} />
 			</div>
 		</section>
 

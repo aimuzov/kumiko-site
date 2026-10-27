@@ -49,6 +49,7 @@ const tools = [
 					alt="kumiko"
 					width={128}
 					height={128}
+					densities={[1, 2, 3]}
 					formats={['avif', 'webp']}
 				/>
 			</span>
@@ -72,9 +73,9 @@ const tools = [
 		padding-block: var(--section-y);
 		text-align: center;
 
-		/* Прокрутки на поглощение -- полтора экрана сверх самого раздела */
+		/* Прокрутки на поглощение -- экран сверх самого раздела */
 		&--scrolly {
-			height: 260vh;
+			height: 200vh;
 			padding-block: 0;
 		}
 	}

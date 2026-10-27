@@ -19,8 +19,10 @@ export const strings = {
 		'hero.download': 'Скачать {version}',
 		'hero.requires': 'macOS 14 и новее',
 		'hero.brew': 'Через Homebrew',
-		'hero.hint':
-			'Попробуй: <kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd> двигают фокус, <kbd>n</kbd> открывает окно, <kbd>x</kbd> закрывает, <kbd>1</kbd>–<kbd>4</kbd> переключают столы',
+		'hint.focus': 'фокус',
+		'hint.open': 'окно',
+		'hint.close': 'закрыть',
+		'hint.spaces': 'столы',
 		'hero.demo':
 			'Рабочий стол с kumiko: окна стоят плиткой, открываются и закрываются, рамка фокуса переходит между ними, внизу бар с рабочими столами',
 
@@ -97,8 +99,10 @@ export const strings = {
 		'hero.download': 'Download {version}',
 		'hero.requires': 'macOS 14 or later',
 		'hero.brew': 'With Homebrew',
-		'hero.hint':
-			'Try it: <kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd> move the focus, <kbd>n</kbd> opens a window, <kbd>x</kbd> closes it, <kbd>1</kbd>–<kbd>4</kbd> switch workspaces',
+		'hint.focus': 'focus',
+		'hint.open': 'window',
+		'hint.close': 'close',
+		'hint.spaces': 'workspaces',
 		'hero.demo':
 			'A desktop with kumiko: windows tile, open and close, the focus frame moves between them, and the bar with workspaces runs along the bottom',
 

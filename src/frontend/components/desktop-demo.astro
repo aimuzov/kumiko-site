@@ -1,9 +1,21 @@
 ---
 import { Coffee } from 'lucide-static'
 
-type Props = { label: string; hint: string }
+import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
 
-const { label, hint } = Astro.props
+import { t } from '#frontend/lib/i18n.ts'
+
+type Props = { label: string; locale: Locale }
+
+const { label, locale } = Astro.props
+
+/** Шпаргалка под демо: клавиши и что они делают, как в подсказках macOS. */
+const keys = [
+	{ keys: ['h', 'j', 'k', 'l'], what: 'hint.focus' },
+	{ keys: ['n'], what: 'hint.open' },
+	{ keys: ['x'], what: 'hint.close' },
+	{ keys: ['1', '–', '4'], what: 'hint.spaces' },
+]
 
 /** Окна первого стола до скрипта, по местам плитки на три окна. */
 const first = ['code', 'web', 'chat']
@@ -19,41 +31,52 @@ const names = ['Code', 'Notes', 'Media', 'Other']
 
      Окна скрипт создаёт сам, поэтому стили глобальные: у его элементов нет атрибута области
      стилей Astro. Классы desktop__ свои только у этого демо -->
-<figure class="desktop" role="img" aria-label={label} data-demo>
-	<div class="desktop__screen">
-		<div class="desktop__area" data-area>
-			{first.map((kind, i) => (
-				<div class={`desktop__slot desktop__slot--${i}`} data-win={kind}>
-					<div class={`desktop__win desktop__win--${kind}`}>
-						<span class="desktop__chrome" />
-						<span class="desktop__body" />
+<div class="desktop-wrap">
+	<figure class="desktop" role="img" aria-label={label} data-demo>
+		<div class="desktop__screen">
+			<div class="desktop__area" data-area>
+				{first.map((kind, i) => (
+					<div class={`desktop__slot desktop__slot--${i}`} data-win={kind}>
+						<div class={`desktop__win desktop__win--${kind}`}>
+							<span class="desktop__chrome" />
+							<span class="desktop__body" />
+						</div>
 					</div>
-				</div>
-			))}
-		</div>
-		<div class="desktop__bar">
-			<span class="desktop__spaces">
-				{names.map((name, i) => (
-					<span class:list={['desktop__space', i === 0 && 'is-current']} data-space={i} data-name={name}>
-						<span class="desktop__num">{i + 1}</span>
-						<span class="desktop__apps" data-apps>
-							{i === 0 && first.map((kind) => <span class={`desktop__app desktop__app--${kind}`} />)}
-						</span>
-					</span>
 				))}
-			</span>
-			<span class="desktop__status">
-				<span class="desktop__input">RU</span>
-				<span class="desktop__battery" />
-				<span class="desktop__mug" set:html={Coffee} />
-				<span class="desktop__clock" data-clock>
-					Mon 27 Oct&nbsp;&nbsp;10:24
+			</div>
+			<div class="desktop__bar">
+				<span class="desktop__spaces">
+					{names.map((name, i) => (
+						<span class:list={['desktop__space', i === 0 && 'is-current']} data-space={i} data-name={name}>
+							<span class="desktop__num">{i + 1}</span>
+							<span class="desktop__apps" data-apps>
+								{i === 0 && first.map((kind) => <span class={`desktop__app desktop__app--${kind}`} />)}
+							</span>
+						</span>
+					))}
 				</span>
-			</span>
+				<span class="desktop__status">
+					<span class="desktop__input">RU</span>
+					<span class="desktop__battery" />
+					<span class="desktop__mug" set:html={Coffee} />
+					<span class="desktop__clock" data-clock>
+						Mon 27 Oct&nbsp;&nbsp;10:24
+					</span>
+				</span>
+			</div>
 		</div>
-	</div>
-	<figcaption class="desktop__hint" set:html={hint} />
-</figure>
+	</figure>
+	<p class="desktop__hint" aria-hidden="true">
+		{keys.map(({ keys, what }) => (
+			<span class="desktop__hint-item">
+				{keys.map((key) =>
+					key === '–' ? <span class="desktop__hint-dash">–</span> : <kbd class="desktop__key">{key}</kbd>,
+				)}
+				<span class="desktop__hint-what">{t(locale, what)}</span>
+			</span>
+		))}
+	</p>
+</div>
 
 <script>
 	import { initDesktopDemo } from '#frontend/lib/desktop-demo.ts'
@@ -62,11 +85,14 @@ const names = ['Code', 'Notes', 'Media', 'Other']
 </script>
 
 <style is:global>
+	.desktop-wrap {
+		width: min(980px, 100%);
+	}
+
 	.desktop {
 		--frame: light-dark(#5b8cff, #8aadf4);
 		--move: 0.45s cubic-bezier(0.65, 0, 0.35, 1);
 
-		width: min(980px, 100%);
 		margin: 0;
 		padding: 10px;
 		border-radius: 22px;
@@ -468,26 +494,54 @@ const names = ['Code', 'Notes', 'Media', 'Other']
 		white-space: pre;
 	}
 
+	/* Шпаргалка: группы "клавиши -- что делают" через тонкие разделители. Клавиши одинаковые
+	   и спокойные, в цвет текста, чтобы строка читалась как подпись, а не как набор кнопок */
 	.desktop__hint {
-		margin-top: 14px;
-		font-size: 0.875rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px 0;
+		justify-content: center;
+		margin-top: 16px;
+		font-size: 0.8125rem;
 		color: var(--muted);
-		text-align: center;
 
 		/* Подсказка про клавиши нужна только там, где есть клавиатура */
 		@media (--touch) {
 			display: none;
 		}
+	}
 
-		/* stylelint-disable-next-line selector-max-type -- клавиши приходят разметкой из словаря */
-		& kbd {
-			padding: 1px 6px;
-			border: 1px solid var(--border);
-			border-radius: 5px;
-			font-family: var(--font-mono);
-			font-size: 0.8125rem;
-			color: var(--fg);
-			background: var(--surface);
+	.desktop__hint-item {
+		display: inline-flex;
+		gap: 3px;
+		align-items: center;
+		padding: 0 14px;
+
+		& + & {
+			border-left: 1px solid color-mix(in srgb, var(--fg) 12%, transparent);
 		}
+	}
+
+	.desktop__key {
+		display: inline-grid;
+		place-items: center;
+		min-width: 1.6em;
+		height: 1.6em;
+		padding: 0 0.35em;
+		border-radius: 5px;
+		font-family: var(--font-sans);
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--fg);
+		background: color-mix(in srgb, var(--fg) 7%, transparent);
+		box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--fg) 12%, transparent);
+	}
+
+	.desktop__hint-dash {
+		color: color-mix(in srgb, var(--fg) 35%, transparent);
+	}
+
+	.desktop__hint-what {
+		margin-left: 5px;
 	}
 </style>

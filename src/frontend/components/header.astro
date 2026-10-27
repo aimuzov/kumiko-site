@@ -36,7 +36,15 @@ const github =
 <header class="header" data-header>
 	<div class="container header__inner">
 		<a class="header__logo" href={home} aria-label={t(locale, 'header.home')}>
-			<Picture class="header__icon" src={icon} alt="" width={28} height={28} formats={['avif', 'webp']} />
+			<Picture
+				class="header__icon"
+				src={icon}
+				alt=""
+				width={28}
+				height={28}
+				densities={[1, 2, 3]}
+				formats={['avif', 'webp']}
+			/>
 			<span class="header__name" aria-hidden="true">
 				kumi<span class="header__accent">ko</span>
 			</span>
