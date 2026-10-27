@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/aimuzov/kumiko-site/compare/v1.4.0...v1.5.0) (2026-10-27)
+
+
+### Features
+
+* big titles crumble to dust when they leave ([1f8f061](https://github.com/aimuzov/kumiko-site/commit/1f8f06153dcf4b89236e3d3b72e5af7df0f06620))
+* big titles crumble to dust when they leave ([17590e7](https://github.com/aimuzov/kumiko-site/commit/17590e7edfa2b838f51a188aa016c8bc30fc06bb)), closes [#19](https://github.com/aimuzov/kumiko-site/issues/19)
+* big titles drift left to right into their dust ([87465f3](https://github.com/aimuzov/kumiko-site/commit/87465f3e1cf39ecf7a5183e9603ba98c9c4f8024))
+
+
+### Bug Fixes
+
+* bring the title back when reduced motion turns on mid-page ([8ca621a](https://github.com/aimuzov/kumiko-site/commit/8ca621a8169f9cffb114f4f094b4f000ea78229f))
+
 ## [1.4.0](https://github.com/aimuzov/kumiko-site/compare/v1.3.0...v1.4.0) (2026-10-27)
 
 
