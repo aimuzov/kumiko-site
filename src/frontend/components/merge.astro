@@ -103,7 +103,7 @@ const tools = [
 	}
 
 	.merge__lead {
-		max-width: 40rem;
+		max-width: 48rem;
 		margin: 12px auto 0;
 		color: var(--muted);
 		text-wrap: balance;
@@ -112,15 +112,35 @@ const tools = [
 	/* stylelint-disable selector-max-type -- <i>, <b>, <em> и <s> приходят разметкой из словаря */
 	/* Утилита в тексте загорается плашкой цвета своего значка, когда её плашка влетела в иконку.
 	   Цвета -- по порядку <i> в строке, тот же, что у плашек */
+	/* Ярлык -- мягкая плашка в цвет значка утилиты: 16% цвета на фоне, текст того же цвета, но
+	   глубже, и слева квадратик, как иконка приложения. До влёта -- обычное слово, место под
+	   квадратиком схлопнуто, чтобы строка не прыгала только по ширине самого ярлыка */
 	.merge__lead :global(i) {
-		margin: 0 -0.14em;
-		padding: 0.04em 0.16em;
-		border-radius: 0.35em;
+		display: inline-flex;
+		gap: 0;
+		align-items: center;
+		padding: 0 0.1em;
+		border-radius: 0.45em;
 		font-style: normal;
-		background: color-mix(in srgb, var(--tint) 0%, transparent);
+		white-space: nowrap;
+		background: transparent;
 		transition:
 			color 0.4s ease,
-			background-color 0.4s ease;
+			background-color 0.4s ease,
+			padding 0.4s ease,
+			gap 0.4s ease;
+
+		&::before {
+			content: '';
+			transform: scale(0);
+			width: 0;
+			height: 0.62em;
+			border-radius: 0.18em;
+			background: var(--tint);
+			transition:
+				width 0.4s ease,
+				transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+		}
 
 		&:nth-of-type(1) {
 			--tint: #32ade6;
@@ -147,8 +167,23 @@ const tools = [
 		}
 
 		&.is-in {
-			color: #fff;
-			background: var(--tint);
+			gap: 0.32em;
+			margin-right: -0.08em;
+			padding: 0.02em 0.42em 0.02em 0.32em;
+			color: color-mix(in srgb, var(--tint) 62%, var(--fg));
+			background: color-mix(in srgb, var(--tint) 16%, transparent);
+			animation: chip-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+			&::before {
+				transform: none;
+				width: 0.62em;
+			}
+		}
+	}
+
+	@keyframes chip-in {
+		40% {
+			transform: translateY(-0.12em) scale(1.06);
 		}
 	}
 
