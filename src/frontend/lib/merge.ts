@@ -28,7 +28,9 @@ export function initMerge(stage: HTMLElement) {
 	onScrollFrames(() => {
 		// В начале раздела плашки ещё постоят, к концу поглощение кончается с запасом, чтобы
 		// полюбоваться на выросшую иконку
-		const still = path.step(clamp((sectionProgress(section) - 0.12) / 0.62))
+		const goal = clamp((sectionProgress(section) - 0.12) / 0.62)
+		// Проглоченное назад не выпускаем: прокрутка вверх больше не разбирает выросшую иконку
+		const still = path.step(swallowed === tools.length ? 1 : goal)
 		const squash = clamp(path.v * 6, -0.25, 0.25).toFixed(3)
 
 		let eaten = 0
