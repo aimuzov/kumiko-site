@@ -6,8 +6,8 @@ import ThemeBoot from '@aimuzov/infra-site-kit/theme-boot.astro'
 import '@aimuzov/infra-site-kit/ui/tokens.css'
 
 import Backdrop from '#frontend/components/backdrop.astro'
-import Corner from '#frontend/components/corner.astro'
 import Footer from '#frontend/components/footer.astro'
+import Header from '#frontend/components/header.astro'
 import '#frontend/styles/global.css'
 import { site } from '#frontend/data/site.ts'
 import { t } from '#frontend/lib/i18n.ts'
@@ -52,7 +52,7 @@ const url = new URL(Astro.url.pathname, Astro.site)
 	</head>
 	<body>
 		<Backdrop />
-		<Corner {locale} />
+		<Header {locale} />
 		<slot />
 		<Footer {locale} />
 	</body>

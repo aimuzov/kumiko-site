@@ -33,9 +33,9 @@ const lead = t(locale, 'changelog.lead')
 	.history {
 		--changelog-accent: var(--accent);
 		--changelog-muted: var(--muted);
-		--changelog-sticky-top: 72px;
+		--changelog-sticky-top: calc(var(--header-h) + 16px);
 		--changelog-padding: 0 var(--gutter);
 
-		padding-block: calc(var(--section-y) + 24px) var(--section-y);
+		padding-block: calc(var(--header-h) + var(--section-y)) var(--section-y);
 	}
 </style>

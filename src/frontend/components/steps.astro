@@ -14,7 +14,7 @@ const { locale } = Astro.props
 
 <!-- Три шага, и каждый показывает себя маленькой сценой по кругу: команда печатается в терминале,
      переключатели разрешений щёлкают по очереди, разбросанные окна встают плиткой -->
-<section class="steps" aria-labelledby="steps-title">
+<section class="steps" id="steps" aria-labelledby="steps-title">
 	<div class="container">
 		<HeadingIcon icon={Footprints} />
 		<h2 class="steps__title" id="steps-title">

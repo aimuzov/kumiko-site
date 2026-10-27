@@ -5,6 +5,14 @@ export const strings = {
 	ru: {
 		'site.description':
 			'kumiko, тайлинговый менеджер окон для macOS: рабочие столы, хоткеи и бар в одном приложении',
+		'header.home': 'kumiko, на главную',
+		'nav.label': 'Разделы',
+		'nav.features': 'Возможности',
+		'nav.steps': 'Как начать',
+		'nav.install': 'Установка',
+		'nav.source': 'Исходники на GitHub',
+		'nav.download': 'Скачать',
+
 		'hero.tagline': 'Тайлинговый менеджер окон для macOS',
 		'hero.lead':
 			'Окна, рабочие столы, хоткеи и бар в одном приложении. Всё настраивается в окне настроек или в одном файле kumiko.toml.',
@@ -65,6 +73,14 @@ export const strings = {
 	},
 	en: {
 		'site.description': 'kumiko, a tiling window manager for macOS: workspaces, hotkeys and a bar in one app',
+		'header.home': 'kumiko, home',
+		'nav.label': 'Sections',
+		'nav.features': 'Features',
+		'nav.steps': 'Get started',
+		'nav.install': 'Install',
+		'nav.source': 'Source on GitHub',
+		'nav.download': 'Download',
+
 		'hero.tagline': 'A tiling window manager for macOS',
 		'hero.lead':
 			'Windows, workspaces, hotkeys and a bar in one app. Set it all up in the settings window or in one kumiko.toml file.',

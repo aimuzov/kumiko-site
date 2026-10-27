@@ -35,7 +35,7 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 				</h1>
 				<p class="hero__tagline">{t(locale, 'hero.tagline')}</p>
 				<p class="hero__lead">{t(locale, 'hero.lead')}</p>
-				<div class="hero__actions">
+				<div class="hero__actions" data-cta>
 					<a class="hero__download" href={newest.download}>
 						<span set:html={Download} aria-hidden="true" />
 						{t(locale, 'hero.download', { version })}
@@ -54,7 +54,7 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 			</div>
 		</section>
 
-		<section class="features" aria-labelledby="features-title">
+		<section class="features" id="features" aria-labelledby="features-title">
 			<div class="container">
 				<HeadingIcon icon={Sparkles} />
 				<h2 class="section-title" id="features-title">
@@ -127,7 +127,7 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 		</section>
 		<Steps {locale} />
 
-		<section class="install" aria-labelledby="install-title">
+		<section class="install" id="install" aria-labelledby="install-title">
 			<div class="container install__inner">
 				<HeadingIcon icon={PackageOpen} />
 				<h2 class="section-title" id="install-title">
@@ -174,7 +174,7 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 <style>
 	.hero {
 		position: relative;
-		padding-block: calc(var(--section-y) + 24px) var(--section-y);
+		padding-block: calc(var(--header-h) + var(--section-y)) var(--section-y);
 		text-align: center;
 
 		/* Тёплое свечение за иконкой, как на баннере README */
@@ -570,10 +570,14 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 			animation: float 6s ease-in-out infinite;
 		}
 
+		/* Свойства анимации по отдельности: минификатор склеивает сокращение `animation` с
+		   `animation-timeline` в одно, а такое сокращение браузер отбрасывает целиком */
 		@supports (animation-timeline: view()) {
 			/* Первый экран при уходе вверх отстаёт от прокрутки и гаснет */
 			.hero__inner {
-				animation: sink linear both;
+				animation-name: sink;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
 				animation-timeline: view();
 				animation-range: exit 0% exit 100%;
 			}
@@ -581,16 +585,18 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 			/* Рабочий стол встаёт из наклона, как на страницах продуктов */
 			.hero__stage {
 				transform-origin: 50% 100%;
-				animation: rise linear both;
+				animation-name: rise;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
 				animation-timeline: view();
 				animation-range: entry 0% cover 40%;
 			}
 
 			/* Карточки проявляются и всплывают, каждая колонка со своей скоростью */
 			.feature {
-				animation:
-					appear linear both,
-					parallax linear both;
+				animation-name: appear, parallax;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
 				animation-timeline: view(), view();
 				animation-range:
 					entry 0% entry 80%,

@@ -28,11 +28,19 @@
 	--ui-accent-soft: color-mix(in srgb, var(--accent) 14%, var(--bg));
 	--ui-font-mono: var(--font-mono);
 
-	/* Угловые кнопки: тема, язык и история стоят в одном ряду на всех страницах. */
-	--corner-top: 16px;
-	--corner-right: 16px;
+	/* Высота шапки: от неё отступает первый экран и останавливаются якоря. */
+	--header-h: 64px;
 
 	color-scheme: light dark;
+}
+
+/* Якоря из шапки не прячут заголовок раздела под ней. */
+html {
+	scroll-padding-top: calc(var(--header-h) + 16px);
+
+	@media (prefers-reduced-motion: no-preference) {
+		scroll-behavior: smooth;
+	}
 }
 
 :root[data-theme='light'] {

@@ -103,15 +103,21 @@
 		}
 	}
 
+	/* Свойства анимации по отдельности: минификатор склеивает сокращение `animation` с
+	   `animation-timeline` в одно, а такое сокращение браузер отбрасывает целиком */
 	@supports (animation-timeline: scroll()) {
 		@media (prefers-reduced-motion: no-preference) {
 			.backdrop__layer--far {
-				animation: lift-far linear both;
+				animation-name: lift-far;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
 				animation-timeline: scroll(root);
 			}
 
 			.backdrop__layer--near {
-				animation: lift-near linear both;
+				animation-name: lift-near;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
 				animation-timeline: scroll(root);
 			}
 		}
