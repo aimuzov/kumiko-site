@@ -66,16 +66,14 @@ const windows = ['code', 'music', 'web', 'chat', 'term', 'notes']
 		isolation: isolate;
 		position: relative;
 		overflow-x: clip;
-		padding-block: var(--section-top) calc(var(--section-y) * 1.5);
+		padding-block: var(--section-top) 16px;
 	}
 
+	/* Плитка ровно на экран: когда заголовок доехал до шапки и окна разошлись, они видны целиком.
+	   Отнимаем шапку, место заголовка и поля */
 	.final__screen {
 		position: relative;
-		height: min(78vh, 720px);
-
-		@media (--below-sm) {
-			height: 86vh;
-		}
+		height: max(420px, calc(100vh - var(--header-h) - var(--section-top) - 56px));
 	}
 
 	/* --k -- насколько окно уже встало. Число зарегистрировано, поэтому переход тянет его
