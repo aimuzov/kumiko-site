@@ -10,14 +10,21 @@ type Props = {
 const { id, icon, text } = Astro.props
 ---
 
-<!-- Заголовок раздела огромными контурными буквами на слое под контентом. Он отстаёт от прокрутки,
+<!-- Заголовок раздела огромными буквами на слое под контентом. Он отстаёт от прокрутки,
      проявляется, пока раздел въезжает, и гаснет, когда тот уходит. Раздел даёт ему position и
-     isolation, иначе слой уйдёт под фон страницы -->
+     isolation, иначе слой уйдёт под фон страницы.
+
+     Буквы нарочно едва отличаются от фона, поэтому они -- картинка для глаз, а для скринридера
+     заголовок лежит рядом обычным h2, скрытым с экрана. e2e исключает картинку из проверки
+     контраста: читать её не нужно -->
 <div class="big-title">
-	<h2 class="big-title__text" {id}>
-		<span class="big-title__icon" aria-hidden="true" set:html={icon} />
+	<h2 class="big-title__label" {id}>
 		{text}
 	</h2>
+	<span class="big-title__text" aria-hidden="true">
+		<span class="big-title__icon" set:html={icon} />
+		{text}
+	</span>
 </div>
 
 <style>
@@ -32,32 +39,36 @@ const { id, icon, text } = Astro.props
 		justify-content: center;
 	}
 
-	/* Буквы пустые внутри: контур и едва заметная заливка сверху вниз */
+	.big-title__label {
+		position: absolute;
+		overflow: hidden;
+		width: 1px;
+		height: 1px;
+		white-space: nowrap;
+		clip-path: inset(50%);
+	}
+
+	/* Сплошная заливка цветом между акцентом и фоном: буквы видно, но они не спорят с контентом */
 	.big-title__text {
 		display: flex;
 		gap: 0.15em;
 		align-items: center;
-		margin: 0;
-		font-size: clamp(4rem, 15vw, 13rem);
+		font-size: clamp(3rem, 10vw, 9rem);
 		font-weight: 900;
 		line-height: 0.9;
-		color: transparent;
+		color: color-mix(in srgb, var(--accent) 28%, var(--bg));
 		letter-spacing: -0.05em;
 		white-space: nowrap;
-		background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 22%, transparent), transparent 85%);
-		background-clip: text;
-		-webkit-text-stroke: 1.5px color-mix(in srgb, var(--accent) 40%, transparent);
 	}
 
 	.big-title__icon {
 		display: inline-grid;
-		color: color-mix(in srgb, var(--accent) 45%, transparent);
 
 		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
 		& :global(svg) {
 			width: 0.7em;
 			height: 0.7em;
-			stroke-width: 1.2;
+			stroke-width: 2.4;
 		}
 	}
 
