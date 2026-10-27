@@ -3,21 +3,23 @@ import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
 import { Picture } from 'astro:assets'
 
 import icon from '#frontend/assets/icon.png'
+import PageIcon from '#frontend/components/page-icon.astro'
 import { t } from '#frontend/lib/i18n.ts'
 
 type Props = { locale: Locale }
 
 const { locale } = Astro.props
 
-/** Что обычно ставят по отдельности, место плашки на сцене и роль из словаря. */
+/** Что обычно ставят по отдельности, место плашки на сцене, роль из словаря и та часть kumiko,
+ *  что её заменяет: её значок стоит на плашке и потом в ряду под иконкой. */
 const tools = [
-	{ name: 'yabai', role: 'merge.windows', spot: 'a' },
-	{ name: 'skhd', role: 'merge.hotkeys', spot: 'b' },
-	{ name: 'sketchybar', role: 'merge.bar', spot: 'c' },
-	{ name: 'JankyBorders', role: 'merge.borders', spot: 'd' },
-	{ name: 'Ice', role: 'merge.menubar', spot: 'e' },
-	{ name: 'SketchyVim', role: 'merge.vim', spot: 'f' },
-]
+	{ name: 'yabai', role: 'merge.windows', spot: 'a', page: 'workspaces' },
+	{ name: 'skhd', role: 'merge.hotkeys', spot: 'b', page: 'hotkeys' },
+	{ name: 'sketchybar', role: 'merge.bar', spot: 'c', page: 'bar' },
+	{ name: 'JankyBorders', role: 'merge.borders', spot: 'd', page: 'borders' },
+	{ name: 'Ice', role: 'merge.menubar', spot: 'e', page: 'menubar' },
+	{ name: 'SketchyVim', role: 'merge.vim', spot: 'f', page: 'vim' },
+] as const
 ---
 
 <!-- Плашки утилит, которые обычно ставят по отдельности, при прокрутке слетаются в иконку
@@ -29,13 +31,21 @@ const tools = [
 		</h2>
 		<p class="merge__lead">{t(locale, 'merge.lead')}</p>
 		<div class="merge__stage">
-			{tools.map(({ name, role, spot }) => (
+			{tools.map(({ name, role, spot, page }) => (
 				<span class={`merge__tool merge__tool--${spot}`}>
-					<b class="merge__name">{name}</b>
-					<span class="merge__role">{t(locale, role)}</span>
+					<PageIcon {page} size="sm" />
+					<span class="merge__label">
+						<b class="merge__name">{name}</b>
+						<span class="merge__role">{t(locale, role)}</span>
+					</span>
 				</span>
 			))}
 			<Picture class="merge__icon" src={icon} alt="kumiko" width={128} height={128} formats={['avif', 'webp']} />
+			<span class="merge__inside" aria-hidden="true">
+				{tools.map(({ page }) => (
+					<PageIcon {page} size="xs" />
+				))}
+			</span>
 		</div>
 	</div>
 </section>
@@ -83,12 +93,13 @@ const tools = [
 		position: absolute;
 		translate: -50% -50%;
 		display: flex;
-		flex-direction: column;
-		gap: 2px;
-		padding: 10px 16px;
+		gap: 10px;
+		align-items: center;
+		padding: 8px 14px 8px 8px;
 		border: 1px solid color-mix(in srgb, var(--fg) 10%, transparent);
 		border-radius: 14px;
 		font-size: 0.875rem;
+		text-align: left;
 		background: color-mix(in srgb, var(--surface) 80%, transparent);
 		backdrop-filter: blur(8px);
 		box-shadow: 0 8px 24px rgb(0 0 0 / 15%);
@@ -141,6 +152,21 @@ const tools = [
 		}
 	}
 
+	.merge__label {
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* Под иконкой -- значки всего, что теперь внутри. Проявляются, когда плашки долетели */
+	.merge__inside {
+		position: absolute;
+		top: calc(50% + 84px);
+		left: 50%;
+		translate: -50% 0;
+		display: flex;
+		gap: 6px;
+	}
+
 	.merge__name {
 		font-family: var(--font-mono);
 	}
@@ -154,13 +180,15 @@ const tools = [
 	   `animation-timeline` в одно, а такое сокращение браузер отбрасывает целиком */
 	@supports (animation-timeline: view()) {
 		@media (prefers-reduced-motion: no-preference) {
+			/* Шкала общая, сцены: иначе нижние плашки трогались бы позже верхних. Пока сцена
+			   въезжает и стоит на экране, плашки на местах, слетаются они в её верхней половине */
 			.merge__tool,
-			.merge__icon {
+			.merge__icon,
+			.merge__inside {
 				animation-timing-function: ease-in-out;
 				animation-fill-mode: both;
-				/* Шкала общая, сцены: иначе нижние плашки трогались бы позже верхних */
 				animation-timeline: --merge;
-				animation-range: cover 30% cover 65%;
+				animation-range: contain 35% contain 90%;
 			}
 
 			.merge__tool {
@@ -169,6 +197,11 @@ const tools = [
 
 			.merge__icon {
 				animation-name: swallow;
+			}
+
+			.merge__inside {
+				animation-name: reveal;
+				animation-range: contain 80% contain 100%;
 			}
 		}
 	}
@@ -181,6 +214,13 @@ const tools = [
 
 		to {
 			transform: translate(var(--to)) scale(0.3);
+			opacity: 0;
+		}
+	}
+
+	@keyframes reveal {
+		from {
+			transform: translateY(12px);
 			opacity: 0;
 		}
 	}

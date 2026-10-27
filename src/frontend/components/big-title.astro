@@ -1,0 +1,93 @@
+---
+type Props = {
+	/** `id` заголовка, на него ссылается `aria-labelledby` раздела. */
+	id: string
+	/** SVG из lucide-static. */
+	icon: string
+	text: string
+}
+
+const { id, icon, text } = Astro.props
+---
+
+<!-- Заголовок раздела огромными контурными буквами на слое под контентом. Он отстаёт от прокрутки,
+     проявляется, пока раздел въезжает, и гаснет, когда тот уходит. Раздел даёт ему position и
+     isolation, иначе слой уйдёт под фон страницы -->
+<div class="big-title">
+	<h2 class="big-title__text" {id}>
+		<span class="big-title__icon" aria-hidden="true" set:html={icon} />
+		{text}
+	</h2>
+</div>
+
+<style>
+	.big-title {
+		pointer-events: none;
+		position: absolute;
+		z-index: -1;
+		top: 0;
+		right: 0;
+		left: 0;
+		display: flex;
+		justify-content: center;
+	}
+
+	/* Буквы пустые внутри: контур и едва заметная заливка сверху вниз */
+	.big-title__text {
+		display: flex;
+		gap: 0.15em;
+		align-items: center;
+		margin: 0;
+		font-size: clamp(4rem, 15vw, 13rem);
+		font-weight: 900;
+		line-height: 0.9;
+		color: transparent;
+		letter-spacing: -0.05em;
+		white-space: nowrap;
+		background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 22%, transparent), transparent 85%);
+		background-clip: text;
+		-webkit-text-stroke: 1.5px color-mix(in srgb, var(--accent) 40%, transparent);
+	}
+
+	.big-title__icon {
+		display: inline-grid;
+		color: color-mix(in srgb, var(--accent) 45%, transparent);
+
+		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
+		& :global(svg) {
+			width: 0.7em;
+			height: 0.7em;
+			stroke-width: 1.2;
+		}
+	}
+
+	/* Свойства анимации по отдельности: минификатор склеивает сокращение `animation` с
+	   `animation-timeline` в одно, а такое сокращение браузер отбрасывает целиком */
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.big-title__text {
+				animation-name: surface;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
+				animation-timeline: view();
+			}
+		}
+	}
+
+	@keyframes surface {
+		from {
+			transform: translateY(60%) scale(0.92);
+			opacity: 0;
+		}
+
+		35%,
+		60% {
+			opacity: 1;
+		}
+
+		to {
+			transform: translateY(-60%) scale(1.04);
+			opacity: 0;
+		}
+	}
+</style>

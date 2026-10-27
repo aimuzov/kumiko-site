@@ -2,7 +2,7 @@
 import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
 import { Footprints } from 'lucide-static'
 
-import HeadingIcon from '#frontend/components/heading-icon.astro'
+import BigTitle from '#frontend/components/big-title.astro'
 
 import { t } from '#frontend/lib/i18n.ts'
 import { BREW } from '#frontend/lib/kumiko.ts'
@@ -16,10 +16,7 @@ const { locale } = Astro.props
      переключатели разрешений щёлкают по очереди, разбросанные окна встают плиткой -->
 <section class="steps" id="steps" aria-labelledby="steps-title">
 	<div class="container">
-		<HeadingIcon icon={Footprints} />
-		<h2 class="steps__title" id="steps-title">
-			{t(locale, 'steps.title')}
-		</h2>
+		<BigTitle id="steps-title" icon={Footprints} text={t(locale, 'steps.title')} />
 		<ol class="steps__list">
 			<li class="step">
 				<div class="step__scene step__scene--term" aria-hidden="true">
@@ -71,15 +68,11 @@ const { locale } = Astro.props
 <style>
 	.steps {
 		--scene: 6s;
+		isolation: isolate;
 
-		padding-block: var(--section-y);
-	}
-
-	.steps__title {
-		margin: 0 0 clamp(24px, 4vw, 48px);
-		font-size: clamp(1.8rem, 4vw, 2.6rem);
-		text-align: center;
-		letter-spacing: -0.02em;
+		position: relative;
+		overflow-x: clip;
+		padding-block: var(--section-top) var(--section-y);
 	}
 
 	.steps__list {

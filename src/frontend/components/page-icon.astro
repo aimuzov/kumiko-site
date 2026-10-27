@@ -1,5 +1,5 @@
 ---
-import { Command, LayoutGrid, List, PanelTop, SquareDashed, TextCursorInput } from 'lucide-static'
+import { Command, LayoutGrid, List, PanelTop, PanelTopDashed, SquareDashed, TextCursorInput } from 'lucide-static'
 
 /** Значок страницы окна настроек kumiko: та же фигура из SF Symbols, только из Lucide, и тот же цвет. */
 const ICONS = {
@@ -9,15 +9,27 @@ const ICONS = {
 	bar: PanelTop,
 	borders: SquareDashed,
 	vim: TextCursorInput,
+	// Своей страницы у прятанья значков нет, оно живёт в общих настройках
+	menubar: PanelTopDashed,
 }
 
-type Props = { page: keyof typeof ICONS; class?: string }
+type Props = {
+	page: keyof typeof ICONS
+	/** `sm` -- для плашек, `xs` -- для ряда значков. */
+	size?: 'sm' | 'xs'
+	class?: string
+}
 
 // Остальное -- в том числе атрибут области стилей родителя, иначе его правила по `class` мимо
-const { page, class: className, ...rest } = Astro.props
+const { page, size, class: className, ...rest } = Astro.props
 ---
 
-<span class:list={['page-icon', `page-icon--${page}`, className]} aria-hidden="true" set:html={ICONS[page]} {...rest} />
+<span
+	class:list={['page-icon', `page-icon--${page}`, size && `page-icon--${size}`, className]}
+	aria-hidden="true"
+	set:html={ICONS[page]}
+	{...rest}
+/>
 
 <style>
 	/* Плитка как в боковой панели окна настроек: системный цвет сверху светлее, белая фигура */
@@ -35,8 +47,8 @@ const { page, class: className, ...rest } = Astro.props
 
 		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
 		& :global(svg) {
-			width: 26px;
-			height: 26px;
+			width: var(--glyph, 26px);
+			height: var(--glyph, 26px);
 			stroke-width: 2.2;
 		}
 
@@ -62,6 +74,26 @@ const { page, class: className, ...rest } = Astro.props
 
 		&--vim {
 			--icon: #34c759;
+		}
+
+		&--menubar {
+			--icon: #00c7be;
+		}
+
+		&--sm {
+			--glyph: 18px;
+
+			width: 32px;
+			height: 32px;
+			border-radius: 8px;
+		}
+
+		&--xs {
+			--glyph: 14px;
+
+			width: 24px;
+			height: 24px;
+			border-radius: 6px;
 		}
 	}
 </style>

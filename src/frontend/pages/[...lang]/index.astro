@@ -8,6 +8,7 @@ import strip from '#frontend/assets/shots/strip.png'
 import BrewCommand from '#frontend/components/brew-command.svelte'
 import DesktopDemo from '#frontend/components/desktop-demo.astro'
 import DodgyButton from '#frontend/components/dodgy-button.svelte'
+import BigTitle from '#frontend/components/big-title.astro'
 import HeadingIcon from '#frontend/components/heading-icon.astro'
 import Merge from '#frontend/components/merge.astro'
 import PageIcon from '#frontend/components/page-icon.astro'
@@ -60,10 +61,7 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 
 		<section class="features" id="features" aria-labelledby="features-title">
 			<div class="container">
-				<HeadingIcon icon={Sparkles} />
-				<h2 class="section-title" id="features-title">
-					{t(locale, 'features.title')}
-				</h2>
+				<BigTitle id="features-title" icon={Sparkles} text={t(locale, 'features.title')} />
 				<div class="features__grid">
 					{features.map((key) => (
 						<article class={`feature feature--${key}`}>
@@ -135,10 +133,7 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 
 		<section class="install" id="install" aria-labelledby="install-title">
 			<div class="container install__inner">
-				<HeadingIcon icon={PackageOpen} />
-				<h2 class="section-title" id="install-title">
-					{t(locale, 'install.title')}
-				</h2>
+				<BigTitle id="install-title" icon={PackageOpen} text={t(locale, 'install.title')} />
 				<p class="install__text">{t(locale, 'install.brew')}</p>
 				<p class="install__text">
 					<BrewCommand {locale} client:visible />
@@ -286,15 +281,14 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 		margin-top: clamp(40px, 6vw, 72px);
 	}
 
-	.section-title {
-		margin: 0 0 clamp(24px, 4vw, 48px);
-		font-size: clamp(1.8rem, 4vw, 2.6rem);
-		text-align: center;
-		letter-spacing: -0.02em;
-	}
-
-	.features {
-		padding-block: var(--section-y);
+	/* Под контентом раздела лежит огромный заголовок из big-title.astro: раздел держит его слой
+	   и обрезает по ширине, а сверху оставляет место, чтобы буквы выглядывали из-за контента */
+	.features,
+	.install {
+		isolation: isolate;
+		position: relative;
+		overflow-x: clip;
+		padding-block: var(--section-top) var(--section-y);
 	}
 
 	.features__grid {
@@ -518,10 +512,6 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 	.mini-vim__mode {
 		font-size: 0.75rem;
 		color: #5af78e;
-	}
-
-	.install {
-		padding-block: var(--section-y);
 	}
 
 	.install__inner {
