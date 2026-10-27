@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/aimuzov/kumiko-site/compare/v1.3.0...v1.4.0) (2026-10-27)
+
+
+### Features
+
+* send visitors to the English version by their browser language ([df701c2](https://github.com/aimuzov/kumiko-site/commit/df701c2c7476f71954b0eb632d7f4720b22ce674))
+* send visitors to the English version by their browser language ([adf6f46](https://github.com/aimuzov/kumiko-site/commit/adf6f46976a3c7a22bcbe91a450d7b471f0a7a15))
+
 ## [1.3.0](https://github.com/aimuzov/kumiko-site/compare/v1.2.0...v1.3.0) (2026-10-27)
 
 
