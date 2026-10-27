@@ -34,7 +34,7 @@
     - a drawn desktop the keys drive the way kumiko does: `h j k l`, `n`, `x`, `1`–`4`. The BSP layout and the neighbour search live in [`lib/tiling.ts`](src/frontend/lib/tiling.ts);
     - One app instead of six: as you scroll, yabai, skhd, sketchybar, JankyBorders, Ice and SketchyVim fly into the kumiko icon;
     - the features, three install steps and a finale where scattered windows tile around the download window.
-- **What's new** (`/changelog/`): the reader changelog from kumiko's [`changelog.json`](https://github.com/aimuzov/kumiko/blob/main/changelog.json), fetched at build time and drawn by the [infra-site-kit](https://github.com/aimuzov/infra-site-kit) component. The site picks up a new kumiko release by itself, see Deployment.
+- **What's new** (`/changelog/`, `/en/changelog/`): the reader changelog from kumiko's [`changelog.json`](https://github.com/aimuzov/kumiko/blob/main/changelog.json), fetched at build time and drawn by the [infra-site-kit](https://github.com/aimuzov/infra-site-kit) component. The site picks up a new kumiko release by itself, see Deployment.
 - **Header**: section anchors with the current one marked, the language, the theme with its peek, GitHub and the download.
 - **404** and the **footer** from [infra-site-kit](https://github.com/aimuzov/infra-site-kit).
 

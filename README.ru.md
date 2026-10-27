@@ -3,11 +3,9 @@
 	<img src="https://img.shields.io/badge/%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-0066cc?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5IDYiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0wIDBoOXYzSDB6Ii8+PHBhdGggZmlsbD0iIzAwMzlhNiIgZD0iTTAgMmg5djJIMHoiLz48cGF0aCBmaWxsPSIjZDUyYjFlIiBkPSJNMCA0aDl2MkgweiIvPjwvc3ZnPg==" alt="Русский">
 </p>
 
-<!-- Раскомментировать, когда в .github/assets появится banner.jpg.
 <p align="center">
-	<a href="https://kumiko.aimuzov.online"><img src=".github/assets/banner.jpg" alt="kumiko: Лендинг kumiko, тайлингового менеджера окон для macOS" width="100%"></a>
+	<a href="https://kumiko.aimuzov.online"><img src=".github/assets/banner.jpg" alt="kumiko, тайлинговый менеджер окон для macOS: окна, рабочие столы, хоткеи и бар в одном приложении" width="100%"></a>
 </p>
--->
 
 <p align="center">
 	<a href="https://github.com/aimuzov/kumiko-site/actions/workflows/deploy.yml"><img src="https://img.shields.io/github/actions/workflow/status/aimuzov/kumiko-site/deploy.yml?branch=main&label=release" alt="Release"></a>
@@ -36,7 +34,7 @@
     - нарисованный рабочий стол, которым правят клавиши, как в самом kumiko: `h j k l`, `n`, `x`, `1`–`4`. Плитка BSP и поиск соседнего окна живут в [`lib/tiling.ts`](src/frontend/lib/tiling.ts);
     - «Одно приложение вместо шести»: при прокрутке yabai, skhd, sketchybar, JankyBorders, Ice и SketchyVim слетаются в иконку kumiko;
     - возможности, три шага установки и финал, где разбросанные окна встают плиткой вокруг окна со скачиванием.
-- **Что нового** (`/changelog/`): ченжлог для читателя из [`changelog.json`](https://github.com/aimuzov/kumiko/blob/main/changelog.json) kumiko, его берёт сборка и рисует компонент [infra-site-kit](https://github.com/aimuzov/infra-site-kit). Новый релиз kumiko сайт подхватывает сам, см. «Выкладку».
+- **Что нового** (`/changelog/`, `/en/changelog/`): ченжлог для читателя из [`changelog.json`](https://github.com/aimuzov/kumiko/blob/main/changelog.json) kumiko, его берёт сборка и рисует компонент [infra-site-kit](https://github.com/aimuzov/infra-site-kit). Новый релиз kumiko сайт подхватывает сам, см. «Выкладку».
 - **Шапка**: якоря разделов с подсветкой текущего, язык, тема с подглядыванием, GitHub и скачивание.
 - **404** и **подвал** из [infra-site-kit](https://github.com/aimuzov/infra-site-kit).
 
