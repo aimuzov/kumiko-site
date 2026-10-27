@@ -91,7 +91,9 @@ export function speckAt(speck: Speck, p: number) {
  * просит меньше движения, остаётся обычное угасание из CSS.
  */
 export function initDust(title: HTMLElement) {
-	if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+	const still = matchMedia('(prefers-reduced-motion: reduce)')
+
+	if (still.matches) return
 
 	if (!CSS.supports('animation-timeline: view()')) return
 
@@ -192,7 +194,8 @@ export function initDust(title: HTMLElement) {
 
 	function frame() {
 		const box = title.getBoundingClientRect()
-		const p = snapProgress(box.top, box.height, innerHeight)
+		// Меньше движения попросили уже на открытой странице -- заголовок снова цел и стоит
+		const p = still.matches ? 0 : snapProgress(box.top, box.height, innerHeight)
 
 		// Начав рассыпаться, буквы уступают место холсту и после него не возвращаются: слой с
 		// пылью больше не гаснет сам, иначе пыль погасла бы раньше, чем разлетелась
@@ -222,6 +225,7 @@ export function initDust(title: HTMLElement) {
 
 	new ResizeObserver(rebuild).observe(float)
 	document.fonts.ready.then(rebuild)
+	still.addEventListener('change', frame)
 	onScrollFrames(frame)
 }
 
