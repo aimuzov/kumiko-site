@@ -1,5 +1,8 @@
 ---
 import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
+import { Footprints } from 'lucide-static'
+
+import HeadingIcon from '#frontend/components/heading-icon.astro'
 
 import { t } from '#frontend/lib/i18n.ts'
 import { BREW } from '#frontend/lib/kumiko.ts'
@@ -13,6 +16,7 @@ const { locale } = Astro.props
      переключатели разрешений щёлкают по очереди, разбросанные окна встают плиткой -->
 <section class="steps" aria-labelledby="steps-title">
 	<div class="container">
+		<HeadingIcon icon={Footprints} />
 		<h2 class="steps__title" id="steps-title">
 			{t(locale, 'steps.title')}
 		</h2>
