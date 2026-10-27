@@ -25,6 +25,16 @@ export function initMerge(stage: HTMLElement) {
 
 	section.classList.add('merge--scrolly')
 
+	// Всё проглочено -- высокий липкий раздел больше не нужен, иначе прокрутка назад сначала
+	// мотала бы пустую высоту. Раздел сжимается до обычного, а прокрутка сдвигается на столько
+	// же, поэтому сцена на экране остаётся на месте
+	function settle() {
+		const before = stage.getBoundingClientRect().top
+
+		section.classList.remove('merge--scrolly')
+		scrollBy({ top: stage.getBoundingClientRect().top - before, behavior: 'instant' })
+	}
+
 	onScrollFrames(() => {
 		// В начале раздела плашки ещё постоят, к концу поглощение кончается с запасом, чтобы
 		// полюбоваться на выросшую иконку
@@ -53,6 +63,9 @@ export function initMerge(stage: HTMLElement) {
 		const grown = grow.step(0.85 + 0.05 * eaten + (full ? 0.2 : 0))
 
 		stage.classList.toggle('merge--full', full)
+
+		if (full && section.classList.contains('merge--scrolly')) settle()
+
 		core.style.setProperty('--grow', grow.x.toFixed(4))
 		core.style.setProperty('--tilt', ((1 - clamp(path.x)) * -10).toFixed(2))
 
