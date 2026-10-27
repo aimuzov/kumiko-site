@@ -1,0 +1,547 @@
+---
+import { Coffee } from 'lucide-static'
+
+import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
+
+import { t } from '#frontend/lib/i18n.ts'
+
+type Props = { label: string; locale: Locale }
+
+const { label, locale } = Astro.props
+
+/** Шпаргалка под демо: клавиши и что они делают, как в подсказках macOS. */
+const keys = [
+	{ keys: ['h', 'j', 'k', 'l'], what: 'hint.focus' },
+	{ keys: ['n'], what: 'hint.open' },
+	{ keys: ['x'], what: 'hint.close' },
+	{ keys: ['1', '–', '4'], what: 'hint.spaces' },
+]
+
+/** Окна первого стола до скрипта, по местам плитки на три окна. */
+const first = ['code', 'web', 'chat']
+
+/** Имена столов: пустой стол бар показывает именем, а не иконками. */
+const names = ['Code', 'Notes', 'Media', 'Other']
+---
+
+<!-- Нарисованный рабочий стол под kumiko, им правит lib/desktop-demo.ts: окна встают плиткой,
+     открываются и закрываются, фокус ходит по h j k l, столы переключаются цифрами и кликом по
+     бару. Пока гость ничего не жмёт, демо само показывает это по кругу. Без скрипта -- первый
+     стол из трёх окон плиткой.
+
+     Окна скрипт создаёт сам, поэтому стили глобальные: у его элементов нет атрибута области
+     стилей Astro. Классы desktop__ свои только у этого демо -->
+<div class="desktop-wrap">
+	<figure class="desktop" role="img" aria-label={label} data-demo>
+		<div class="desktop__screen">
+			<div class="desktop__area" data-area>
+				{first.map((kind, i) => (
+					<div class={`desktop__slot desktop__slot--${i}`} data-win={kind}>
+						<div class={`desktop__win desktop__win--${kind}`}>
+							<span class="desktop__chrome" />
+							<span class="desktop__body" />
+						</div>
+					</div>
+				))}
+			</div>
+			<div class="desktop__bar">
+				<span class="desktop__spaces">
+					{names.map((name, i) => (
+						<span class:list={['desktop__space', i === 0 && 'is-current']} data-space={i} data-name={name}>
+							<span class="desktop__num">{i + 1}</span>
+							<span class="desktop__apps" data-apps>
+								{i === 0 && first.map((kind) => <span class={`desktop__app desktop__app--${kind}`} />)}
+							</span>
+						</span>
+					))}
+				</span>
+				<span class="desktop__status">
+					<span class="desktop__input">RU</span>
+					<span class="desktop__battery" />
+					<span class="desktop__mug" set:html={Coffee} />
+					<span class="desktop__clock" data-clock lang="en">
+						Mon 27 Oct  10:24
+					</span>
+				</span>
+			</div>
+		</div>
+	</figure>
+	<p class="desktop__hint" aria-hidden="true">
+		{keys.map(({ keys, what }) => (
+			<span class="desktop__hint-item">
+				{keys.map((key) =>
+					key === '–' ? <span class="desktop__hint-dash">–</span> : <kbd class="desktop__key">{key}</kbd>,
+				)}
+				<span class="desktop__hint-what">{t(locale, what)}</span>
+			</span>
+		))}
+	</p>
+</div>
+
+<script>
+	import { initDesktopDemo } from '#frontend/lib/desktop-demo.ts'
+
+	for (const demo of document.querySelectorAll<HTMLElement>('[data-demo]')) initDesktopDemo(demo)
+</script>
+
+<style is:global>
+	.desktop-wrap {
+		width: min(980px, 100%);
+	}
+
+	.desktop {
+		--frame: light-dark(#5b8cff, #8aadf4);
+		--move: 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+
+		margin: 0;
+		padding: 10px;
+		border-radius: 22px;
+		background: light-dark(#1d1d1f, #2a2a2d);
+		box-shadow:
+			0 30px 80px rgb(0 0 0 / 35%),
+			inset 0 0 0 1px rgb(255 255 255 / 8%);
+	}
+
+	.desktop__screen {
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		aspect-ratio: 16 / 10;
+		border-radius: 13px;
+		background:
+			radial-gradient(120% 90% at 20% 0%, #3a4f78 0%, transparent 60%),
+			radial-gradient(90% 80% at 100% 30%, #5a3d52 0%, transparent 55%), linear-gradient(#1a2640, #0a111e);
+	}
+
+	.desktop__area {
+		position: relative;
+		flex: 1;
+		margin: 0.8% 0.8% 0;
+	}
+
+	/* Место окна задаёт скрипт процентами области, до него -- плитка на три окна. Новое и
+	   закрытое окно сжимаются. Стол сменяется мгновенно, как у kumiko: окна скрытого стола он
+	   уводит в угол экрана, а показанного сразу ставит на места, без всякого полёта */
+	.desktop__slot {
+		position: absolute;
+		padding: 0.6%;
+		transition:
+			left var(--move),
+			top var(--move),
+			width var(--move),
+			height var(--move),
+			transform var(--move),
+			opacity 0.35s ease;
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+
+		&--0 {
+			top: 0;
+			left: 0;
+			width: 55%;
+			height: 100%;
+		}
+
+		&--1 {
+			top: 0;
+			left: 55%;
+			width: 45%;
+			height: 50%;
+		}
+
+		&--2 {
+			top: 50%;
+			left: 55%;
+			width: 45%;
+			height: 50%;
+		}
+
+		&.is-away {
+			visibility: hidden;
+		}
+
+		[data-switching] & {
+			transition: none;
+		}
+
+		&.is-full {
+			animation: refuse 0.35s ease;
+		}
+
+		&.is-new,
+		&.is-closing {
+			transform: scale(0.85);
+			opacity: 0;
+		}
+	}
+
+	@keyframes refuse {
+		25% {
+			translate: -1.5% 0;
+		}
+
+		75% {
+			translate: 1.5% 0;
+		}
+	}
+
+	/* Окно -- блок с полоской заголовка и намёком на содержимое. В фокусе -- рамка kumiko */
+	.desktop__win {
+		cursor: pointer;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		border-radius: 9px;
+		background: #1e1f24;
+		box-shadow:
+			0 0 0 2px transparent,
+			0 8px 24px rgb(0 0 0 / 35%);
+		transition: box-shadow 0.25s ease;
+
+		.is-focus > & {
+			box-shadow:
+				0 0 0 2px var(--frame),
+				0 8px 24px rgb(0 0 0 / 35%);
+		}
+	}
+
+	.desktop__chrome {
+		flex: none;
+		height: 9%;
+		min-height: 14px;
+		max-height: 22px;
+		background:
+			radial-gradient(circle at 12px 50%, #ff5f57 3.5px, transparent 4px),
+			radial-gradient(circle at 24px 50%, #febc2e 3.5px, transparent 4px),
+			radial-gradient(circle at 36px 50%, #28c840 3.5px, transparent 4px), #2a2b31;
+	}
+
+	.desktop__body {
+		flex: 1;
+		margin: 6%;
+	}
+
+	.desktop__win--code {
+		/* Строки кода: у каждого слоя свой цвет, длина и отступ, шаг общий, поэтому строки
+		   не накладываются, а складываются в блоки разной ширины */
+		& .desktop__body {
+			background:
+				repeating-linear-gradient(#0000 0 2px, #c792ea88 2px 7px, #0000 7px 72px) 0 0 / 38% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 14px, #82aaff77 14px 19px, #0000 19px 72px) 8% 0 / 62% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 26px, #ffffff33 26px 31px, #0000 31px 72px) 16% 0 / 48% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 38px, #c3e88d77 38px 43px, #0000 43px 72px) 16% 0 / 70% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 50px, #ffffff33 50px 55px, #0000 55px 72px) 8% 0 / 30% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 62px, #f78c6c77 62px 67px, #0000 67px 72px) 0 0 / 22% 100% no-repeat;
+		}
+	}
+
+	.desktop__win--web {
+		background: #f4efe6;
+
+		& .desktop__chrome {
+			background:
+				radial-gradient(circle at 12px 50%, #ff5f57 3.5px, transparent 4px),
+				radial-gradient(circle at 24px 50%, #febc2e 3.5px, transparent 4px),
+				radial-gradient(circle at 36px 50%, #28c840 3.5px, transparent 4px), #e4ddd1;
+		}
+
+		& .desktop__body {
+			background:
+				linear-gradient(#c08a5c, #9a5f30) 0 0 / 100% 38% no-repeat,
+				repeating-linear-gradient(#0000 0 10px, #2b1d1322 10px 14px) 0 100% / 100% 50% no-repeat;
+		}
+	}
+
+	.desktop__win--chat {
+		& .desktop__body {
+			border-radius: 4px;
+			background:
+				linear-gradient(#3e8ef7, #3e8ef7) 100% 10% / 45% 16% no-repeat,
+				linear-gradient(#ffffff26, #ffffff26) 0 45% / 55% 16% no-repeat,
+				linear-gradient(#3e8ef7, #3e8ef7) 100% 80% / 35% 16% no-repeat;
+		}
+	}
+
+	.desktop__win--term {
+		background: #111214;
+
+		& .desktop__body {
+			background: repeating-linear-gradient(#0000 0 8px, #5af78e66 8px 11px, #0000 11px 18px) 0 0 / 60% 100%
+				no-repeat;
+		}
+	}
+
+	.desktop__win--notes {
+		background: #fdf3c4;
+
+		& .desktop__chrome {
+			background-color: #efe2a6;
+		}
+
+		& .desktop__body {
+			background: repeating-linear-gradient(#0000 0 12px, #8a6d1f44 12px 14px);
+		}
+	}
+
+	.desktop__win--music {
+		& .desktop__body {
+			border-radius: 6px;
+			background:
+				linear-gradient(90deg, #ff2d55 0 38%, #0000 38%) 0 100% / 100% 6px no-repeat,
+				linear-gradient(135deg, #af52de, #ff9500) 0 0 / 30% 70% no-repeat,
+				repeating-linear-gradient(#0000 0 12px, #ffffff22 12px 16px) 100% 0 / 62% 70% no-repeat;
+		}
+	}
+
+	/* Бар как у kumiko, по его Views.swift: без плашки, текст прямо на обоях. Слева столы: номер и
+	   иконки их приложений, текущий -- в стеклянной капсуле, остальные приглушены и в сером.
+	   Справа раскладка, батарея, кружка и дата. Размеры -- его пункты в долях шрифта бара */
+	.desktop__bar {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: space-between;
+		height: 3em;
+		padding: 0 0.9em;
+		font-size: clamp(8px, 1vw, 11px);
+		color: #fff;
+	}
+
+	.desktop__spaces {
+		display: flex;
+		gap: 0.15em;
+		align-items: center;
+	}
+
+	.desktop__space {
+		cursor: pointer;
+		display: inline-flex;
+		gap: 0.38em;
+		align-items: center;
+		height: 1.85em;
+		padding: 0 0.62em;
+		border-radius: 999px;
+
+		&:hover {
+			background: color-mix(in srgb, var(--frame) 30%, transparent);
+		}
+
+		/* Капсула текущего стола: заливка без обводки, как в баре kumiko */
+		&.is-current {
+			background: rgb(255 255 255 / 16%);
+			backdrop-filter: blur(6px) saturate(1.6);
+		}
+
+		&.is-hidden {
+			display: none;
+		}
+	}
+
+	.desktop__num {
+		font-variant-numeric: tabular-nums;
+
+		.desktop__space:not(.is-current) & {
+			opacity: 0.75;
+		}
+	}
+
+	.desktop__apps {
+		display: inline-flex;
+		gap: 0.23em;
+		align-items: center;
+	}
+
+	/* Иконка приложения на 15 пунктов, как в баре. Не на текущем столе -- серая и чуть бледнее */
+	.desktop__app {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 1.3em;
+		height: 1.3em;
+		border-radius: 24%;
+		font-size: 1em;
+		background: var(--app);
+
+		.desktop__space:not(.is-current) & {
+			opacity: 0.9;
+			filter: grayscale(1);
+		}
+
+		&::after {
+			font-size: 0.55em;
+			font-weight: 800;
+			line-height: 1;
+			color: #fff;
+		}
+
+		&--code {
+			--app: linear-gradient(#3b8eea, #1f5fb8);
+
+			&::after {
+				content: '{}';
+			}
+		}
+
+		&--web {
+			--app:
+				radial-gradient(circle at 50% 50%, #fff4e2 0 28%, transparent 30%), linear-gradient(#e0a86e, #9a5f30);
+		}
+
+		&--chat {
+			--app: linear-gradient(#5ab4f2, #2a8bd8);
+
+			border-radius: 50%;
+
+			&::after {
+				content: '';
+				width: 46%;
+				height: 34%;
+				border-radius: 40%;
+				background: #fff;
+			}
+		}
+
+		&--term {
+			--app: linear-gradient(#3a3b40, #121316);
+
+			&::after {
+				content: '>_';
+				color: #5af78e;
+			}
+		}
+
+		&--notes {
+			--app: linear-gradient(#fbe382 0 30%, #fff8dc 30%);
+
+			&::after {
+				content: '';
+				width: 60%;
+				height: 40%;
+				margin-top: 20%;
+				background: repeating-linear-gradient(#0000 0 2px, #c9b26a 2px 3px);
+			}
+		}
+
+		&--music {
+			--app: linear-gradient(#ff5a78, #e3204c);
+
+			&::after {
+				content: '♪';
+				font-size: 0.75em;
+			}
+		}
+	}
+
+	/* Пустой текущий стол бар показывает именем, а не иконками */
+	.desktop__name {
+		opacity: 0.9;
+	}
+
+	.desktop__status {
+		display: flex;
+		gap: 1.08em;
+		align-items: center;
+	}
+
+	.desktop__input {
+		padding: 0 0.3em;
+		border: 1px solid rgb(255 255 255 / 85%);
+		border-radius: 0.3em;
+		font-size: 0.78em;
+		font-weight: 600;
+		line-height: 1.35;
+	}
+
+	/* Батарея как в Пункте управления: контур, колпачок и заливка по заряду */
+	.desktop__battery {
+		position: relative;
+		width: 1.85em;
+		height: 0.92em;
+		padding: 1.5px;
+		border: 1px solid rgb(255 255 255 / 55%);
+		border-radius: 0.28em;
+		background: linear-gradient(90deg, #fff 0 78%, transparent 78%) content-box;
+		background-clip: content-box;
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			right: -0.2em;
+			transform: translateY(-50%);
+			width: 0.12em;
+			height: 0.36em;
+			border-radius: 0 1px 1px 0;
+			background: rgb(255 255 255 / 55%);
+		}
+	}
+
+	.desktop__mug {
+		display: inline-grid;
+
+		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
+		& svg {
+			width: 1.15em;
+			height: 1.15em;
+		}
+	}
+
+	.desktop__clock {
+		font-variant-numeric: tabular-nums;
+		white-space: pre;
+	}
+
+	/* Шпаргалка: группы "клавиши -- что делают" через тонкие разделители. Клавиши одинаковые
+	   и спокойные, в цвет текста, чтобы строка читалась как подпись, а не как набор кнопок */
+	.desktop__hint {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px 0;
+		justify-content: center;
+		margin-top: 16px;
+		font-size: 0.8125rem;
+		color: var(--muted);
+
+		/* Подсказка про клавиши нужна только там, где есть клавиатура */
+		@media (--touch) {
+			display: none;
+		}
+	}
+
+	.desktop__hint-item {
+		display: inline-flex;
+		gap: 3px;
+		align-items: center;
+		padding: 0 14px;
+
+		& + & {
+			border-left: 1px solid color-mix(in srgb, var(--fg) 12%, transparent);
+		}
+	}
+
+	.desktop__key {
+		display: inline-grid;
+		place-items: center;
+		min-width: 1.6em;
+		height: 1.6em;
+		padding: 0 0.35em;
+		border-radius: 5px;
+		font-family: var(--font-sans);
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--fg);
+		background: color-mix(in srgb, var(--fg) 7%, transparent);
+		box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--fg) 12%, transparent);
+	}
+
+	.desktop__hint-dash {
+		color: color-mix(in srgb, var(--fg) 35%, transparent);
+	}
+
+	.desktop__hint-what {
+		margin-left: 5px;
+	}
+</style>

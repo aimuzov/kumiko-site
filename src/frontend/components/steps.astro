@@ -1,0 +1,352 @@
+---
+import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
+import { Footprints } from 'lucide-static'
+
+import BigTitle from '#frontend/components/big-title.astro'
+
+import { t } from '#frontend/lib/i18n.ts'
+import { BREW } from '#frontend/lib/kumiko.ts'
+
+type Props = { locale: Locale }
+
+const { locale } = Astro.props
+---
+
+<!-- Три шага, и каждый показывает себя маленькой сценой по кругу: команда печатается в терминале,
+     переключатели разрешений щёлкают по очереди, разбросанные окна встают плиткой -->
+<section class="steps" id="steps" aria-labelledby="steps-title">
+	<div class="container">
+		<BigTitle id="steps-title" icon={Footprints} filled side="right" text={t(locale, 'steps.title')} />
+		<ol class="steps__list">
+			<li class="step">
+				<div class="step__scene step__scene--term" aria-hidden="true">
+					<span class="term__line">
+						<span class="term__prompt">$</span>
+						<span class="term__typed">{BREW}</span>
+					</span>
+					<span class="term__done">==> kumiko was successfully installed!</span>
+				</div>
+				<h3 class="step__name">
+					<span class="step__number">1</span>
+					{t(locale, 'steps.install.title')}
+				</h3>
+				<p class="step__text">{t(locale, 'steps.install.text')}</p>
+			</li>
+			<li class="step">
+				<div class="step__scene step__scene--allow" aria-hidden="true">
+					<span class="allow__row">
+						{t(locale, 'steps.allow.access')}
+						<span class="allow__switch allow__switch--first"></span>
+					</span>
+					<span class="allow__row">
+						{t(locale, 'steps.allow.input')}
+						<span class="allow__switch allow__switch--second"></span>
+					</span>
+				</div>
+				<h3 class="step__name">
+					<span class="step__number">2</span>
+					{t(locale, 'steps.allow.title')}
+				</h3>
+				<p class="step__text">{t(locale, 'steps.allow.text')}</p>
+			</li>
+			<li class="step">
+				<div class="step__scene step__scene--tile" aria-hidden="true">
+					<span class="tile__win tile__win--a"></span>
+					<span class="tile__win tile__win--b"></span>
+					<span class="tile__win tile__win--c"></span>
+				</div>
+				<h3 class="step__name">
+					<span class="step__number">3</span>
+					{t(locale, 'steps.tile.title')}
+				</h3>
+				<p class="step__text">{t(locale, 'steps.tile.text')}</p>
+			</li>
+		</ol>
+	</div>
+</section>
+
+<style>
+	.steps {
+		--scene: 6s;
+		isolation: isolate;
+
+		position: relative;
+		overflow-x: clip;
+		padding-block: var(--section-top) var(--section-y);
+	}
+
+	.steps__list {
+		display: grid;
+		gap: 20px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		@media (--md) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.step__scene {
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		justify-content: center;
+		height: 150px;
+		margin-bottom: 18px;
+		padding: 18px;
+		border-radius: 16px;
+		font-size: 0.8125rem;
+		color: #e6e6ea;
+		background: #14161c;
+		box-shadow: inset 0 0 0 1px rgb(255 255 255 / 6%);
+	}
+
+	.step__name {
+		display: flex;
+		gap: 10px;
+		align-items: center;
+		margin: 0;
+		font-size: 1.25rem;
+	}
+
+	.step__number {
+		display: inline-grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		font-size: 0.875rem;
+		color: var(--on-accent);
+		background: var(--accent);
+	}
+
+	.step__text {
+		margin: 8px 0 0;
+		color: var(--muted);
+	}
+
+	/* 1: команда печатается по буквам, потом Homebrew докладывает об успехе */
+	.step__scene--term {
+		font-family: var(--font-mono);
+	}
+
+	.term__line {
+		display: flex;
+		gap: 8px;
+		white-space: nowrap;
+	}
+
+	.term__prompt {
+		color: #5af78e;
+	}
+
+	.term__typed {
+		overflow: hidden;
+		width: 0;
+		border-right: 2px solid #e6e6ea;
+		animation: type var(--scene) steps(38) infinite;
+	}
+
+	.term__done {
+		color: #5af78e;
+		opacity: 0;
+		animation: done var(--scene) ease infinite;
+	}
+
+	/* 2: переключатели щёлкают один за другим */
+	.allow__row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 8px 12px;
+		border-radius: 10px;
+		background: #1f2128;
+	}
+
+	.allow__switch {
+		position: relative;
+		width: 34px;
+		height: 20px;
+		border-radius: 10px;
+		background: #3a3b42;
+		animation: switch-on var(--scene) ease infinite;
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: 2px;
+			left: 2px;
+			width: 16px;
+			height: 16px;
+			border-radius: 50%;
+			background: #fff;
+			animation: knob var(--scene) ease infinite;
+		}
+
+		&--second,
+		&--second::after {
+			animation-delay: 0.8s;
+		}
+	}
+
+	/* 3: окна лежат вразброс и встают в плитку */
+	.step__scene--tile {
+		position: relative;
+		display: block;
+	}
+
+	.tile__win {
+		position: absolute;
+		border-radius: 6px;
+		background: #2a2b31;
+		box-shadow:
+			inset 0 6px 0 #3a3b42,
+			0 4px 12px rgb(0 0 0 / 40%);
+		animation: var(--scene) cubic-bezier(0.65, 0, 0.35, 1) infinite;
+
+		&--a {
+			animation-name: tile-a;
+		}
+
+		&--b {
+			animation-name: tile-b;
+		}
+
+		&--c {
+			animation-name: tile-c;
+		}
+	}
+
+	@keyframes type {
+		0% {
+			width: 0;
+		}
+
+		45%,
+		100% {
+			width: 38ch;
+		}
+	}
+
+	@keyframes done {
+		0%,
+		50% {
+			opacity: 0;
+		}
+
+		58%,
+		92% {
+			opacity: 1;
+		}
+
+		100% {
+			opacity: 0;
+		}
+	}
+
+	@keyframes switch-on {
+		0%,
+		25% {
+			background: #3a3b42;
+		}
+
+		35%,
+		90% {
+			background: #34c759;
+		}
+
+		100% {
+			background: #3a3b42;
+		}
+	}
+
+	@keyframes knob {
+		0%,
+		25% {
+			transform: none;
+		}
+
+		35%,
+		90% {
+			transform: translateX(14px);
+		}
+
+		100% {
+			transform: none;
+		}
+	}
+
+	@keyframes tile-a {
+		0%,
+		20% {
+			inset: 22% 50% 30% 8%;
+			transform: rotate(-6deg);
+		}
+
+		45%,
+		90% {
+			inset: 8% 51% 8% 4%;
+			transform: none;
+			box-shadow:
+				inset 0 6px 0 #3a3b42,
+				0 0 0 2px #8aadf4;
+		}
+
+		100% {
+			inset: 22% 50% 30% 8%;
+			transform: rotate(-6deg);
+		}
+	}
+
+	@keyframes tile-b {
+		0%,
+		20% {
+			inset: 12% 10% 52% 46%;
+			transform: rotate(5deg);
+		}
+
+		45%,
+		90% {
+			inset: 8% 4% 51% 51%;
+			transform: none;
+		}
+
+		100% {
+			inset: 12% 10% 52% 46%;
+			transform: rotate(5deg);
+		}
+	}
+
+	@keyframes tile-c {
+		0%,
+		20% {
+			inset: 55% 22% 6% 40%;
+			transform: rotate(-3deg);
+		}
+
+		45%,
+		90% {
+			inset: 51% 4% 8% 51%;
+			transform: none;
+		}
+
+		100% {
+			inset: 55% 22% 6% 40%;
+			transform: rotate(-3deg);
+		}
+	}
+
+	/* Без движения -- сразу итог каждой сцены */
+	@media (--reduced-motion) {
+		.term__typed,
+		.term__done,
+		.allow__switch,
+		.allow__switch::after,
+		.tile__win {
+			animation-play-state: paused;
+			animation-delay: calc(var(--scene) * -0.6);
+		}
+	}
+</style>

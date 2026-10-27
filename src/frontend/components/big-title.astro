@@ -1,0 +1,222 @@
+---
+import '@fontsource-variable/manrope'
+
+type Props = {
+	/** `id` заголовка, на него ссылается `aria-labelledby` раздела. */
+	id: string
+	/** SVG из lucide-static. */
+	icon: string
+	/** Залить значок цветом, а не только обвести: звёздам и следам идёт, коробке нет. */
+	filled?: boolean
+	/** С какой стороны лежит огромный значок. Разделы чередуют, чтобы не было однообразно. */
+	side?: 'left' | 'right'
+	text: string
+}
+
+const { id, icon, filled = false, side = 'left', text } = Astro.props
+---
+
+<!-- Заголовок раздела огромными буквами на слое под контентом. Он отстаёт от прокрутки,
+     проявляется, пока раздел въезжает, и гаснет, когда тот уходит. Раздел даёт ему position и
+     isolation, иначе слой уйдёт под фон страницы.
+
+     Буквы нарочно едва отличаются от фона, поэтому они -- картинка для глаз, а для скринридера
+     заголовок лежит рядом обычным h2, скрытым с экрана. e2e исключает картинку из проверки
+     контраста: читать её не нужно.
+
+     Значок раздела -- отдельный слой: огромный, в три четверти экрана, сбоку и едва виден. Он едет
+     со своей скоростью и поворачивается, поэтому за буквами есть глубина -->
+<div class="big-title">
+	<h2 class="big-title__label" {id}>
+		{text}
+	</h2>
+	<span
+		class:list={['big-title__glyph', filled && 'big-title__glyph--filled', `big-title__glyph--${side}`]}
+		aria-hidden="true"
+		set:html={icon}
+	/>
+	<span class="big-title__text" aria-hidden="true">
+		<span class="big-title__float">{text}</span>
+	</span>
+</div>
+
+<style>
+	.big-title {
+		pointer-events: none;
+		position: absolute;
+		z-index: -1;
+		top: -6px;
+		right: 0;
+		left: 0;
+		display: flex;
+		justify-content: center;
+	}
+
+	.big-title__label {
+		position: absolute;
+		overflow: hidden;
+		width: 1px;
+		height: 1px;
+		white-space: nowrap;
+		clip-path: inset(50%);
+	}
+
+	/* --fade -- насколько заголовок угас. Анимируется только число, а цвет считается из него
+	   здесь: значения в ключевых кадрах браузер не пересчитывает при смене темы */
+	@property --fade {
+		syntax: '<number>';
+		inherits: false;
+		initial-value: 1;
+	}
+
+	/* Сплошная заливка. Раздел въезжает -- буквы яркой меди, дальше они угасают до цвета между
+	   акцентом и фоном: видно, но не спорят с контентом. Без анимации сразу угасший */
+	.big-title__text {
+		--vivid: light-dark(#b8692c, #e8a467);
+		--dim: color-mix(in srgb, var(--accent) 50%, var(--bg));
+
+		display: flex;
+		gap: 0.15em;
+		align-items: center;
+		font-family: 'Manrope Variable', var(--font-sans);
+		font-size: var(--big-title);
+		font-weight: 700;
+		line-height: 0.9;
+		color: color-mix(in srgb, var(--vivid) calc((1 - var(--fade)) * 100%), var(--dim));
+		letter-spacing: 0.01em;
+		white-space: nowrap;
+	}
+
+	/* Сам по себе заголовок левитирует: прокрутку слушает внешний слой, а этот качается по
+	   времени, поэтому они не спорят за transform */
+	.big-title__float {
+		display: flex;
+		gap: 0.15em;
+		align-items: center;
+
+		@media (prefers-reduced-motion: no-preference) {
+			animation: levitate 7s ease-in-out infinite;
+		}
+	}
+
+	.big-title__glyph {
+		--turn: 1;
+
+		position: absolute;
+		top: -16vh;
+		left: -12vw;
+		width: 75vh;
+		height: 75vh;
+		color: light-dark(rgb(140 80 30), rgb(220 150 90));
+
+		/* Прозрачность у всего svg, а не у цвета: фон под значком -- тёплый градиент, и значок
+		   ложится на него чуть темнее и того же тона. Будь прозрачным цвет линий, на их
+		   пересечениях прозрачность сложилась бы в тёмные пятна */
+		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
+		& :global(svg) {
+			width: 100%;
+			height: 100%;
+			opacity: 0.06;
+			stroke-width: 2.4;
+		}
+
+		/* Справа значок лежит зеркально: и поворачивается в обратную сторону */
+		&--right {
+			--turn: -1;
+
+			right: -12vw;
+			left: auto;
+		}
+
+		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
+		&--filled :global(svg) {
+			fill: currentColor;
+		}
+	}
+
+	/* Свойства анимации по отдельности: минификатор склеивает сокращение `animation` с
+	   `animation-timeline` в одно, а такое сокращение браузер отбрасывает целиком */
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.big-title__text,
+			.big-title__glyph {
+				animation-timing-function: linear;
+				animation-fill-mode: both;
+				animation-timeline: view();
+			}
+
+			/* Проявляется и уезжает всё время, пока раздел на экране, а угасает с трети до
+			   двух третей этого пути */
+			.big-title__text {
+				animation-name: surface, fade;
+				animation-range:
+					normal,
+					cover 30% cover 62%;
+			}
+
+			/* Значок медленнее букв и поворачивается, как будто лежит глубже */
+			.big-title__glyph {
+				animation-name: deep;
+			}
+		}
+	}
+
+	@keyframes fade {
+		from {
+			--fade: 0;
+		}
+
+		to {
+			--fade: 1;
+		}
+	}
+
+	@keyframes levitate {
+		0%,
+		100% {
+			transform: translateY(0) rotate(0deg);
+		}
+
+		33% {
+			transform: translateY(-10px) rotate(-0.6deg);
+		}
+
+		66% {
+			transform: translateY(6px) rotate(0.4deg);
+		}
+	}
+
+	@keyframes deep {
+		from {
+			transform: translateY(40%) rotate(calc(var(--turn) * -10deg));
+			opacity: 0;
+		}
+
+		30%,
+		70% {
+			opacity: 1;
+		}
+
+		to {
+			transform: translateY(-20%) rotate(calc(var(--turn) * 6deg));
+			opacity: 0;
+		}
+	}
+
+	@keyframes surface {
+		from {
+			transform: translateY(25%) scale(0.94);
+			opacity: 0;
+		}
+
+		35%,
+		60% {
+			opacity: 1;
+		}
+
+		to {
+			transform: translateY(-25%) scale(1.02);
+			opacity: 0;
+		}
+	}
+</style>

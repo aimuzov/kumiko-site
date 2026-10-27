@@ -4,99 +4,155 @@ import { t as kitT, LOCALES, type Locale } from '@aimuzov/infra-site-kit/i18n.js
 export const strings = {
 	ru: {
 		'site.description':
-			'kumiko, тайлинговый менеджер окон для macOS: рабочие столы, хоткеи и бар в одном приложении',
-		'hero.tagline': 'Тайлинговый менеджер окон для macOS',
+			'kumiko, тайлинговый менеджер окон для macOS: рабочие столы, хоткеи и бар в одном приложении',
+		'header.home': 'kumiko, на главную',
+		'nav.label': 'Разделы',
+		'nav.features': 'Возможности',
+		'nav.steps': 'Как начать',
+		'nav.install': 'Установка',
+		'nav.source': 'Исходники на GitHub',
+		'nav.download': 'Скачать',
+
+		'hero.tagline': 'Тайлинговый менеджер окон для macOS',
 		'hero.lead':
-			'Окна, рабочие столы, хоткеи и бар в одном приложении. Всё настраивается в окне настроек или в одном файле kumiko.toml.',
+			'Окна, рабочие столы, хоткеи и бар в одном приложении. Всё настраивается в окне настроек или в одном файле kumiko.toml.',
 		'hero.download': 'Скачать {version}',
-		'hero.requires': 'macOS 14 и новее',
+		'hero.requires': 'macOS 14 и новее',
 		'hero.brew': 'Через Homebrew',
-		'hero.shot': 'Окно настроек kumiko, страница рабочих столов',
+		'hint.focus': 'фокус',
+		'hint.open': 'окно',
+		'hint.close': 'закрыть',
+		'hint.spaces': 'столы',
+		'hero.demo':
+			'Рабочий стол с kumiko: окна стоят плиткой, открываются и закрываются, рамка фокуса переходит между ними, внизу бар с рабочими столами',
+
+		'merge.title': '<em>Одно</em> приложение вместо <s>шести</s>',
+		'merge.lead':
+			'<i>Плитку</i>, <i>хоткеи</i>, <i>бар</i>, <i>рамку</i>, <i>прятки значков строки меню</i> и <i>Vim</i> обычно собирают из отдельных утилит. В kumiko это <b>один процесс и один файл настроек</b>.',
+		'merge.windows': 'окна',
+		'merge.hotkeys': 'хоткеи',
+		'merge.bar': 'бар',
+		'merge.borders': 'рамка',
+		'merge.menubar': 'строка меню',
+		'merge.vim': 'Vim',
 
 		'features.title': 'Что умеет',
-		'workspaces.title': 'Рабочие столы на каждом экране',
+		'workspaces.title': 'Рабочие столы на каждом экране',
 		'workspaces.text':
-			'Приложения сами открываются на своём столе и встают в том порядке, в каком ты их перечислил. Стол живёт на основном или внешнем экране и раскладывает окна плиткой, стопкой или оставляет плавать.',
-		'workspaces.shot': 'Рабочие столы: список столов и приложения выбранного',
-		'rules.title': 'Правила для окон',
+			'Приложения сами открываются на своём столе и встают в том порядке, в каком ты их перечислил. Стол живёт на основном или внешнем экране и раскладывает окна плиткой, стопкой или оставляет плавать.',
+		'rules.title': 'Правила для окон',
 		'rules.text':
-			'Что встаёт плиткой, а что плавает, решают правила по приложению, заголовку и идентификатору окна. Окна настроек и окна, у которых нельзя менять размер, плавают сами.',
-		'rules.shot': 'Правила окон: приложения и исключения для их окон',
-		'hotkeys.title': 'Хоткеи с режимами',
+			'Что встаёт плиткой, а что плавает, решают правила по приложению, заголовку и идентификатору окна. Окна настроек и окна, у которых нельзя менять размер, плавают сами.',
+		'hotkeys.title': 'Хоткеи с режимами',
 		'hotkeys.text':
-			'Сочетания пишутся как в skhd и держатся за положение клавиш, поэтому работают на любой раскладке. Есть режимы, переназначение клавиш и запрет системных сочетаний.',
-		'hotkeys.shot': 'Хоткеи: режимы и сочетания режима по умолчанию',
+			'Сочетания пишутся как в skhd и держатся за положение клавиш, поэтому работают на любой раскладке. Есть режимы, переназначение клавиш и запрет системных сочетаний.',
 		'bar.title': 'Бар вместо строки меню',
 		'bar.text':
-			'Столы с иконками приложений, которые растут под курсором, как в Dock, время, батарея и раскладка. Клик по столу показывает его, по иконке -- окно приложения.',
-		'bar.shot': 'Настройки бара: масштаб, элементы и увеличение иконок',
+			'Столы с иконками приложений, которые растут под курсором, как в Dock, время, батарея и раскладка. Клик по столу показывает его, по иконке — окно приложения.',
 		'bar.strip': 'Бар с рабочими столами и иконками их приложений',
-		'borders.title': 'Рамка вокруг окна в фокусе',
+		'borders.title': 'Рамка вокруг окна в фокусе',
 		'borders.text': 'Цветом акцента системы или своим. Углы рамки повторяют радиус окна.',
-		'borders.shot': 'Настройки рамки: толщина, цвет и исключения',
-		'vim.title': 'Vim в любом текстовом поле',
+		'vim.title': 'Vim в любом текстовом поле',
 		'vim.text':
-			'Режимы Vim в полях любых приложений, и на русской раскладке тоже. В терминалах и редакторах со своим Vim их можно выключить.',
-		'vim.shot': 'Настройки Vim: приложения без него и команды при запуске',
+			'Режимы Vim в полях любых приложений, и на русской раскладке тоже. В терминалах и редакторах со своим Vim их можно выключить.',
+
+		'steps.title': 'Три шага',
+		'steps.install.title': 'Поставь',
+		'steps.install.text': 'Одна команда в терминале. Cask заодно кладёт команду kumiko в PATH.',
+		'steps.allow.title': 'Разреши',
+		'steps.allow.text': 'Универсальный доступ, чтобы раскладывать окна, и мониторинг ввода для хоткеев и Vim.',
+		'steps.allow.access': 'Универсальный доступ',
+		'steps.allow.input': 'Мониторинг ввода',
+		'steps.tile.title': 'Работай',
+		'steps.tile.text': 'Окна сами встают по местам, а остальное настраивается в окне настроек или в kumiko.toml.',
+
+		'final.title': 'Разложи свои окна',
+		'final.done': 'Твой рабочий стол следующий',
 
 		'install.title': 'Установка',
-		'install.brew': 'Через Homebrew. Cask заодно кладёт команду kumiko в PATH.',
+		'install.brew': 'Через Homebrew. Cask заодно кладёт команду kumiko в PATH.',
 		'install.zip':
-			'Или скачай архив, распакуй и перенеси Kumiko.app в Программы. Приложение пока не нотаризовано: в первый раз открой его, а потом нажми «Всё равно открыть» в настройках «Конфиденциальность и безопасность».',
-		'install.permissions':
-			'При первом запуске kumiko попросит Универсальный доступ, чтобы раскладывать окна, и Мониторинг ввода для хоткеев и Vim.',
+			'Или скачай архив, распакуй и перенеси Kumiko.app в Программы. Приложение пока не нотаризовано: в первый раз открой его, а потом нажми «Всё равно открыть» в настройках «Конфиденциальность и безопасность».',
 		'install.sip':
-			'Всё работает без отключения SIP, кроме выключения теней окон и плавающих окон поверх остальных. Им нужен скрипт в Dock, как у yabai.',
+			'Всё работает без отключения SIP, кроме выключения теней окон и плавающих окон поверх остальных. Им нужен скрипт в Dock, как у yabai.',
 
 		'changelog.title': 'Что нового',
-		'changelog.lead': 'Как менялся kumiko от версии к версии, простыми словами.',
+		'changelog.lead': 'Как менялся kumiko от версии к версии, простыми словами.',
 		'changelog.toc': 'Версии',
 		'changelog.version': 'версия',
 		'changelog.link': 'Что нового',
-		back: 'На главную',
+		back: 'На главную',
 	},
 	en: {
 		'site.description': 'kumiko, a tiling window manager for macOS: workspaces, hotkeys and a bar in one app',
+		'header.home': 'kumiko, home',
+		'nav.label': 'Sections',
+		'nav.features': 'Features',
+		'nav.steps': 'Get started',
+		'nav.install': 'Install',
+		'nav.source': 'Source on GitHub',
+		'nav.download': 'Download',
+
 		'hero.tagline': 'A tiling window manager for macOS',
 		'hero.lead':
 			'Windows, workspaces, hotkeys and a bar in one app. Set it all up in the settings window or in one kumiko.toml file.',
 		'hero.download': 'Download {version}',
 		'hero.requires': 'macOS 14 or later',
 		'hero.brew': 'With Homebrew',
-		'hero.shot': 'The kumiko settings window on the Workspaces page',
+		'hint.focus': 'focus',
+		'hint.open': 'window',
+		'hint.close': 'close',
+		'hint.spaces': 'workspaces',
+		'hero.demo':
+			'A desktop with kumiko: windows tile, open and close, the focus frame moves between them, and the bar with workspaces runs along the bottom',
+
+		'merge.title': '<em>One</em> app instead of <s>six</s>',
+		'merge.lead':
+			'<i>Tiling</i>, <i>hotkeys</i>, <i>a bar</i>, <i>a frame</i>, <i>hiding menu bar icons</i> and <i>Vim</i> usually come from separate tools. In kumiko they are <b>one process and one config file</b>.',
+		'merge.windows': 'windows',
+		'merge.hotkeys': 'hotkeys',
+		'merge.bar': 'bar',
+		'merge.borders': 'borders',
+		'merge.menubar': 'menu bar',
+		'merge.vim': 'Vim',
 
 		'features.title': 'What it does',
 		'workspaces.title': 'Workspaces on every display',
 		'workspaces.text':
 			'Apps open on their own workspace and line up in the order you list them. A workspace lives on the main or the external display and tiles its windows, stacks them or lets them float.',
-		'workspaces.shot': 'Workspaces: the list and the apps of the chosen one',
 		'rules.title': 'Window rules',
 		'rules.text':
 			'Rules by app, title and window identifier decide what tiles and what floats. Settings windows and windows that cannot be resized float by themselves.',
-		'rules.shot': 'Window rules: apps and exceptions for their windows',
 		'hotkeys.title': 'Hotkeys with modes',
 		'hotkeys.text':
 			'Shortcuts are written the way skhd writes them and stick to key positions, so they work with any input source. There are modes, key remaps and a way to take a system shortcut away.',
-		'hotkeys.shot': 'Hotkeys: modes and the shortcuts of the default one',
 		'bar.title': 'A bar in the place of the menu bar',
 		'bar.text':
 			'Workspaces with app icons that grow under the pointer the way the Dock does, the time, the battery and the input source. A click on a workspace shows it, on an icon brings up the window.',
-		'bar.shot': 'Bar settings: scale, items and icon magnification',
 		'bar.strip': 'The bar with workspaces and the icons of their apps',
 		'borders.title': 'A frame around the focused window',
 		'borders.text': 'In your accent colour or one of your own. Its corners follow the radius of the window.',
-		'borders.shot': 'Border settings: width, colour and exceptions',
 		'vim.title': 'Vim in any text field',
 		'vim.text':
 			'Vim modes in the text fields of any app, on a Russian layout too. Turn them off in terminals and editors that have a Vim of their own.',
-		'vim.shot': 'Vim settings: apps without it and commands at start',
+
+		'steps.title': 'Three steps',
+		'steps.install.title': 'Install',
+		'steps.install.text': 'One command in the terminal. The cask also puts the kumiko command on the PATH.',
+		'steps.allow.title': 'Allow',
+		'steps.allow.text': 'Accessibility to arrange windows and Input Monitoring for hotkeys and Vim.',
+		'steps.allow.access': 'Accessibility',
+		'steps.allow.input': 'Input Monitoring',
+		'steps.tile.title': 'Tile',
+		'steps.tile.text': 'Windows find their places, and the rest is set in the settings window or in kumiko.toml.',
+
+		'final.title': 'Tile your windows',
+		'final.done': 'Your desktop is next',
 
 		'install.title': 'Install',
 		'install.brew': 'With Homebrew. The cask also puts the kumiko command on the PATH.',
 		'install.zip':
 			'Or download the archive, unzip it and move Kumiko.app to Applications. The app is not notarized yet: try to open it once, then press Open Anyway under Privacy & Security in System Settings.',
-		'install.permissions':
-			'On first launch kumiko asks for Accessibility to arrange windows and Input Monitoring for hotkeys and Vim.',
 		'install.sip':
 			'Everything works with SIP on but turning window shadows off and keeping floating windows on top. Those need a scripting addition in Dock, as with yabai.',
 
