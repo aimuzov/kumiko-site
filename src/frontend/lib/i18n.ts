@@ -20,9 +20,9 @@ export const strings = {
 		'hero.requires': 'macOS 14 и новее',
 		'hero.brew': 'Через Homebrew',
 		'hero.hint':
-			'Попробуй: <kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd> двигают фокус, <kbd>n</kbd> открывает окно, <kbd>x</kbd> закрывает',
+			'Попробуй: <kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd> двигают фокус, <kbd>n</kbd> открывает окно, <kbd>x</kbd> закрывает, <kbd>1</kbd>–<kbd>4</kbd> переключают столы',
 		'hero.demo':
-			'Рабочий стол с kumiko: окна стоят плиткой, новое окно делит место соседнего, рамка фокуса переходит между ними, внизу бар с рабочими столами',
+			'Рабочий стол с kumiko: окна стоят плиткой, открываются и закрываются, рамка фокуса переходит между ними, внизу бар с рабочими столами',
 
 		'merge.title': 'Одно приложение вместо шести',
 		'merge.lead':
@@ -98,9 +98,9 @@ export const strings = {
 		'hero.requires': 'macOS 14 or later',
 		'hero.brew': 'With Homebrew',
 		'hero.hint':
-			'Try it: <kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd> move the focus, <kbd>n</kbd> opens a window, <kbd>x</kbd> closes it',
+			'Try it: <kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd> move the focus, <kbd>n</kbd> opens a window, <kbd>x</kbd> closes it, <kbd>1</kbd>–<kbd>4</kbd> switch workspaces',
 		'hero.demo':
-			'A desktop with kumiko: windows tile, a new window splits the place of its neighbour, the focus frame moves between them, and the bar with workspaces runs along the bottom',
+			'A desktop with kumiko: windows tile, open and close, the focus frame moves between them, and the bar with workspaces runs along the bottom',
 
 		'merge.title': 'One app instead of six',
 		'merge.lead':
