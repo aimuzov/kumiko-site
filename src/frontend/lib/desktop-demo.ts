@@ -20,6 +20,9 @@ const IDLE = 10_000
 /** Сколько гаснет закрытое окно, прежде чем уйти из разметки. */
 const CLOSING = 300
 
+/** Больше окон на одном столе демо не открывает: мельче они уже не читаются. */
+const MAX = 6
+
 /** Узел с классами, для окна и точки на баре. */
 function node(className: string, ...children: Node[]) {
 	const el = document.createElement(children.length ? 'div' : 'span')
@@ -96,6 +99,18 @@ export function initDesktopDemo(demo: HTMLElement) {
 
 	function open() {
 		const wins = spaces[current]
+
+		// Места нет: окно в фокусе качается, гость видит, что нажатие услышано
+		if (wins.length >= MAX) {
+			const el = wins[focus[current]]?.el
+
+			el?.classList.remove('is-full')
+			void el?.offsetWidth
+			el?.classList.add('is-full')
+
+			return
+		}
+
 		const kind = KINDS.find((k) => !wins.some((w) => w.kind === k)) ?? KINDS[wins.length % KINDS.length]
 		const at = Math.min(focus[current] + 1, wins.length)
 		const el = create(kind)
