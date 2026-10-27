@@ -14,7 +14,7 @@ test.describe('en browser', () => {
 	test('keeps an explicit choice', async ({ page, context, baseURL }) => {
 		await context.addCookies([{ name: 'lang', value: 'ru', url: baseURL }])
 		await page.goto('/')
-		await expect(page).toHaveURL(/\/$/)
+		await expect(page).toHaveURL(new URL('/', baseURL).href)
 		await expect(page.locator('html')).toHaveAttribute('lang', 'ru')
 	})
 
@@ -27,9 +27,9 @@ test.describe('en browser', () => {
 test.describe('ru browser', () => {
 	test.use({ locale: 'ru-RU' })
 
-	test('stays on the Russian version', async ({ page }) => {
+	test('stays on the Russian version', async ({ page, baseURL }) => {
 		await page.goto('/')
-		await expect(page).toHaveURL(/\/$/)
+		await expect(page).toHaveURL(new URL('/', baseURL).href)
 		await expect(page.locator('html')).toHaveAttribute('lang', 'ru')
 	})
 })
