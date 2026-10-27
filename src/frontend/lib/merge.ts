@@ -14,6 +14,7 @@ export function initMerge(stage: HTMLElement) {
 
 	const section = stage.closest<HTMLElement>('[data-merge-section]')!
 	const tools = [...stage.querySelectorAll<HTMLElement>('[data-tool]')]
+	const terms = [...section.querySelectorAll<HTMLElement>('.merge__lead i')]
 	const core = stage.querySelector<HTMLElement>('[data-core]')!
 	const span = 1 - (tools.length - 1) * STAGGER
 	const path = spring()
@@ -22,6 +23,9 @@ export function initMerge(stage: HTMLElement) {
 	grow.x = 0.85
 
 	let swallowed = 0
+	// Всё проглочено -- навсегда. Счёт глотков для этого не годится: пружина на миг уводит путь
+	// ниже порога, и сцена начинала разматываться назад
+	let done = false
 
 	section.classList.add('merge--scrolly')
 
@@ -40,15 +44,17 @@ export function initMerge(stage: HTMLElement) {
 		// полюбоваться на выросшую иконку
 		const goal = clamp((sectionProgress(section) - 0.12) / 0.62)
 		// Проглоченное назад не выпускаем: прокрутка вверх больше не разбирает выросшую иконку
-		const still = path.step(swallowed === tools.length ? 1 : goal)
+		const still = path.step(done ? 1 : goal)
 		const squash = clamp(path.v * 6, -0.25, 0.25).toFixed(3)
 
 		let eaten = 0
 
 		tools.forEach((tool, i) => {
-			const k = clamp((path.x - i * STAGGER) / span)
+			const k = done ? 1 : clamp((path.x - i * STAGGER) / span)
 
 			if (k >= 0.98) eaten++
+
+			terms[i]?.classList.toggle('is-in', k >= 0.98)
 
 			tool.style.setProperty('--k', k.toFixed(4))
 			tool.style.setProperty('--squash', squash)
@@ -59,10 +65,13 @@ export function initMerge(stage: HTMLElement) {
 
 		swallowed = eaten
 
-		const full = eaten === tools.length
+		done ||= eaten === tools.length
+
+		const full = done
 		const grown = grow.step(0.85 + 0.05 * eaten + (full ? 0.2 : 0))
 
 		stage.classList.toggle('merge--full', full)
+		section.classList.toggle('merge--done', full)
 
 		if (full && section.classList.contains('merge--scrolly')) settle()
 

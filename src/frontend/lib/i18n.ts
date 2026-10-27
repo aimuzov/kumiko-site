@@ -26,9 +26,9 @@ export const strings = {
 		'hero.demo':
 			'Рабочий стол с kumiko: окна стоят плиткой, открываются и закрываются, рамка фокуса переходит между ними, внизу бар с рабочими столами',
 
-		'merge.title': 'Одно приложение вместо шести',
+		'merge.title': '<em>Одно</em> приложение вместо <s>шести</s>',
 		'merge.lead':
-			'Плитку, хоткеи, бар, рамку, прятки значков строки меню и Vim обычно собирают из отдельных утилит. В kumiko это один процесс и один файл настроек.',
+			'<i>Плитку</i>, <i>хоткеи</i>, <i>бар</i>, <i>рамку</i>, <i>прятки значков строки меню</i> и <i>Vim</i> обычно собирают из отдельных утилит. В kumiko это <b>один процесс и один файл настроек</b>.',
 		'merge.windows': 'окна',
 		'merge.hotkeys': 'хоткеи',
 		'merge.bar': 'бар',
@@ -106,9 +106,9 @@ export const strings = {
 		'hero.demo':
 			'A desktop with kumiko: windows tile, open and close, the focus frame moves between them, and the bar with workspaces runs along the bottom',
 
-		'merge.title': 'One app instead of six',
+		'merge.title': '<em>One</em> app instead of <s>six</s>',
 		'merge.lead':
-			'Tiling, hotkeys, a bar, a frame, hiding menu bar icons and Vim usually come from separate tools. In kumiko they are one process and one config file.',
+			'<i>Tiling</i>, <i>hotkeys</i>, <i>a bar</i>, <i>a frame</i>, <i>hiding menu bar icons</i> and <i>Vim</i> usually come from separate tools. In kumiko they are <b>one process and one config file</b>.',
 		'merge.windows': 'windows',
 		'merge.hotkeys': 'hotkeys',
 		'merge.bar': 'bar',
