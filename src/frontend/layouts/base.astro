@@ -2,6 +2,7 @@
 import '@aimuzov/infra-site-kit/base.css'
 import I18nHead from '@aimuzov/infra-site-kit/i18n-head.astro'
 import LocaleBoot from '@aimuzov/infra-site-kit/locale-boot.astro'
+import Sentry from '@aimuzov/infra-site-kit/sentry.astro'
 import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
 import ThemeBoot from '@aimuzov/infra-site-kit/theme-boot.astro'
 import '@aimuzov/infra-site-kit/ui/tokens.css'
@@ -39,6 +40,7 @@ const url = new URL(Astro.url.pathname, Astro.site)
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<LocaleBoot />
 		<ThemeBoot key={THEME_KEY} />
+		<Sentry />
 		<title>{fullTitle}</title>
 		<meta name="description" content={description} />
 		{index ? <I18nHead /> : <meta name="robots" content="noindex" />}
