@@ -3,11 +3,9 @@
 	<a href="README.ru.md"><img src="https://img.shields.io/badge/%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-555?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5IDYiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0wIDBoOXYzSDB6Ii8+PHBhdGggZmlsbD0iIzAwMzlhNiIgZD0iTTAgMmg5djJIMHoiLz48cGF0aCBmaWxsPSIjZDUyYjFlIiBkPSJNMCA0aDl2MkgweiIvPjwvc3ZnPg==" alt="Русский"></a>
 </p>
 
-<!-- Uncomment once .github/assets/banner.en.jpg is in place.
 <p align="center">
-	<a href="https://kumiko.aimuzov.online"><img src=".github/assets/banner.en.jpg" alt="kumiko: A landing page for kumiko, a tiling window manager for macOS" width="100%"></a>
+	<a href="https://kumiko.aimuzov.online"><img src=".github/assets/banner.en.jpg" alt="kumiko, a tiling window manager for macOS: windows, workspaces, hotkeys and a bar in one app" width="100%"></a>
 </p>
--->
 
 <p align="center">
 	<a href="https://github.com/aimuzov/kumiko-site/actions/workflows/deploy.yml"><img src="https://img.shields.io/github/actions/workflow/status/aimuzov/kumiko-site/deploy.yml?branch=main&label=release" alt="Release"></a>
@@ -20,24 +18,25 @@
 
 <h3 align="center">A landing page for kumiko, a tiling window manager for macOS</h3>
 
-<!-- Uncomment once the screenshots are in .github/assets.
 <table>
 	<tr>
-		<td width="50%" align="center"><img src=".github/assets/home.jpg" alt="Home page"><br><b>Home</b> for visitors</td>
-		<td width="50%" align="center"><img src=".github/assets/screen.jpg" alt="Second screen"><br><b>Screen</b> what it shows</td>
+		<td width="50%" align="center"><img src=".github/assets/home.jpg" alt="First screen: the icon, kumiko, the download button and the Homebrew command"><br><b>First screen</b> with the download</td>
+		<td width="50%" align="center"><img src=".github/assets/finale.jpg" alt="Finale: windows tiled around the download window"><br><b>Finale</b>, where the windows tile</td>
 	</tr>
 </table>
--->
 
-<p>Lives at <a href="https://kumiko.aimuzov.online">kumiko.aimuzov.online</a>. A static <a href="https://astro.build">Astro</a> site, interactive islands are written in <a href="https://svelte.dev">Svelte</a>.</p>
-
-The site is in Russian, so the names below are translated.
+<p>Lives at <a href="https://kumiko.aimuzov.online">kumiko.aimuzov.online</a>. A static <a href="https://astro.build">Astro</a> site, interactive islands are written in <a href="https://svelte.dev">Svelte</a>. Russian lives at the root, English under <code>/en/</code>.</p>
 
 ## What's inside
 
-- **Home** (`/`): the site name and description from [`src/frontend/data/site.ts`](src/frontend/data/site.ts).
-- **404**: the shared not-found page from [infra-site-kit](https://github.com/aimuzov/infra-site-kit) inside the site layout: a link home, "back" for visitors who came from the site and suggestions from the sitemap.
-- **Footer**: the author credit from [infra-site-kit](https://github.com/aimuzov/infra-site-kit) with a link to the source code, `repo` in [`site.ts`](src/frontend/data/site.ts).
+- **Home** (`/`, `/en/`):
+    - the first screen with the latest release to download and `brew install --cask aimuzov/tap/kumiko`;
+    - a drawn desktop the keys drive the way kumiko does: `h j k l`, `n`, `x`, `1`–`4`. The BSP layout and the neighbour search live in [`lib/tiling.ts`](src/frontend/lib/tiling.ts);
+    - One app instead of six: as you scroll, yabai, skhd, sketchybar, JankyBorders, Ice and SketchyVim fly into the kumiko icon;
+    - the features, three install steps and a finale where scattered windows tile around the download window.
+- **What's new** (`/changelog/`, `/en/changelog/`): the reader changelog from kumiko's [`changelog.json`](https://github.com/aimuzov/kumiko/blob/main/changelog.json), fetched at build time and drawn by the [infra-site-kit](https://github.com/aimuzov/infra-site-kit) component. The site picks up a new kumiko release by itself, see Deployment.
+- **Header**: section anchors with the current one marked, the language, the theme with its peek, GitHub and the download.
+- **404** and the **footer** from [infra-site-kit](https://github.com/aimuzov/infra-site-kit).
 
 ## How it is built
 
@@ -45,6 +44,8 @@ Everything lives in `src/`:
 
 - [`src/frontend`](src/frontend): the Astro site, it is the `srcDir` in `astro.config.mjs`. Imports go through `#frontend/*`.
 - No API of its own, the scaffold for one lives in [infra-site-template](https://github.com/aimuzov/infra-site-template).
+- Texts of both languages live in [`lib/i18n.ts`](src/frontend/lib/i18n.ts), the pages are built per language through `[...lang]`.
+- A typograph in [`middleware.ts`](src/frontend/middleware.ts) runs over every Russian page at build time, so the text from the changelog and infra-site-kit gets no-break spaces too. It leaves scripts and styles byte for byte, so the CSP hashes hold.
 
 Everything about the server is in [`deploy`](deploy): the Dockerfile, compose and nginx. The deploy script is shared by all sites and lives in [infra-server](https://github.com/aimuzov/infra-server).
 
@@ -91,6 +92,8 @@ The build puts a CSP with hashes of Astro's scripts and styles into every page (
 The projects server from [infra-server](https://github.com/aimuzov/infra-server): merging the release PR that release-please keeps open runs `deploy.yml`, which runs the checks and logs in over SSH. The steps of both come from [infra-site-kit](https://github.com/aimuzov/infra-site-kit), which also holds the server address and its `known_hosts` line. There the key runs the shared [`deploy/site.sh`](https://github.com/aimuzov/infra-server/blob/main/deploy/site.sh) of infra-server, which checks out the release tag and rebuilds the `kumiko-site` container (nginx with the static site) from [`deploy/docker-compose.yml`](deploy/docker-compose.yml). The build runs in a systemd unit, so a dropped SSH connection does not cut it short. The domain and TLS are handled by the shared Caddy. `.env` lives on the server in `/srv/kumiko-site`.
 
 The deploy job runs only when the repository variable `DEPLOY_ENABLED` is `true`, and the SSH key is the `DEPLOY_SSH_KEY` secret. Until the server is set up, a release only runs the checks.
+
+The site shows kumiko's changelog and latest release, so a new kumiko release needs a rebuild. [`kumiko-release.yml`](.github/workflows/kumiko-release.yml) checks every half hour whether the tag of the latest kumiko release matches the one the site was built with (`/kumiko-version.txt`) and runs the deploy if not. No token in the kumiko repo is needed.
 
 To roll back fast, run Release by hand with the previous tag: `gh workflow run deploy.yml -f tag=v1.2.3`. A fix of the bad commit goes out through the release PR like any change.
 
