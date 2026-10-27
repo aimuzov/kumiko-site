@@ -14,6 +14,9 @@ export default defineConfig({
 	// Svelte для интерактивных островов, остальное -- статический HTML
 	// с ванильными скриптами.
 	integrations: [svelte(), sitemap()],
+	// Мелкие файлы Vite встраивает в CSS как data:, а CSP шрифты оттуда не пускает:
+	// шрифты всегда лежат отдельными файлами.
+	vite: { build: { assetsInlineLimit: (file) => (file.endsWith('.woff2') ? false : undefined) } },
 	// Подсветка Shiki несовместима с CSP.
 	markdown: { syntaxHighlight: false },
 	// Astro кладёт в `<meta>` страницы CSP с хешами своих скриптов и стилей.

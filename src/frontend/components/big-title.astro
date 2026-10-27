@@ -1,4 +1,6 @@
 ---
+import '@fontsource-variable/unbounded'
+
 type Props = {
 	/** `id` заголовка, на него ссылается `aria-labelledby` раздела. */
 	id: string
@@ -56,6 +58,7 @@ const { id, icon, text } = Astro.props
 		display: flex;
 		gap: 0.15em;
 		align-items: center;
+		font-family: 'Unbounded Variable', var(--font-sans);
 		font-size: var(--big-title);
 		font-weight: 500;
 		line-height: 0.9;
@@ -82,7 +85,10 @@ const { id, icon, text } = Astro.props
 		left: -6vw;
 		width: 50vh;
 		height: 50vh;
-		color: color-mix(in srgb, var(--accent) 12%, var(--bg));
+		/* Полупрозрачный акцент, а не смесь с фоном: фон под значком -- тёплый градиент, и
+		   непрозрачная заливка ложилась на него серой заплаткой. Так значок чуть темнее того,
+		   что под ним, и того же тона */
+		color: light-dark(rgb(140 80 30 / 11%), rgb(220 150 90 / 9%));
 
 		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
 		& :global(svg) {
