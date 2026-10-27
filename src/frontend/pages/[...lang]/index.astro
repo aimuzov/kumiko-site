@@ -38,7 +38,7 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 				</h1>
 				<p class="hero__tagline">{t(locale, 'hero.tagline')}</p>
 				<p class="hero__lead">{t(locale, 'hero.lead')}</p>
-				<div class="hero__actions" data-cta>
+				<div class="hero__actions">
 					<a class="hero__download" href={newest.download}>
 						<span set:html={Download} aria-hidden="true" />
 						{t(locale, 'hero.download', { version })}

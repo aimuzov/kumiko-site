@@ -22,8 +22,10 @@ const { id, icon, text } = Astro.props
 		{text}
 	</h2>
 	<span class="big-title__text" aria-hidden="true">
-		<span class="big-title__icon" set:html={icon} />
-		{text}
+		<span class="big-title__float">
+			<span class="big-title__icon" set:html={icon} />
+			{text}
+		</span>
 	</span>
 </div>
 
@@ -56,9 +58,21 @@ const { id, icon, text } = Astro.props
 		font-size: var(--big-title);
 		font-weight: 900;
 		line-height: 0.9;
-		color: color-mix(in srgb, var(--accent) 28%, var(--bg));
+		color: color-mix(in srgb, var(--accent) 38%, var(--bg));
 		letter-spacing: -0.05em;
 		white-space: nowrap;
+	}
+
+	/* Сам по себе заголовок левитирует: прокрутку слушает внешний слой, а этот качается по
+	   времени, поэтому они не спорят за transform */
+	.big-title__float {
+		display: flex;
+		gap: 0.15em;
+		align-items: center;
+
+		@media (prefers-reduced-motion: no-preference) {
+			animation: levitate 7s ease-in-out infinite;
+		}
 	}
 
 	.big-title__icon {
@@ -82,6 +96,21 @@ const { id, icon, text } = Astro.props
 				animation-fill-mode: both;
 				animation-timeline: view();
 			}
+		}
+	}
+
+	@keyframes levitate {
+		0%,
+		100% {
+			transform: translateY(0) rotate(0deg);
+		}
+
+		33% {
+			transform: translateY(-10px) rotate(-0.6deg);
+		}
+
+		66% {
+			transform: translateY(6px) rotate(0.4deg);
 		}
 	}
 

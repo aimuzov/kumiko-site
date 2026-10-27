@@ -32,8 +32,7 @@ const github =
 ---
 
 <!-- Шапка прозрачная над первым экраном и становится стеклом, когда страница под ней поехала.
-     Полоска снизу показывает, сколько страницы пройдено, а кнопка скачивания выезжает, когда
-     большая кнопка первого экрана ушла за край -->
+     Полоска снизу показывает, сколько страницы пройдено -->
 <header class="header" data-header>
 	<div class="container header__inner">
 		<a class="header__logo" href={home} aria-label={t(locale, 'header.home')}>
@@ -80,6 +79,9 @@ const github =
 </script>
 
 <style>
+	/* Стекло -- анимация от прокрутки страницы: верный вид с первого кадра, даже если страница
+	   открылась уже прокрученной. Браузер без scroll-driven animations получает data-scrolled
+	   от lib/header.ts */
 	.header {
 		position: fixed;
 		z-index: 30;
@@ -87,12 +89,28 @@ const github =
 		right: 0;
 		left: 0;
 		border-bottom: 1px solid transparent;
-		transition:
-			background-color 0.3s ease,
-			border-color 0.3s ease,
-			backdrop-filter 0.3s ease;
+	}
 
-		&[data-scrolled] {
+	@supports (animation-timeline: scroll()) {
+		.header {
+			animation-name: glass;
+			animation-timing-function: linear;
+			animation-fill-mode: both;
+			animation-timeline: scroll(root);
+			animation-range: 0 32px;
+		}
+	}
+
+	@supports not (animation-timeline: scroll()) {
+		.header[data-scrolled] {
+			border-bottom-color: color-mix(in srgb, var(--fg) 8%, transparent);
+			background: color-mix(in srgb, var(--bg) 72%, transparent);
+			backdrop-filter: saturate(1.4) blur(16px);
+		}
+	}
+
+	@keyframes glass {
+		to {
 			border-bottom-color: color-mix(in srgb, var(--fg) 8%, transparent);
 			background: color-mix(in srgb, var(--bg) 72%, transparent);
 			backdrop-filter: saturate(1.4) blur(16px);
@@ -245,35 +263,28 @@ const github =
 		}
 	}
 
-	/* Пока видна большая кнопка первого экрана, маленькая спрятана: две кнопки "Скачать" рядом
-	   ни к чему. Ушла большая -- маленькая выезжает справа */
 	.header__download {
-		overflow: hidden;
 		display: inline-flex;
 		gap: 6px;
 		align-items: center;
-		max-width: 0;
-		margin-left: 0;
-		padding: 7px 0;
+		margin-left: 6px;
+		padding: 7px 14px;
 		border-radius: 999px;
 		font-size: 0.875rem;
 		font-weight: 600;
 		color: var(--on-accent);
 		text-decoration: none;
 		white-space: nowrap;
-		opacity: 0;
 		background: var(--accent);
-		transition:
-			max-width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-			padding 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-			margin 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-			opacity 0.3s ease;
+		transition: filter 0.2s ease;
 
-		[data-cta-gone] & {
-			max-width: 160px;
-			margin-left: 6px;
-			padding-inline: 14px;
-			opacity: 1;
+		&:hover {
+			filter: brightness(1.08);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--accent);
+			outline-offset: 2px;
 		}
 
 		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
