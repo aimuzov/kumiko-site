@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/aimuzov/kumiko-site/compare/v1.5.0...v1.6.0) (2026-10-27)
+
+
+### Features
+
+* report browser errors to Sentry ([5286b90](https://github.com/aimuzov/kumiko-site/commit/5286b901b452d4670dc4e95ad347d2be0a87e086))
+* report browser errors to Sentry via infra-site-kit ([953e307](https://github.com/aimuzov/kumiko-site/commit/953e307e7227eb0dc37bb0a71e6625e862862297))
+
 ## [1.5.0](https://github.com/aimuzov/kumiko-site/compare/v1.4.0...v1.5.0) (2026-10-27)
 
 
