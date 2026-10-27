@@ -1,8 +1,9 @@
 ---
 import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
+import { Download, LayoutDashboard } from 'lucide-static'
 
+import BigTitle from '#frontend/components/big-title.astro'
 import BrewCommand from '#frontend/components/brew-command.svelte'
-import DodgyButton from '#frontend/components/dodgy-button.svelte'
 import { t } from '#frontend/lib/i18n.ts'
 
 type Props = {
@@ -15,43 +16,40 @@ type Props = {
 const { locale, download, version } = Astro.props
 
 /** Окна, что лежат вразброс. Место в хаосе и в плитке -- в стилях по классу окна. */
-const windows = ['code', 'web', 'chat', 'term', 'notes', 'music']
+const windows = ['code', 'music', 'web', 'chat', 'term', 'notes']
 ---
 
-<!-- Финал: на весь экран вразброс лежат окна, под углом и внахлёст. Пока прокрутка ведёт высокий
-     раздел, lib/final.ts на пружине раскладывает их в плитку, по одному, и последним встаёт окно
-     со скачиванием. Без скрипта и при просьбе о меньшем движении окна сразу стоят плиткой -->
+<!-- Финал: окна лежат вразброс, под углом и внахлёст, а окно со скачиванием -- посередине.
+     Когда раздел доезжает до рубежа, lib/final.ts ставит final--tiled, и окна по очереди плавно
+     расходятся по плитке, а окно со скачиванием встаёт в центр во всю высоту. Без скрипта и при
+     просьбе о меньшем движении окна сразу стоят плиткой -->
 <section class="final" aria-labelledby="final-title" data-final>
-	<div class="final__sticky">
-		<div class="final__screen">
+	<div class="container">
+		<BigTitle id="final-title" icon={LayoutDashboard} text={t(locale, 'final.title')} />
+		<div class="final__screen" data-screen>
 			{windows.map((kind) => (
-				<div class={`final__slot final__slot--${kind}`} data-slot aria-hidden="true">
+				<div class={`final__slot final__slot--${kind}`} aria-hidden="true">
 					<div class={`final__win final__win--${kind}`}>
 						<span class="final__chrome" />
 						<span class="final__body" />
 					</div>
 				</div>
 			))}
-			<div class="final__slot final__slot--cta" data-slot>
+			<div class="final__slot final__slot--cta">
 				<div class="final__win final__win--cta">
 					<span class="final__chrome" aria-hidden="true"></span>
 					<div class="final__cta">
 						<p class="final__done">{t(locale, 'final.done')}</p>
-						<DodgyButton
-							href={download}
-							label={t(locale, 'hero.download', { version })}
-							dodges={t(locale, 'final.dodge').split('|')}
-							client:visible
-						/>
+						<a class="final__download" href={download}>
+							<span set:html={Download} aria-hidden="true" />
+							{t(locale, 'hero.download', { version })}
+						</a>
 						<span class="final__brew">
 							<BrewCommand {locale} client:visible />
 						</span>
 					</div>
 				</div>
 			</div>
-			<h2 class="final__title" id="final-title">
-				{t(locale, 'final.title')}
-			</h2>
 		</div>
 	</div>
 </section>
@@ -63,40 +61,34 @@ const windows = ['code', 'web', 'chat', 'term', 'notes', 'music']
 </script>
 
 <style>
+	/* Над окнами -- огромный заголовок из big-title.astro, как у остальных разделов */
 	.final {
-		padding-block: var(--section-y);
-
-		/* Прокрутки на раскладку -- полтора экрана сверх самого раздела */
-		&--scrolly {
-			height: 260vh;
-			padding-block: 0;
-		}
-	}
-
-	.final__sticky {
-		height: min(80vh, 760px);
-		padding: 0 var(--gutter);
-
-		.final--scrolly & {
-			position: sticky;
-			top: var(--header-h);
-			height: calc(100vh - var(--header-h));
-			padding-block: 16px;
-		}
+		isolation: isolate;
+		position: relative;
+		overflow-x: clip;
+		padding-block: var(--section-top) calc(var(--section-y) * 1.5);
 	}
 
 	.final__screen {
 		position: relative;
-		max-width: 1400px;
-		height: 100%;
-		margin-inline: auto;
+		height: min(78vh, 720px);
+
+		@media (--below-sm) {
+			height: 86vh;
+		}
 	}
 
-	/* Окно стоит между местом в хаосе (x0, y0, w0, h0, r0) и местом в плитке (x1, y1, w1, h1),
-	   --k -- насколько оно уже встало. По умолчанию 1: без скрипта сразу плитка */
-	.final__slot {
-		--k: 1;
+	/* --k -- насколько окно уже встало. Число зарегистрировано, поэтому переход тянет его
+	   плавно, а вместе с ним место, размер и наклон окна */
+	@property --k {
+		syntax: '<number>';
+		inherits: false;
+		initial-value: 1;
+	}
 
+	/* Окно стоит между местом в хаосе (x0, y0, w0, h0, r0) и местом в плитке (x1, y1, w1, h1).
+	   Без скрипта --k равно 1, и окна сразу стоят плиткой */
+	.final__slot {
 		position: absolute;
 		top: calc(var(--y0) + (var(--y1) - var(--y0)) * var(--k));
 		left: calc(var(--x0) + (var(--x1) - var(--x0)) * var(--k));
@@ -104,144 +96,167 @@ const windows = ['code', 'web', 'chat', 'term', 'notes', 'music']
 		width: calc(var(--w0) + (var(--w1) - var(--w0)) * var(--k));
 		height: calc(var(--h0) + (var(--h1) - var(--h0)) * var(--k));
 		padding: 5px;
+
+		/* Окна расходятся по очереди с перелётом, окно со скачиванием -- последним */
+		.final--armed & {
+			--k: 0;
+
+			transition: --k 1.1s cubic-bezier(0.34, 1.32, 0.64, 1) var(--delay, 0s);
+		}
+
+		.final--tiled & {
+			--k: 1;
+		}
 	}
 
 	.final__slot--code {
-		--x0: 4%;
-		--y0: 6%;
+		--x0: 2%;
+		--y0: 4%;
 		--w0: 32%;
-		--h0: 40%;
+		--h0: 42%;
 		--r0: -9deg;
 		--x1: 0%;
 		--y1: 0%;
-		--w1: 24%;
-		--h1: 50%;
+		--w1: 28%;
+		--h1: 40%;
+		--delay: 0s;
+	}
+
+	.final__slot--music {
+		--x0: 4%;
+		--y0: 60%;
+		--w0: 28%;
+		--h0: 30%;
+		--r0: 13deg;
+		--x1: 0%;
+		--y1: 40%;
+		--w1: 28%;
+		--h1: 25%;
+		--delay: 0.08s;
 	}
 
 	.final__slot--web {
-		--x0: 60%;
+		--x0: 66%;
 		--y0: 2%;
-		--w0: 34%;
-		--h0: 32%;
+		--w0: 32%;
+		--h0: 34%;
 		--r0: 7deg;
 		--x1: 0%;
-		--y1: 50%;
-		--w1: 24%;
-		--h1: 50%;
+		--y1: 65%;
+		--w1: 28%;
+		--h1: 35%;
+		--delay: 0.16s;
 	}
 
 	.final__slot--chat {
-		--x0: 16%;
-		--y0: 54%;
+		--x0: 30%;
+		--y0: 58%;
 		--w0: 26%;
 		--h0: 34%;
-		--r0: 11deg;
-		--x1: 24%;
+		--r0: -11deg;
+		--x1: 72%;
 		--y1: 0%;
-		--w1: 24%;
+		--w1: 28%;
 		--h1: 34%;
+		--delay: 0.24s;
 	}
 
 	.final__slot--term {
 		--x0: 68%;
-		--y0: 56%;
+		--y0: 52%;
 		--w0: 28%;
-		--h0: 32%;
+		--h0: 36%;
 		--r0: -13deg;
-		--x1: 24%;
+		--x1: 72%;
 		--y1: 34%;
-		--w1: 24%;
+		--w1: 28%;
 		--h1: 33%;
+		--delay: 0.32s;
 	}
 
 	.final__slot--notes {
 		--x0: 40%;
-		--y0: 14%;
+		--y0: 6%;
 		--w0: 22%;
-		--h0: 30%;
+		--h0: 32%;
 		--r0: -4deg;
-		--x1: 24%;
+		--x1: 72%;
 		--y1: 67%;
-		--w1: 24%;
+		--w1: 28%;
 		--h1: 33%;
-	}
-
-	.final__slot--music {
-		--x0: 0%;
-		--y0: 66%;
-		--w0: 24%;
-		--h0: 26%;
-		--r0: 15deg;
-		--x1: 48%;
-		--y1: 0%;
-		--w1: 52%;
-		--h1: 30%;
+		--delay: 0.4s;
 	}
 
 	.final__slot--cta {
-		--x0: 42%;
-		--y0: 44%;
-		--w0: 30%;
-		--h0: 34%;
-		--r0: -6deg;
-		--x1: 48%;
-		--y1: 30%;
-		--w1: 52%;
-		--h1: 70%;
+		--x0: 33%;
+		--y0: 28%;
+		--w0: 34%;
+		--h0: 44%;
+		--r0: -5deg;
+		--x1: 28%;
+		--y1: 0%;
+		--w1: 44%;
+		--h1: 100%;
+		--delay: 0.55s;
 
 		z-index: 2;
 	}
 
-	/* На телефоне плитка в столбик: окно со скачиванием -- вся ширина внизу. Селектор сильнее
-	   основного: минификатор ставит медиазапрос раньше, и иначе основной перебил бы его */
+	/* На телефоне плитка в столбик: окно со скачиванием -- широкой полосой посередине. Селектор
+	   сильнее основного: минификатор ставит медиазапрос раньше, и иначе основной перебил бы его */
 	@media (--below-sm) {
 		.final__screen .final__slot--code {
 			--x1: 0%;
 			--y1: 0%;
 			--w1: 50%;
-			--h1: 22%;
+			--h1: 20%;
 		}
 
-		.final__screen .final__slot--web {
+		.final__screen .final__slot--music {
 			--x1: 50%;
 			--y1: 0%;
 			--w1: 50%;
-			--h1: 22%;
+			--h1: 20%;
+		}
+
+		.final__screen .final__slot--cta {
+			--x0: 10%;
+			--y0: 30%;
+			--w0: 80%;
+			--h0: 36%;
+			--x1: 0%;
+			--y1: 20%;
+			--w1: 100%;
+			--h1: 44%;
+		}
+
+		.final__screen .final__slot--web {
+			--x1: 0%;
+			--y1: 64%;
+			--w1: 34%;
+			--h1: 36%;
 		}
 
 		.final__screen .final__slot--chat {
-			--x1: 0%;
-			--y1: 22%;
+			--x1: 34%;
+			--y1: 64%;
+			--w1: 33%;
+			--h1: 36%;
+		}
+
+		.final__screen .final__slot--term,
+		.final__screen .final__slot--notes {
+			--x1: 67%;
 			--w1: 33%;
 			--h1: 18%;
 		}
 
 		.final__screen .final__slot--term {
-			--x1: 33%;
-			--y1: 22%;
-			--w1: 34%;
-			--h1: 18%;
+			--y1: 64%;
 		}
 
 		.final__screen .final__slot--notes {
-			--x1: 67%;
-			--y1: 22%;
-			--w1: 33%;
-			--h1: 18%;
-		}
-
-		.final__screen .final__slot--music {
-			--x1: 0%;
-			--y1: 40%;
-			--w1: 100%;
-			--h1: 14%;
-		}
-
-		.final__screen .final__slot--cta {
-			--x1: 0%;
-			--y1: 54%;
-			--w1: 100%;
-			--h1: 46%;
+			--y1: 82%;
 		}
 	}
 
@@ -267,10 +282,6 @@ const windows = ['code', 'web', 'chat', 'term', 'notes', 'music']
 
 		&--term {
 			background: #111214;
-		}
-
-		&--cta {
-			background: var(--surface);
 		}
 	}
 
@@ -332,68 +343,94 @@ const windows = ['code', 'web', 'chat', 'term', 'notes', 'music']
 		}
 	}
 
-	/* Окно со скачиванием: содержимое масштабируется под само окно, оно же меняет размер */
+	/* Окно со скачиванием медное, в цвет иконки kumiko, поэтому выделяется среди остальных.
+	   Кнопка скачивания в нём переворачивает цвета: светлая на меди */
+	.final__win--cta {
+		--accent: #f3e2c3;
+		--on-accent: #4f2f1b;
+
+		color: #fff4e2;
+		background: linear-gradient(160deg, #a2693c, #5a3420);
+		box-shadow:
+			0 0 0 1px rgb(255 255 255 / 10%),
+			0 24px 60px rgb(80 45 20 / 45%);
+		transition: box-shadow 0.5s ease 1.2s;
+
+		& .final__chrome {
+			background-color: rgb(0 0 0 / 14%);
+		}
+
+		/* Всё встало: на нём рамка фокуса kumiko и мягкое свечение */
+		.final--tiled & {
+			box-shadow:
+				0 0 0 3px #8aadf4,
+				0 0 50px color-mix(in srgb, #8aadf4 45%, transparent),
+				0 24px 60px rgb(80 45 20 / 45%);
+		}
+	}
+
+	.final__download {
+		display: inline-flex;
+		gap: 8px;
+		align-items: center;
+		padding: 14px 26px;
+		border-radius: 999px;
+		font-size: 1.0625rem;
+		font-weight: 700;
+		color: var(--on-accent);
+		text-decoration: none;
+		background: var(--accent);
+		box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
+		transition:
+			transform 0.2s ease,
+			filter 0.2s ease;
+
+		&:hover {
+			transform: translateY(-2px);
+			filter: brightness(1.05);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--accent);
+			outline-offset: 3px;
+		}
+
+		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
+		& :global(svg) {
+			width: 20px;
+			height: 20px;
+		}
+	}
+
+	/* Содержимое масштабируется под само окно, оно же меняет размер */
 	.final__cta {
 		container-type: size;
 		display: flex;
 		flex: 1;
 		flex-direction: column;
-		gap: 14px;
+		gap: 16px;
 		align-items: center;
 		justify-content: center;
 		padding: 16px;
 		text-align: center;
 	}
 
+	.final__done {
+		margin: 0;
+		font-family: 'Manrope Variable', var(--font-sans);
+		font-size: clamp(1.25rem, 7.5cqi, 2.6rem);
+		font-weight: 600;
+		line-height: 1.1;
+	}
+
 	/* На телефоне окно узкое, команда целиком не влезет. Она есть в разделе установки */
 	.final__brew {
+		--ui-fg: #fff4e2;
+
+		color: #fff4e2;
+
 		@media (--below-sm) {
 			display: none;
 		}
-	}
-
-	.final__done {
-		margin: 0;
-		font-size: clamp(1.25rem, 9cqi, 3rem);
-		font-weight: 800;
-		line-height: 1.05;
-		letter-spacing: -0.03em;
-	}
-
-	/* Заголовок поверх хаоса. Гаснет, пока окна раскладываются, и уступает место окну со
-	   скачиванием, --p -- доля пройденного раздела */
-	.final__title {
-		pointer-events: none;
-		position: absolute;
-		z-index: 3;
-		top: 50%;
-		right: 0;
-		left: 0;
-		transform: translateY(calc(-50% - var(--p, 0) * 80px));
-		margin: 0;
-		font-size: clamp(2.6rem, 8vw, 6.5rem);
-		font-weight: 900;
-		line-height: 1;
-		text-align: center;
-		text-shadow: 0 6px 40px var(--bg);
-		letter-spacing: -0.03em;
-		opacity: clamp(0, 1 - (var(--p, 1) - 0.12) * 3, 1);
-
-		/* Без скрипта окна уже плитка, заголовок не прячем, а ставим над ней */
-		.final:not(.final--scrolly) & {
-			position: static;
-			transform: none;
-			margin-bottom: 24px;
-			font-size: clamp(2.2rem, 6vw, 4rem);
-			opacity: 1;
-		}
-	}
-
-	/* Всё встало: рамка фокуса kumiko на окне со скачиванием, и оно тихо светится */
-	.final[data-done] .final__win--cta {
-		box-shadow:
-			0 0 0 3px #8aadf4,
-			0 0 40px color-mix(in srgb, #8aadf4 45%, transparent),
-			0 18px 40px rgb(0 0 0 / 30%);
 	}
 </style>

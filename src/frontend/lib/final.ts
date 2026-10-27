@@ -1,38 +1,25 @@
-import { clamp, onScrollFrames, sectionProgress, spring } from '#frontend/lib/scrolly.ts'
-
-/** Насколько позже соседнего встаёт каждое следующее окно, в долях всего пути. */
-const STAGGER = 0.07
+/** На столько ниже шапки должен подняться заголовок раздела, чтобы окна пошли. */
+const LINE = 40
 
 /**
- * Хаос в плитку: прокрутка высокого раздела задаёт цель, окна догоняют её на пружине и встают на
- * места по одному, окно со скачиванием -- последним. Когда встали все, раздел получает
- * `data-done`, и на этом окне загорается рамка фокуса.
+ * Хаос в плитку: пока раздел не доехал, окна лежат вразброс (`final--armed`). Когда его заголовок
+ * поднялся к шапке, раздел получает `final--tiled`, и окна по очереди плавно расходятся по
+ * плитке. Один раз: обратно в хаос они не возвращаются.
  */
 export function initFinal(section: HTMLElement) {
 	if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-	const slots = [...section.querySelectorAll<HTMLElement>('[data-slot]')]
-	const span = 1 - (slots.length - 1) * STAGGER
-	const path = spring(0.05, 0.84)
+	const header = document.querySelector<HTMLElement>('[data-header]')
 
-	section.classList.add('final--scrolly')
+	section.classList.add('final--armed')
 
-	onScrollFrames(() => {
-		// Сначала хаос постоит, раскладка кончается с запасом, чтобы осталось время на кнопку
-		const still = path.step(clamp((sectionProgress(section) - 0.15) / 0.6))
+	function check() {
+		if (section.getBoundingClientRect().top > (header?.offsetHeight ?? 0) + LINE) return
 
-		let placed = 0
+		section.classList.add('final--tiled')
+		removeEventListener('scroll', check)
+	}
 
-		slots.forEach((slot, i) => {
-			const k = clamp((path.x - i * STAGGER) / span)
-
-			if (k >= 0.98) placed++
-
-			slot.style.setProperty('--k', k.toFixed(4))
-		})
-
-		section.toggleAttribute('data-done', placed === slots.length)
-
-		return still
-	})
+	addEventListener('scroll', check, { passive: true })
+	check()
 }

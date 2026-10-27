@@ -65,8 +65,7 @@ export const strings = {
 		'steps.tile.text': 'Окна сами встают по местам, а остальное настраивается в окне настроек или в kumiko.toml.',
 
 		'final.title': 'Разложи свои окна',
-		'final.done': 'Готово. Теперь твои окна',
-		'final.dodge': 'Мимо!|Ещё разок|Почти!',
+		'final.done': 'Твой рабочий стол следующий',
 
 		'install.title': 'Установка',
 		'install.brew': 'Через Homebrew. Cask заодно кладёт команду kumiko в PATH.',
@@ -144,8 +143,7 @@ export const strings = {
 		'steps.tile.text': 'Windows find their places, and the rest is set in the settings window or in kumiko.toml.',
 
 		'final.title': 'Tile your windows',
-		'final.done': 'Done. Now your windows',
-		'final.dodge': 'Missed!|Once more|Almost!',
+		'final.done': 'Your desktop is next',
 
 		'install.title': 'Install',
 		'install.brew': 'With Homebrew. The cask also puts the kumiko command on the PATH.',
