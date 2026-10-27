@@ -6,10 +6,12 @@ type Props = {
 	id: string
 	/** SVG из lucide-static. */
 	icon: string
+	/** Залить значок цветом, а не только обвести: звёздам и следам идёт, коробке нет. */
+	filled?: boolean
 	text: string
 }
 
-const { id, icon, text } = Astro.props
+const { id, icon, filled = false, text } = Astro.props
 ---
 
 <!-- Заголовок раздела огромными буквами на слое под контентом. Он отстаёт от прокрутки,
@@ -26,7 +28,7 @@ const { id, icon, text } = Astro.props
 	<h2 class="big-title__label" {id}>
 		{text}
 	</h2>
-	<span class="big-title__glyph" aria-hidden="true" set:html={icon} />
+	<span class:list={['big-title__glyph', filled && 'big-title__glyph--filled']} aria-hidden="true" set:html={icon} />
 	<span class="big-title__text" aria-hidden="true">
 		<span class="big-title__float">{text}</span>
 	</span>
@@ -85,16 +87,22 @@ const { id, icon, text } = Astro.props
 		left: -6vw;
 		width: 50vh;
 		height: 50vh;
-		/* Полупрозрачный акцент, а не смесь с фоном: фон под значком -- тёплый градиент, и
-		   непрозрачная заливка ложилась на него серой заплаткой. Так значок чуть темнее того,
-		   что под ним, и того же тона */
-		color: light-dark(rgb(140 80 30 / 11%), rgb(220 150 90 / 9%));
+		color: light-dark(rgb(140 80 30), rgb(220 150 90));
 
+		/* Прозрачность у всего svg, а не у цвета: фон под значком -- тёплый градиент, и значок
+		   ложится на него чуть темнее и того же тона. Будь прозрачным цвет линий, на их
+		   пересечениях прозрачность сложилась бы в тёмные пятна */
 		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
 		& :global(svg) {
 			width: 100%;
 			height: 100%;
-			stroke-width: 1.2;
+			opacity: 0.1;
+			stroke-width: 2.4;
+		}
+
+		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
+		&--filled :global(svg) {
+			fill: currentColor;
 		}
 	}
 

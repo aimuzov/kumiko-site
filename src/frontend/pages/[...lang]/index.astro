@@ -60,7 +60,7 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 
 		<section class="features" id="features" aria-labelledby="features-title">
 			<div class="container">
-				<BigTitle id="features-title" icon={Sparkles} text={t(locale, 'features.title')} />
+				<BigTitle id="features-title" icon={Sparkles} filled text={t(locale, 'features.title')} />
 				<div class="features__grid">
 					{features.map((key) => (
 						<article class={`feature feature--${key}`}>
