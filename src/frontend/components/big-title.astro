@@ -16,16 +16,17 @@ const { id, icon, text } = Astro.props
 
      Буквы нарочно едва отличаются от фона, поэтому они -- картинка для глаз, а для скринридера
      заголовок лежит рядом обычным h2, скрытым с экрана. e2e исключает картинку из проверки
-     контраста: читать её не нужно -->
+     контраста: читать её не нужно.
+
+     Значок раздела -- отдельный слой: огромный, в полэкрана, слева и едва виден. Он едет
+     со своей скоростью и поворачивается, поэтому за буквами есть глубина -->
 <div class="big-title">
 	<h2 class="big-title__label" {id}>
 		{text}
 	</h2>
+	<span class="big-title__glyph" aria-hidden="true" set:html={icon} />
 	<span class="big-title__text" aria-hidden="true">
-		<span class="big-title__float">
-			<span class="big-title__icon" set:html={icon} />
-			{text}
-		</span>
+		<span class="big-title__float">{text}</span>
 	</span>
 </div>
 
@@ -34,7 +35,7 @@ const { id, icon, text } = Astro.props
 		pointer-events: none;
 		position: absolute;
 		z-index: -1;
-		top: 8px;
+		top: -6px;
 		right: 0;
 		left: 0;
 		display: flex;
@@ -56,7 +57,7 @@ const { id, icon, text } = Astro.props
 		gap: 0.15em;
 		align-items: center;
 		font-size: var(--big-title);
-		font-weight: 900;
+		font-weight: 500;
 		line-height: 0.9;
 		color: color-mix(in srgb, var(--accent) 50%, var(--bg));
 		letter-spacing: 0.01em;
@@ -75,14 +76,19 @@ const { id, icon, text } = Astro.props
 		}
 	}
 
-	.big-title__icon {
-		display: inline-grid;
+	.big-title__glyph {
+		position: absolute;
+		top: -8vh;
+		left: -6vw;
+		width: 50vh;
+		height: 50vh;
+		color: color-mix(in srgb, var(--accent) 12%, var(--bg));
 
 		/* stylelint-disable-next-line selector-max-type -- SVG из lucide-static приходит без класса */
 		& :global(svg) {
-			width: 0.7em;
-			height: 0.7em;
-			stroke-width: 2.4;
+			width: 100%;
+			height: 100%;
+			stroke-width: 1.2;
 		}
 	}
 
@@ -90,11 +96,20 @@ const { id, icon, text } = Astro.props
 	   `animation-timeline` в одно, а такое сокращение браузер отбрасывает целиком */
 	@supports (animation-timeline: view()) {
 		@media (prefers-reduced-motion: no-preference) {
-			.big-title__text {
-				animation-name: surface;
+			.big-title__text,
+			.big-title__glyph {
 				animation-timing-function: linear;
 				animation-fill-mode: both;
 				animation-timeline: view();
+			}
+
+			.big-title__text {
+				animation-name: surface;
+			}
+
+			/* Значок медленнее букв и поворачивается, как будто лежит глубже */
+			.big-title__glyph {
+				animation-name: deep;
 			}
 		}
 	}
@@ -111,6 +126,23 @@ const { id, icon, text } = Astro.props
 
 		66% {
 			transform: translateY(6px) rotate(0.4deg);
+		}
+	}
+
+	@keyframes deep {
+		from {
+			transform: translateY(40%) rotate(-10deg);
+			opacity: 0;
+		}
+
+		30%,
+		70% {
+			opacity: 1;
+		}
+
+		to {
+			transform: translateY(-20%) rotate(6deg);
+			opacity: 0;
 		}
 	}
 

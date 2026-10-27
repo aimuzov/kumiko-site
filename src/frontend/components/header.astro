@@ -80,15 +80,29 @@ const github =
 
 <style>
 	/* Стекло -- анимация от прокрутки страницы: верный вид с первого кадра, даже если страница
-	   открылась уже прокрученной. Браузер без scroll-driven animations получает data-scrolled
-	   от lib/header.ts */
+	   открылась уже прокрученной. Анимируется только --glass, доля стекла, а цвета считаются из
+	   неё здесь: значения в ключевых кадрах браузер не пересчитывает, и при смене темы шапка
+	   оставалась бы в старой. Браузер без scroll-driven animations получает data-scrolled от
+	   lib/header.ts */
+	@property --glass {
+		syntax: '<number>';
+		inherits: false;
+		initial-value: 0;
+	}
+
 	.header {
 		position: fixed;
 		z-index: 30;
 		top: 0;
 		right: 0;
 		left: 0;
-		border-bottom: 1px solid transparent;
+		border-bottom: 1px solid color-mix(in srgb, var(--fg) calc(var(--glass) * 8%), transparent);
+		background: color-mix(in srgb, var(--bg) calc(var(--glass) * 72%), transparent);
+		backdrop-filter: saturate(calc(1 + var(--glass) * 0.4)) blur(calc(var(--glass) * 16px));
+
+		&[data-scrolled] {
+			--glass: 1;
+		}
 	}
 
 	@supports (animation-timeline: scroll()) {
@@ -101,19 +115,9 @@ const github =
 		}
 	}
 
-	@supports not (animation-timeline: scroll()) {
-		.header[data-scrolled] {
-			border-bottom-color: color-mix(in srgb, var(--fg) 8%, transparent);
-			background: color-mix(in srgb, var(--bg) 72%, transparent);
-			backdrop-filter: saturate(1.4) blur(16px);
-		}
-	}
-
 	@keyframes glass {
 		to {
-			border-bottom-color: color-mix(in srgb, var(--fg) 8%, transparent);
-			background: color-mix(in srgb, var(--bg) 72%, transparent);
-			backdrop-filter: saturate(1.4) blur(16px);
+			--glass: 1;
 		}
 	}
 

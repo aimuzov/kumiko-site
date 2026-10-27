@@ -1,0 +1,399 @@
+---
+import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
+
+import BrewCommand from '#frontend/components/brew-command.svelte'
+import DodgyButton from '#frontend/components/dodgy-button.svelte'
+import { t } from '#frontend/lib/i18n.ts'
+
+type Props = {
+	locale: Locale
+	/** Прямая ссылка на архив последнего релиза и его версия. */
+	download: string
+	version: string
+}
+
+const { locale, download, version } = Astro.props
+
+/** Окна, что лежат вразброс. Место в хаосе и в плитке -- в стилях по классу окна. */
+const windows = ['code', 'web', 'chat', 'term', 'notes', 'music']
+---
+
+<!-- Финал: на весь экран вразброс лежат окна, под углом и внахлёст. Пока прокрутка ведёт высокий
+     раздел, lib/final.ts на пружине раскладывает их в плитку, по одному, и последним встаёт окно
+     со скачиванием. Без скрипта и при просьбе о меньшем движении окна сразу стоят плиткой -->
+<section class="final" aria-labelledby="final-title" data-final>
+	<div class="final__sticky">
+		<div class="final__screen">
+			{windows.map((kind) => (
+				<div class={`final__slot final__slot--${kind}`} data-slot aria-hidden="true">
+					<div class={`final__win final__win--${kind}`}>
+						<span class="final__chrome" />
+						<span class="final__body" />
+					</div>
+				</div>
+			))}
+			<div class="final__slot final__slot--cta" data-slot>
+				<div class="final__win final__win--cta">
+					<span class="final__chrome" aria-hidden="true"></span>
+					<div class="final__cta">
+						<p class="final__done">{t(locale, 'final.done')}</p>
+						<DodgyButton
+							href={download}
+							label={t(locale, 'hero.download', { version })}
+							dodges={t(locale, 'final.dodge').split('|')}
+							client:visible
+						/>
+						<span class="final__brew">
+							<BrewCommand {locale} client:visible />
+						</span>
+					</div>
+				</div>
+			</div>
+			<h2 class="final__title" id="final-title">
+				{t(locale, 'final.title')}
+			</h2>
+		</div>
+	</div>
+</section>
+
+<script>
+	import { initFinal } from '#frontend/lib/final.ts'
+
+	for (const section of document.querySelectorAll<HTMLElement>('[data-final]')) initFinal(section)
+</script>
+
+<style>
+	.final {
+		padding-block: var(--section-y);
+
+		/* Прокрутки на раскладку -- полтора экрана сверх самого раздела */
+		&--scrolly {
+			height: 260vh;
+			padding-block: 0;
+		}
+	}
+
+	.final__sticky {
+		height: min(80vh, 760px);
+		padding: 0 var(--gutter);
+
+		.final--scrolly & {
+			position: sticky;
+			top: var(--header-h);
+			height: calc(100vh - var(--header-h));
+			padding-block: 16px;
+		}
+	}
+
+	.final__screen {
+		position: relative;
+		max-width: 1400px;
+		height: 100%;
+		margin-inline: auto;
+	}
+
+	/* Окно стоит между местом в хаосе (x0, y0, w0, h0, r0) и местом в плитке (x1, y1, w1, h1),
+	   --k -- насколько оно уже встало. По умолчанию 1: без скрипта сразу плитка */
+	.final__slot {
+		--k: 1;
+
+		position: absolute;
+		top: calc(var(--y0) + (var(--y1) - var(--y0)) * var(--k));
+		left: calc(var(--x0) + (var(--x1) - var(--x0)) * var(--k));
+		transform: rotate(calc(var(--r0) * (1 - var(--k))));
+		width: calc(var(--w0) + (var(--w1) - var(--w0)) * var(--k));
+		height: calc(var(--h0) + (var(--h1) - var(--h0)) * var(--k));
+		padding: 5px;
+	}
+
+	.final__slot--code {
+		--x0: 4%;
+		--y0: 6%;
+		--w0: 32%;
+		--h0: 40%;
+		--r0: -9deg;
+		--x1: 0%;
+		--y1: 0%;
+		--w1: 24%;
+		--h1: 50%;
+	}
+
+	.final__slot--web {
+		--x0: 60%;
+		--y0: 2%;
+		--w0: 34%;
+		--h0: 32%;
+		--r0: 7deg;
+		--x1: 0%;
+		--y1: 50%;
+		--w1: 24%;
+		--h1: 50%;
+	}
+
+	.final__slot--chat {
+		--x0: 16%;
+		--y0: 54%;
+		--w0: 26%;
+		--h0: 34%;
+		--r0: 11deg;
+		--x1: 24%;
+		--y1: 0%;
+		--w1: 24%;
+		--h1: 34%;
+	}
+
+	.final__slot--term {
+		--x0: 68%;
+		--y0: 56%;
+		--w0: 28%;
+		--h0: 32%;
+		--r0: -13deg;
+		--x1: 24%;
+		--y1: 34%;
+		--w1: 24%;
+		--h1: 33%;
+	}
+
+	.final__slot--notes {
+		--x0: 40%;
+		--y0: 14%;
+		--w0: 22%;
+		--h0: 30%;
+		--r0: -4deg;
+		--x1: 24%;
+		--y1: 67%;
+		--w1: 24%;
+		--h1: 33%;
+	}
+
+	.final__slot--music {
+		--x0: 0%;
+		--y0: 66%;
+		--w0: 24%;
+		--h0: 26%;
+		--r0: 15deg;
+		--x1: 48%;
+		--y1: 0%;
+		--w1: 52%;
+		--h1: 30%;
+	}
+
+	.final__slot--cta {
+		--x0: 42%;
+		--y0: 44%;
+		--w0: 30%;
+		--h0: 34%;
+		--r0: -6deg;
+		--x1: 48%;
+		--y1: 30%;
+		--w1: 52%;
+		--h1: 70%;
+
+		z-index: 2;
+	}
+
+	/* На телефоне плитка в столбик: окно со скачиванием -- вся ширина внизу. Селектор сильнее
+	   основного: минификатор ставит медиазапрос раньше, и иначе основной перебил бы его */
+	@media (--below-sm) {
+		.final__screen .final__slot--code {
+			--x1: 0%;
+			--y1: 0%;
+			--w1: 50%;
+			--h1: 22%;
+		}
+
+		.final__screen .final__slot--web {
+			--x1: 50%;
+			--y1: 0%;
+			--w1: 50%;
+			--h1: 22%;
+		}
+
+		.final__screen .final__slot--chat {
+			--x1: 0%;
+			--y1: 22%;
+			--w1: 33%;
+			--h1: 18%;
+		}
+
+		.final__screen .final__slot--term {
+			--x1: 33%;
+			--y1: 22%;
+			--w1: 34%;
+			--h1: 18%;
+		}
+
+		.final__screen .final__slot--notes {
+			--x1: 67%;
+			--y1: 22%;
+			--w1: 33%;
+			--h1: 18%;
+		}
+
+		.final__screen .final__slot--music {
+			--x1: 0%;
+			--y1: 40%;
+			--w1: 100%;
+			--h1: 14%;
+		}
+
+		.final__screen .final__slot--cta {
+			--x1: 0%;
+			--y1: 54%;
+			--w1: 100%;
+			--h1: 46%;
+		}
+	}
+
+	.final__win {
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		border-radius: 12px;
+		background: #1e1f24;
+		box-shadow:
+			0 0 0 1px rgb(255 255 255 / 6%),
+			0 18px 40px rgb(0 0 0 / 30%);
+		transition: box-shadow 0.4s ease;
+
+		&--web {
+			background: #f4efe6;
+		}
+
+		&--notes {
+			background: #fdf3c4;
+		}
+
+		&--term {
+			background: #111214;
+		}
+
+		&--cta {
+			background: var(--surface);
+		}
+	}
+
+	.final__chrome {
+		flex: none;
+		height: 22px;
+		background:
+			radial-gradient(circle at 14px 50%, #ff5f57 4px, transparent 4.5px),
+			radial-gradient(circle at 28px 50%, #febc2e 4px, transparent 4.5px),
+			radial-gradient(circle at 42px 50%, #28c840 4px, transparent 4.5px), rgb(255 255 255 / 6%);
+
+		.final__win--web &,
+		.final__win--notes &,
+		.final__win--cta & {
+			background-color: rgb(0 0 0 / 6%);
+		}
+	}
+
+	.final__body {
+		flex: 1;
+		margin: 7%;
+
+		.final__win--code & {
+			background:
+				repeating-linear-gradient(#0000 0 2px, #c792ea88 2px 7px, #0000 7px 48px) 0 0 / 40% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 14px, #82aaff77 14px 19px, #0000 19px 48px) 10% 0 / 66% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 26px, #c3e88d77 26px 31px, #0000 31px 48px) 20% 0 / 50% 100% no-repeat,
+				repeating-linear-gradient(#0000 0 38px, #f78c6c77 38px 43px, #0000 43px 48px) 0 0 / 28% 100% no-repeat;
+		}
+
+		.final__win--web & {
+			background:
+				linear-gradient(#c08a5c, #9a5f30) 0 0 / 100% 40% no-repeat,
+				repeating-linear-gradient(#0000 0 10px, #2b1d1322 10px 14px) 0 100% / 100% 48% no-repeat;
+		}
+
+		.final__win--chat & {
+			background:
+				linear-gradient(#3e8ef7, #3e8ef7) 100% 10% / 48% 16% no-repeat,
+				linear-gradient(#ffffff26, #ffffff26) 0 45% / 58% 16% no-repeat,
+				linear-gradient(#3e8ef7, #3e8ef7) 100% 80% / 36% 16% no-repeat;
+		}
+
+		.final__win--term & {
+			background: repeating-linear-gradient(#0000 0 8px, #5af78e66 8px 11px, #0000 11px 18px) 0 0 / 64% 100%
+				no-repeat;
+		}
+
+		.final__win--notes & {
+			background: repeating-linear-gradient(#0000 0 12px, #8a6d1f44 12px 14px) 0 0 / 100% 100% no-repeat;
+		}
+
+		.final__win--music & {
+			border-radius: 8px;
+			background:
+				linear-gradient(90deg, #ff2d55 0 38%, #0000 38%) 0 100% / 100% 6px no-repeat,
+				linear-gradient(135deg, #af52de, #ff9500) 0 0 / 28% 70% no-repeat,
+				repeating-linear-gradient(#0000 0 12px, #ffffff22 12px 16px) 100% 0 / 64% 70% no-repeat;
+		}
+	}
+
+	/* Окно со скачиванием: содержимое масштабируется под само окно, оно же меняет размер */
+	.final__cta {
+		container-type: size;
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: 14px;
+		align-items: center;
+		justify-content: center;
+		padding: 16px;
+		text-align: center;
+	}
+
+	/* На телефоне окно узкое, команда целиком не влезет. Она есть в разделе установки */
+	.final__brew {
+		@media (--below-sm) {
+			display: none;
+		}
+	}
+
+	.final__done {
+		margin: 0;
+		font-size: clamp(1.25rem, 9cqi, 3rem);
+		font-weight: 800;
+		line-height: 1.05;
+		letter-spacing: -0.03em;
+	}
+
+	/* Заголовок поверх хаоса. Гаснет, пока окна раскладываются, и уступает место окну со
+	   скачиванием, --p -- доля пройденного раздела */
+	.final__title {
+		pointer-events: none;
+		position: absolute;
+		z-index: 3;
+		top: 50%;
+		right: 0;
+		left: 0;
+		transform: translateY(calc(-50% - var(--p, 0) * 80px));
+		margin: 0;
+		font-size: clamp(2.6rem, 8vw, 6.5rem);
+		font-weight: 900;
+		line-height: 1;
+		text-align: center;
+		text-shadow: 0 6px 40px var(--bg);
+		letter-spacing: -0.03em;
+		opacity: clamp(0, 1 - (var(--p, 1) - 0.12) * 3, 1);
+
+		/* Без скрипта окна уже плитка, заголовок не прячем, а ставим над ней */
+		.final:not(.final--scrolly) & {
+			position: static;
+			transform: none;
+			margin-bottom: 24px;
+			font-size: clamp(2.2rem, 6vw, 4rem);
+			opacity: 1;
+		}
+	}
+
+	/* Всё встало: рамка фокуса kumiko на окне со скачиванием, и оно тихо светится */
+	.final[data-done] .final__win--cta {
+		box-shadow:
+			0 0 0 3px #8aadf4,
+			0 0 40px color-mix(in srgb, #8aadf4 45%, transparent),
+			0 18px 40px rgb(0 0 0 / 30%);
+	}
+</style>

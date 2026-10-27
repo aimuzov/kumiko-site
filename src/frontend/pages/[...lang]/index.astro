@@ -1,15 +1,14 @@
 ---
 import type { Locale } from '@aimuzov/infra-site-kit/i18n.js'
 import { Picture } from 'astro:assets'
-import { Download, LayoutDashboard, PackageOpen, Sparkles } from 'lucide-static'
+import { Download, PackageOpen, Sparkles } from 'lucide-static'
 
 import icon from '#frontend/assets/icon.png'
 import strip from '#frontend/assets/shots/strip.png'
 import BrewCommand from '#frontend/components/brew-command.svelte'
 import DesktopDemo from '#frontend/components/desktop-demo.astro'
-import DodgyButton from '#frontend/components/dodgy-button.svelte'
 import BigTitle from '#frontend/components/big-title.astro'
-import HeadingIcon from '#frontend/components/heading-icon.astro'
+import Final from '#frontend/components/final.astro'
 import Merge from '#frontend/components/merge.astro'
 import PageIcon from '#frontend/components/page-icon.astro'
 import Steps from '#frontend/components/steps.astro'
@@ -149,20 +148,7 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 			</div>
 		</section>
 
-		<section class="final" aria-labelledby="final-title">
-			<div class="container final__inner">
-				<HeadingIcon icon={LayoutDashboard} />
-				<h2 class="final__title" id="final-title">
-					{t(locale, 'final.title')}
-				</h2>
-				<DodgyButton
-					href={newest.download}
-					label={t(locale, 'hero.download', { version })}
-					dodges={t(locale, 'final.dodge').split('|')}
-					client:visible
-				/>
-			</div>
-		</section>
+		<Final {locale} download={newest.download} {version} />
 	</main>
 </Base>
 
@@ -529,24 +515,6 @@ const features = ['workspaces', 'rules', 'hotkeys', 'bar', 'borders', 'vim'] as 
 
 	.install__zip {
 		font-family: var(--font-mono);
-	}
-
-	.final {
-		padding-block: var(--section-y) calc(var(--section-y) * 1.5);
-	}
-
-	.final__inner {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-	}
-
-	.final__title {
-		margin: 0 0 28px;
-		font-size: clamp(2.2rem, 6vw, 4rem);
-		font-weight: 800;
-		letter-spacing: -0.03em;
 	}
 
 	/* Иконка покачивается и мелочи в карточках шевелятся по времени, остальное едет за прокруткой.
