@@ -26,7 +26,7 @@ const { id, icon, filled = false, side = 'left', text } = Astro.props
 
      Значок раздела -- отдельный слой: огромный, в три четверти экрана, сбоку и едва виден. Он едет
      со своей скоростью и поворачивается, поэтому за буквами есть глубина -->
-<div class="big-title">
+<div class="big-title" data-big-title>
 	<h2 class="big-title__label" {id}>
 		{text}
 	</h2>
@@ -36,9 +36,18 @@ const { id, icon, filled = false, side = 'left', text } = Astro.props
 		set:html={icon}
 	/>
 	<span class="big-title__text" aria-hidden="true">
-		<span class="big-title__float">{text}</span>
+		<span class="big-title__float">
+			{text}
+			<canvas class="big-title__dust" width="0" height="0"></canvas>
+		</span>
 	</span>
 </div>
+
+<script>
+	import { initDust } from '#frontend/lib/dust.ts'
+
+	for (const title of document.querySelectorAll<HTMLElement>('[data-big-title]')) initDust(title)
+</script>
 
 <style>
 	.big-title {
@@ -90,6 +99,7 @@ const { id, icon, filled = false, side = 'left', text } = Astro.props
 	/* Сам по себе заголовок левитирует: прокрутку слушает внешний слой, а этот качается по
 	   времени, поэтому они не спорят за transform */
 	.big-title__float {
+		position: relative;
 		display: flex;
 		gap: 0.15em;
 		align-items: center;
@@ -97,6 +107,16 @@ const { id, icon, filled = false, side = 'left', text } = Astro.props
 		@media (prefers-reduced-motion: no-preference) {
 			animation: levitate 7s ease-in-out infinite;
 		}
+	}
+
+	/* Холст с пылью из dust.ts: размер и место ему ставит скрипт, с запасом под разлёт */
+	.big-title__dust {
+		position: absolute;
+	}
+
+	/* Буквы рассыпаются: вместо них на холсте их пыль */
+	.big-title--dusting .big-title__float {
+		color: transparent;
 	}
 
 	.big-title__glyph {
@@ -152,6 +172,11 @@ const { id, icon, filled = false, side = 'left', text } = Astro.props
 				animation-range:
 					normal,
 					cover 30% cover 62%;
+			}
+
+			/* Буквы уносит пыль, поэтому сам слой к концу больше не гаснет */
+			.big-title--dust .big-title__text {
+				animation-name: surface-whole, fade;
 			}
 
 			/* Значок медленнее букв и поворачивается, как будто лежит глубже */
@@ -217,6 +242,22 @@ const { id, icon, filled = false, side = 'left', text } = Astro.props
 		to {
 			transform: translateY(-25%) scale(1.02);
 			opacity: 0;
+		}
+	}
+
+	@keyframes surface-whole {
+		from {
+			transform: translateY(25%) scale(0.94);
+			opacity: 0;
+		}
+
+		35% {
+			opacity: 1;
+		}
+
+		to {
+			transform: translateY(-25%) scale(1.02);
+			opacity: 1;
 		}
 	}
 </style>
