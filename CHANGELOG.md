@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.1](https://github.com/aimuzov/kumiko-site/compare/v1.6.0...v1.6.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* make the big section icons barely visible ([d7d01d2](https://github.com/aimuzov/kumiko-site/commit/d7d01d230e3f7008fc4812009ac17d98f96aa811)), closes [#24](https://github.com/aimuzov/kumiko-site/issues/24)
+
+
+### Reverts
+
+* big titles float up again instead of crumbling to dust ([6edae06](https://github.com/aimuzov/kumiko-site/commit/6edae0631b37525c2f2d7591f99d55e87e9ab3a7)), closes [#24](https://github.com/aimuzov/kumiko-site/issues/24)
+
 ## [1.6.0](https://github.com/aimuzov/kumiko-site/compare/v1.5.0...v1.6.0) (2026-10-27)
 
 
