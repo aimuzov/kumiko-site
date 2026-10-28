@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.2](https://github.com/aimuzov/kumiko-site/compare/v1.6.1...v1.6.2) (2026-10-28)
+
+
+### Bug Fixes
+
+* **deps:** move to infra-site-kit 5.9.1 with the strict Sentry events ([28f9345](https://github.com/aimuzov/kumiko-site/commit/28f934575f6fe7810b78871f6baa2a5387e53576))
+* **deps:** move to infra-site-kit 5.9.1 with the strict Sentry events ([9ff3175](https://github.com/aimuzov/kumiko-site/commit/9ff31752768653453b032f369a18685cc46567bd))
+
 ## [1.6.1](https://github.com/aimuzov/kumiko-site/compare/v1.6.0...v1.6.1) (2026-10-28)
 
 
