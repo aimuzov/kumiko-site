@@ -33,10 +33,10 @@
 		"@aimuzov/infra-site-kit": "github:aimuzov/infra-site-kit#661bf5760d9fda3c0ba6bd35ddb4cbb4537aa929",
 		"@astrojs/check": "0.9.12",
 		"@playwright/test": "1.64.0",
-		"@types/node": "26.6.5",
+		"@types/node": "26.6.6",
 		"lucide-static": "1.61.0",
-		"oxlint": "1.87.0",
-		"prettier": "3.9.9",
+		"oxlint": "1.93.0",
+		"prettier": "3.10.1",
 		"stylelint": "17.16.0",
 		"svelte-check": "4.7.6",
 		"typescript": "6.0.3"
