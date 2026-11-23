@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/aimuzov/kumiko-site/compare/v1.6.2...v1.6.3) (2026-11-23)
+
+
+### Bug Fixes
+
+* **deps:** update astro and svelte ([#37](https://github.com/aimuzov/kumiko-site/issues/37)) ([bef1cc6](https://github.com/aimuzov/kumiko-site/commit/bef1cc60280e0564f70b829a4e5028f99f3928f8))
+
 ## [1.6.2](https://github.com/aimuzov/kumiko-site/compare/v1.6.1...v1.6.2) (2026-10-28)
 
 
